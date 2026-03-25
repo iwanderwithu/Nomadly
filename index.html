@@ -466,12 +466,34 @@ function quizFinish(){
 function quizClose(){
   var el=document.getElementById('onboarding');
   if(el){el.style.opacity='0';el.style.transition='opacity 0.3s';setTimeout(function(){el.style.display='none';},300);}
-  try{if(typeof renderDashboard!=='undefined')renderDashboard();if(typeof updateProgress!=='undefined')updateProgress();}catch(e){}
+  // Navigate to Journey with their specific country + visa track
+  setTimeout(function(){
+    try {
+      var dest = qAnswers.q3 || 'Spain';
+      var countryKey = dest==='Spain'?'spain':dest==='Portugal'?'portugal':dest==='Costa Rica'?'costarica':'spain';
+      if(typeof currentJourneyCountry!=='undefined') currentJourneyCountry = countryKey;
+      var journeyTab = document.querySelectorAll('.nav-tab')[7];
+      if(typeof showPage!=='undefined') showPage('journey', journeyTab);
+      if(typeof renderJourney!=='undefined') renderJourney(countryKey);
+      if(typeof applyPersonalization!=='undefined') applyPersonalization();
+    } catch(e){ console.warn(e); }
+  }, 350);
 }
 // Auto-hide if already done
 (function(){
   try{var done=localStorage.getItem('nomadly3_quiz_done');if(done&&JSON.parse(done)===true){var el=document.getElementById('onboarding');if(el)el.style.display='none';}}catch(e){}
 })();
+function initQuiz(){
+  try{if(typeof DB!=='undefined'&&DB.get('quiz_done',false)){var el=document.getElementById('onboarding');if(el)el.style.display='none';return;}}catch(e){}
+  quizGo(1);
+}
+function resetQuiz(){
+  try{if(typeof DB!=='undefined'){DB.set('quiz_done',false);DB.set('quiz_answers',{});}}catch(e){}
+  qAnswers={};
+  var el=document.getElementById('onboarding');
+  if(el){el.style.display='flex';el.style.opacity='1';}
+  quizGo(1);
+}
 </script>
 
 <!-- ONBOARDING QUIZ -->
@@ -1890,6 +1912,10 @@ const planBtn = document.getElementById(‘ps-’ + savedPlan);
 if (savedPlan !== ‘free’) setPlan(savedPlan, planBtn);
 else applyPlanRestrictions();
 setTimeout(() => initQuiz(), 600);
+// Apply personalization for returning users who already took quiz
+if (DB.get(‘quiz_done’, false)) {
+setTimeout(() => { try { applyPersonalization(); } catch(e){} }, 800);
+}
 }
 
 function updateProgress() {
@@ -2474,6 +2500,82 @@ if(id===‘ai’) renderAISuggestions();
 if(id===‘journey’) renderJourney(currentJourneyCountry);
 }
 
+// ── PERSONALIZATION ──
+function applyPersonalization() {
+const answers = DB.get(‘quiz_answers’, {});
+if (!answers || !Object.keys(answers).length) return;
+
+const dest = answers.q3 || ‘Spain’;
+const income = answers.q5 || ‘’;
+const ancestry = answers.q6 || ‘’;
+const timeline = answers.q4 || ‘’;
+const profile = answers.q2 || ‘solo’;
+const urgent = timeline === ‘3months’;
+
+// Determine visa track
+const isRemote = income === ‘remote’;
+const hasSpanish = ancestry === ‘spanish’;
+let track = hasSpanish ? ‘descent’ : isRemote ? ‘dnv’ : ‘nlv’;
+let trackLabel = hasSpanish ? ‘🇪🇸 Citizenship by Descent’ : isRemote ? ‘💻 Digital Nomad Visa’ : ‘🛂 Non-Lucrative Visa (NLV)’;
+let trackColor = hasSpanish ? ‘#4a7c6f’ : isRemote ? ‘#3b6fa0’ : ‘#c4622d’;
+
+// Set profile mode
+if (profile === ‘couple’) { const b = document.getElementById(‘prof-couple’); if(b) setProfile(‘couple’, b); }
+else if (profile === ‘family’) { const b = document.getElementById(‘prof-family’); if(b) setProfile(‘family’, b); }
+
+// Set journey country
+const countryMap = {Spain:‘spain’, Portugal:‘portugal’, ‘Costa Rica’:‘costarica’};
+const countryKey = countryMap[dest] || ‘spain’;
+currentJourneyCountry = countryKey;
+
+// Set budget country
+if (countryKey !== currentCountry) renderBudget(countryKey);
+
+// Pre-filter planner for their visa type
+const plannerFilter = track === ‘nlv’ ? ‘visa’ : track === ‘dnv’ ? ‘finance’ : ‘visa’;
+// (keep as ‘all’ for now — planner has all relevant tasks)
+
+// Update dashboard greeting with their info
+const greetingEl = document.getElementById(‘dash-greeting’);
+if (greetingEl) {
+const destName = dest === ‘deciding’ ? ‘your destination’ : dest;
+greetingEl.textContent = (urgent ? ’⚡ ’ : ’✦ ’) + ’Moving to ’ + destName;
+}
+
+// Show personalized visa track banner on dashboard
+const existingBanner = document.getElementById(‘visa-track-banner’);
+if (existingBanner) existingBanner.remove();
+const dashPage = document.getElementById(‘page-dashboard’);
+if (dashPage) {
+const banner = document.createElement(‘div’);
+banner.id = ‘visa-track-banner’;
+banner.style.cssText = ‘background:’ + trackColor + ’12;border:1.5px solid ’ + trackColor + ‘30;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px’;
+banner.innerHTML = ‘<div>’
++ ‘<div style="font-weight:700;font-size:13px;color:' + trackColor + '">’ + trackLabel + ‘</div>’
++ ‘<div style="font-size:12px;color:#7a7060;margin-top:2px">’
++ (urgent ? ‘⚡ Urgent timeline — check your next steps below’ : ‘📍 ’ + dest + ’ · Your personalized roadmap is ready’)
++ ‘</div></div>’
++ ‘<button onclick="var t=document.querySelectorAll(\'.nav-tab\')[7];showPage(\'journey\',t)" style="padding:7px 14px;background:' + trackColor + ';color:white;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">View Journey →</button>’;
+// Insert after profile banner
+const profileBanner = document.getElementById(‘profile-banner’);
+if (profileBanner && profileBanner.nextSibling) {
+dashPage.insertBefore(banner, profileBanner.nextSibling);
+} else {
+dashPage.insertBefore(banner, dashPage.firstChild);
+}
+}
+
+// Highlight Journey in sidebar
+document.querySelectorAll(’.sidebar-item’).forEach(function(item) {
+if (item.textContent.includes(‘Visas’) || item.textContent.includes(‘Journey’)) {
+item.style.fontWeight = ‘600’;
+}
+});
+
+renderDashboard();
+updateProgress();
+}
+
 // ── TOAST ──
 function showToast(msg,type=‘info’){
 const c=document.getElementById(‘toast-container’);
@@ -2798,149 +2900,6 @@ const planMap = { wanderer:‘wanderer’, pro:‘pro’ };
 const btn = document.getElementById(‘ps-’ + (planMap[plan] || plan));
 setPlan(planMap[plan] || plan, btn);
 }
-// ── QUIZ — simple show/hide, no JS rendering needed ──
-var qAnswers = {};
-var qCurrent = 1;
-var qTotal = 7;
-
-function quizGo(step) {
-for (var i = 1; i <= qTotal; i++) {
-var el = document.getElementById(‘qstep-’ + i);
-if (el) el.style.display = (i === step) ? ‘block’ : ‘none’;
-}
-qCurrent = step;
-var pct = Math.round((step / qTotal) * 100);
-var bar = document.getElementById(‘quiz-progress-bar’);
-if (bar) bar.style.width = pct + ‘%’;
-var label = document.getElementById(‘quiz-step-label’);
-if (label) label.textContent = ’Step ’ + step + ’ of ’ + qTotal;
-}
-
-function quizPick(step, value) {
-qAnswers[‘q’ + step] = value;
-if (step === 2) {
-if (value === ‘couple’) { var b = document.getElementById(‘prof-couple’); if(b) setProfile(‘couple’,b); }
-else if (value === ‘family’) { var b = document.getElementById(‘prof-family’); if(b) setProfile(‘family’,b); }
-}
-setTimeout(function() {
-if (step < qTotal) { quizGo(step + 1); }
-else { quizFinish(); }
-}, 200);
-}
-
-function quizLangEN() {
-currentLang = ‘en’;
-document.getElementById(‘html-root’).lang = ‘en’;
-document.getElementById(‘qlang-en’).style.cssText += ‘;background:#0d0d0d;color:white;border-color:#0d0d0d’;
-document.getElementById(‘qlang-es’).style.cssText += ‘;background:transparent;color:#7a7060;border-color:rgba(13,13,13,0.2)’;
-var b = document.getElementById(‘lang-en’); if(b) b.classList.add(‘active’);
-var b2 = document.getElementById(‘lang-es’); if(b2) b2.classList.remove(‘active’);
-}
-
-function quizLangES() {
-currentLang = ‘es’;
-document.getElementById(‘html-root’).lang = ‘es’;
-document.getElementById(‘qlang-es’).style.cssText += ‘;background:#0d0d0d;color:white;border-color:#0d0d0d’;
-document.getElementById(‘qlang-en’).style.cssText += ‘;background:transparent;color:#7a7060;border-color:rgba(13,13,13,0.2)’;
-var b = document.getElementById(‘lang-es’); if(b) b.classList.add(‘active’);
-var b2 = document.getElementById(‘lang-en’); if(b2) b2.classList.remove(‘active’);
-}
-
-function quizFinish() {
-DB.set(‘quiz_done’, true);
-DB.set(‘quiz_answers’, qAnswers);
-var dest = qAnswers.q3 || ‘Spain’;
-var income = qAnswers.q5 || ‘’;
-var ancestry = qAnswers.q6 || ‘’;
-var isRemote = income === ‘remote’;
-var hasSpanish = ancestry === ‘spanish’;
-var urgent = qAnswers.q4 === ‘3months’;
-var track = hasSpanish ? ‘🇪🇸 Citizenship by Descent’ : isRemote ? ‘💻 Digital Nomad Visa’ : ‘🛂 Non-Lucrative Visa (NLV)’;
-var color = hasSpanish ? ‘#4a7c6f’ : isRemote ? ‘#3b6fa0’ : ‘#c4622d’;
-var desc = hasSpanish ? ‘You may qualify for Spanish citizenship through your Spanish parent or grandparent.’ : isRemote ? ‘Remote workers qualify for the Digital Nomad Visa with 24% flat tax (Beckham Law).’ : ‘The NLV is your best path — requires passive income or savings of €27k+.’;
-var el = document.getElementById(‘onboarding’);
-var card = el ? el.querySelector(‘div’) : null;
-if (!card) return;
-card.innerHTML = ‘<div style="text-align:center;padding:8px">’
-+ ‘<div style="font-size:44px;margin-bottom:10px">🎯</div>’
-+ ‘<div style="font-family:\'Syne\',sans-serif;font-weight:800;font-size:20px;color:#0d0d0d;margin-bottom:6px">Your path is clear.</div>’
-+ ‘<div style="font-size:13px;color:#7a7060;margin-bottom:16px">Moving to <strong style="color:#0d0d0d">’ + dest + ‘</strong></div>’
-+ ‘<div style="background:' + color + '18;border:1.5px solid ' + color + '40;border-radius:12px;padding:14px;margin-bottom:14px;text-align:left">’
-+ ‘<div style="font-family:\'Syne\',sans-serif;font-weight:700;font-size:14px;color:' + color + ';margin-bottom:4px">’ + track + ‘</div>’
-+ ‘<div style="font-size:12px;color:#7a7060">’ + desc + ‘</div></div>’
-+ (urgent ? ‘<div style="background:#fdf6e8;border-radius:10px;padding:10px;font-size:12px;color:#d4a843;margin-bottom:14px;text-align:left">⚡ <strong>Urgent timeline!</strong> Open your Planner for immediate next steps.</div>’ : ‘’)
-+ ‘<button onclick="quizClose()" style="width:100%;padding:14px;background:#c4622d;color:white;border:none;border-radius:12px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:15px;cursor:pointer">Let's go →</button>’
-+ ‘</div>’;
-}
-
-function quizClose() {
-var el = document.getElementById(‘onboarding’);
-if (el) { el.style.opacity=‘0’; el.style.transition=‘opacity 0.3s’; setTimeout(function(){ el.style.display=‘none’; },300); }
-try { renderDashboard(); updateProgress(); } catch(e){}
-showToast(‘✅ Profile set! Nomadly is personalized for you.’, ‘success’);
-}
-
-function initQuiz() {
-if (DB.get(‘quiz_done’, false)) {
-var el = document.getElementById(‘onboarding’);
-if (el) el.style.display = ‘none’;
-return;
-}
-quizGo(1);
-}
-
-function resetQuiz() {
-DB.set(‘quiz_done’, false);
-DB.set(‘quiz_answers’, {});
-qAnswers = {};
-var el = document.getElementById(‘onboarding’);
-if (el) { el.style.display=‘flex’; el.style.opacity=‘1’; }
-quizGo(1);
-}
-{
-id:‘origin’, icon:‘🌎’,
-q:‘Where are you relocating from?’, q_es:’¿Desde dónde te vas a reubicar?’,
-options:    [‘🇵🇷 Puerto Rico’,‘🇺🇸 USA (mainland)’,‘🇲🇽 Mexico’,‘🇨🇴 Colombia’,‘🇦🇷 Argentina’,‘🌍 Other’],
-options_es: [‘🇵🇷 Puerto Rico’,‘🇺🇸 EE.UU. (continental)’,‘🇲🇽 México’,‘🇨🇴 Colombia’,‘🇦🇷 Argentina’,‘🌍 Otro’],
-},
-{
-id:‘profile’, icon:‘👥’,
-q:“Who’s making this move?”, q_es:’¿Quién hace este movimiento?’,
-options:    [‘👤 Just me’,‘👫 Me + partner’,‘👨‍👩‍👧 Family with kids’,‘👴 Retirement move’],
-options_es: [‘👤 Solo yo’,‘👫 Yo + pareja’,‘👨‍👩‍👧 Familia con hijos’,‘👴 Mudanza de retiro’],
-},
-{
-id:‘destination’, icon:‘🗺️’,
-q:‘Where are you moving to?’, q_es:’¿A dónde te mudas?’,
-options:    [‘🇪🇸 Spain’,‘🇵🇹 Portugal’,‘🇨🇷 Costa Rica’,‘🇨🇴 Colombia’,‘🇲🇽 Mexico’,‘🤔 Still deciding’],
-options_es: [‘🇪🇸 España’,‘🇵🇹 Portugal’,‘🇨🇷 Costa Rica’,‘🇨🇴 Colombia’,‘🇲🇽 México’,‘🤔 Aún no sé’],
-},
-{
-id:‘timeline’, icon:‘📅’,
-q:‘When are you planning to move?’, q_es:’¿Cuándo planeas mudarte?’,
-options:    [‘🔥 In the next 3 months’,‘📆 3–6 months’,‘🗓️ 6–12 months’,‘⏳ 1–2 years’,‘🌱 Just exploring’],
-options_es: [‘🔥 En los próximos 3 meses’,‘📆 3–6 meses’,‘🗓️ 6–12 meses’,‘⏳ 1–2 años’,‘🌱 Solo explorando’],
-},
-{
-id:‘income’, icon:‘💳’,
-q:‘What is your main income type?’, q_es:’¿Cuál es tu tipo principal de ingresos?’,
-options:    [‘💻 Remote job / freelance (active income)’,‘📈 Investments / savings / passive income’,‘💼 Both active and passive’,‘🚫 Neither — exploring options’],
-options_es: [‘💻 Trabajo remoto / freelance (ingreso activo)’,‘📈 Inversiones / ahorros / ingreso pasivo’,‘💼 Ambos — activo y pasivo’,‘🚫 Ninguno — explorando opciones’],
-},
-{
-id:‘ancestry’, icon:‘🧬’,
-q:‘Do you have Spanish or EU ancestry?’, q_es:’¿Tienes ascendencia española o europea?’,
-options:    [‘🇪🇸 Yes — parent or grandparent born in Spain’,‘🇮🇹 Yes — Italian ancestry’,‘🇮🇪 Yes — Irish ancestry’,‘🇩🇪 Yes — German ancestry’,‘🌍 Other EU ancestry’,‘❌ No EU ancestry’],
-options_es: [‘🇪🇸 Sí — padre/abuelo nacido en España’,‘🇮🇹 Sí — ascendencia italiana’,‘🇮🇪 Sí — ascendencia irlandesa’,‘🇩🇪 Sí — ascendencia alemana’,‘🌍 Otra ascendencia europea’,‘❌ Sin ascendencia europea’],
-},
-{
-id:‘motivation’, icon:‘💡’,
-q:“What’s your #1 goal?”, q_es:’¿Cuál es tu objetivo principal?’,
-options:    [‘🛂 Get dual citizenship / second passport’,‘🏖️ Better lifestyle & climate’,‘💰 Lower cost of living’,‘💻 Establish remote work base’,‘🏠 Buy property abroad’,‘🌿 All of the above’],
-options_es: [‘🛂 Obtener doble ciudadanía / segundo pasaporte’,‘🏖️ Mejor estilo de vida y clima’,‘💰 Menor costo de vida’,‘💻 Establecer base de trabajo remoto’,‘🏠 Comprar propiedad en el extranjero’,‘🌿 Todo lo anterior’],
-},
-];
-
 // ── JOURNEY PAGE ──
 const JOURNEYS = {
 spain: {
