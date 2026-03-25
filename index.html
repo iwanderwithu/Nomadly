@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nomadly — Your Relocation OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0d0d; --paper: #f5f2eb; --sand: #e8e2d5;
+  --warm: #c8b89a; --terra: #c4622d; --terra-light: #e8855a;
+  --sage: #4a7c6f; --sage-light: #6aab9c; --sky: #3b6fa0;
+  --gold: #d4a843; --muted: #7a7060; --surface: #ffffff;
+  --border: rgba(13,13,13,0.1);
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+a, a:link, a:visited, a:hover, a:active { color:inherit !important; text-decoration:none !important; }
+button { font-family:inherit; -webkit-appearance:none; }
+body { background:var(--paper); color:var(--ink); font-family:'DM Sans',sans-serif; font-size:15px; line-height:1.6; min-height:100vh; -webkit-text-size-adjust:100%; }
+
+/* ── TOAST ── */
+#toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:8px; }
+.toast {
+background:var(–ink); color:white; padding:12px 18px; border-radius:12px;
+font-size:13px; display:flex; align-items:center; gap:10px;
+box-shadow:0 8px 24px rgba(0,0,0,0.2); animation:slideUp 0.3s ease;
+max-width:320px;
+}
+.toast.success { border-left:3px solid var(–sage-light); }
+.toast.info { border-left:3px solid var(–sky); }
+.toast.warning { border-left:3px solid var(–gold); }
+@keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+
+/* ── MODAL ── */
+.modal-overlay {
+position:fixed; inset:0; z-index:500;
+background:rgba(13,13,13,0.55); backdrop-filter:blur(4px);
+display:none; align-items:center; justify-content:center;
+}
+.modal-overlay.active { display:flex; animation:fadeIn 0.2s ease; }
+.modal {
+background:var(–surface); border-radius:20px; padding:36px;
+width:90%; max-width:460px; box-shadow:0 32px 64px rgba(0,0,0,0.2);
+}
+.modal h3 { font-family:‘Syne’,sans-serif; font-size:20px; font-weight:800; margin-bottom:20px; }
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(–muted); margin-bottom:6px; }
+.form-group input, .form-group select, .form-group textarea {
+width:100%; padding:10px 14px; border:1.5px solid var(–border);
+border-radius:10px; font-family:‘DM Sans’,sans-serif; font-size:14px;
+background:var(–paper); outline:none; transition:border-color 0.15s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(–terra); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modal-actions { display:flex; gap:10px; margin-top:24px; }
+.btn-primary { flex:1; padding:12px; background:var(–terra); color:white; border:none; border-radius:10px; font-family:‘Syne’,sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:all 0.15s; }
+.btn-primary:hover { background:var(–terra-light); }
+.btn-secondary { padding:12px 20px; background:var(–sand); color:var(–ink); border:none; border-radius:10px; font-family:‘Syne’,sans-serif; font-weight:600; font-size:14px; cursor:pointer; }
+
+/* ── PAYWALL ── */
+#paywall { position:fixed; inset:0; z-index:1000; background:rgba(13,13,13,0.75); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; }
+#paywall.active { display:flex; animation:fadeIn 0.3s ease; }
+.paywall-card { background:#ffffff !important; border-radius:20px; padding:48px 44px; max-width:480px; width:90%; text-align:center; box-shadow:0 40px 80px rgba(0,0,0,0.3); }
+.paywall-emoji { font-size:40px; margin-bottom:16px; }
+.paywall-card h2 { font-family:‘Syne’,sans-serif; font-size:26px; font-weight:800; margin-bottom:8px; color:#0d0d0d !important; }
+.paywall-card p { color:#7a7060 !important; font-size:14px; margin-bottom:28px; line-height:1.7; }
+.plans { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+.plan { border:2px solid rgba(13,13,13,0.1); border-radius:14px; padding:18px 14px; cursor:pointer; transition:all 0.2s; position:relative; background:#ffffff; }
+.plan:hover { border-color:#c4622d; }
+.plan.featured { border-color:#c4622d; background:#fff8f5; }
+.plan-badge { position:absolute; top:-10px; left:50%; transform:translateX(-50%); background:#c4622d; color:white; font-size:10px; font-weight:600; padding:3px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.06em; white-space:nowrap; }
+.plan-name { font-family:‘Syne’,sans-serif; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:0.06em; color:#7a7060 !important; margin-bottom:6px; }
+.plan-price { font-family:‘Syne’,sans-serif; font-size:28px; font-weight:800; color:#0d0d0d !important; }
+.plan-price span { font-size:13px; font-weight:400; color:#7a7060 !important; }
+.plan-features { font-size:12px; color:#7a7060 !important; margin-top:8px; line-height:1.8; list-style:none; }
+.plan-features li::before { content:“✓ “; color:#4a7c6f; font-weight:600; }
+.btn-subscribe { width:100%; padding:15px; background:#c4622d !important; color:white !important; border:none; border-radius:12px; font-family:‘Syne’,sans-serif; font-weight:700; font-size:15px; cursor:pointer; transition:all 0.2s; margin-bottom:12px; }
+.btn-subscribe:hover { background:#e8855a !important; transform:translateY(-1px); }
+.btn-dismiss { background:none; border:none; color:#7a7060 !important; font-size:13px; cursor:pointer; text-decoration:underline; }
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+
+/* ── TOPBAR ── */
+.topbar { background:#0d0d0d !important; color:white !important; display:flex; align-items:center; justify-content:space-between; padding:0 32px; height:58px; position:sticky; top:0; z-index:100; }
+.logo { font-family:‘Syne’,sans-serif; font-size:20px; font-weight:800; letter-spacing:-0.02em; display:flex; align-items:center; gap:8px; color:white !important; }
+.logo-dot { width:8px; height:8px; background:#c4622d; border-radius:50%; }
+.topbar-nav { display:flex; gap:6px; align-items:center; }
+.nav-tab { padding:7px 16px; border-radius:8px; background:none; border:none; color:rgba(255,255,255,0.6) !important; font-family:‘DM Sans’,sans-serif; font-size:13px; cursor:pointer; transition:all 0.15s; -webkit-appearance:none; }
+.nav-tab:hover { color:white !important; background:rgba(255,255,255,0.08); }
+.nav-tab.active { color:white !important; background:rgba(255,255,255,0.15); }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.free-badge { background:var(–terra); color:white; font-size:11px; font-weight:600; padding:4px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.07em; }
+
+/* Search */
+.search-wrap { position:relative; }
+.topbar-search { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2); color:white !important; -webkit-text-fill-color:white !important; padding:7px 14px 7px 34px; border-radius:8px; font-family:‘DM Sans’,sans-serif; font-size:13px; width:200px; outline:none; transition:all 0.2s; }
+.topbar-search::placeholder { color:rgba(255,255,255,0.4) !important; -webkit-text-fill-color:rgba(255,255,255,0.4) !important; opacity:1; }
+.topbar-search:focus { width:260px; border-color:rgba(255,255,255,0.35); background:rgba(255,255,255,0.15); }
+.search-icon { position:absolute; left:10px; top:50%; transform:translateY(-50%); opacity:0.4; font-size:13px; pointer-events:none; }
+.search-results { position:absolute; top:calc(100% + 8px); left:0; width:320px; background:#ffffff; border-radius:12px; box-shadow:0 16px 40px rgba(0,0,0,0.15); overflow:hidden; display:none; }
+.search-results.active { display:block; animation:fadeIn 0.15s ease; }
+.sr-item { display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; transition:background 0.1s; font-size:13px; color:#0d0d0d !important; background:#ffffff; }
+.sr-item:hover { background:#f5f2eb; }
+.sr-icon { font-size:16px; width:24px; text-align:center; }
+.sr-text strong { display:block; font-size:13px; font-weight:500; color:#0d0d0d !important; }
+.sr-text span { font-size:11px; color:#7a7060 !important; }
+.sr-empty { padding:16px; text-align:center; font-size:13px; color:#7a7060 !important; background:#ffffff; }
+
+/* Notif */
+.notif-btn { position:relative; background:none; border:none; color:rgba(255,255,255,0.6); font-size:18px; cursor:pointer; padding:4px; line-height:1; }
+.notif-btn:hover { color:white; }
+.notif-dot { position:absolute; top:2px; right:2px; width:8px; height:8px; background:#c4622d; border-radius:50%; border:2px solid #0d0d0d; }
+.notif-panel { position:fixed; top:70px; right:16px; width:320px; background:#ffffff; border-radius:14px; box-shadow:0 16px 40px rgba(0,0,0,0.2); overflow:hidden; display:none; z-index:999; border:1px solid rgba(13,13,13,0.1); }
+.notif-panel.active { display:block; animation:fadeIn 0.15s ease; }
+.notif-header { padding:14px 16px; border-bottom:1px solid rgba(13,13,13,0.1); display:flex; justify-content:space-between; align-items:center; background:#ffffff; }
+.notif-header span { font-family:‘Syne’,sans-serif; font-weight:700; font-size:13px; color:#0d0d0d !important; }
+.notif-clear { font-size:11px; color:#c4622d !important; cursor:pointer; background:none; border:none; font-family:‘DM Sans’,sans-serif; }
+.notif-item { padding:12px 16px; border-bottom:1px solid rgba(13,13,13,0.08); display:flex; gap:10px; cursor:pointer; transition:background 0.1s; background:#ffffff; }
+.notif-item:hover { background:#f5f2eb; }
+.notif-item:last-child { border-bottom:none; }
+.notif-item-icon { font-size:18px; }
+.notif-item-text { font-size:12px; line-height:1.5; color:#7a7060 !important; }
+.notif-item-text strong { color:#0d0d0d !important; font-weight:500; }
+.notif-item-time { font-size:10px; color:#c8b89a !important; margin-top:2px; }
+.notif-unread { background:#fff8f5 !important; }
+
+.btn-upgrade { background:white; color:var(–ink); border:none; padding:8px 18px; border-radius:8px; font-family:‘Syne’,sans-serif; font-weight:700; font-size:13px; cursor:pointer; transition:all 0.15s; }
+.btn-upgrade:hover { background:var(–paper); }
+
+/* ── LAYOUT ── */
+.app-body { display:flex; min-height:calc(100vh - 58px); }
+.sidebar { width:260px; flex-shrink:0; background:#ffffff; border-right:1px solid rgba(13,13,13,0.1); padding:28px 20px; display:flex; flex-direction:column; gap:6px; color:#0d0d0d; }
+.sidebar-section { font-size:10px; text-transform:uppercase; letter-spacing:0.1em; font-weight:600; color:var(–warm); padding:14px 12px 6px; }
+.sidebar-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; cursor:pointer; transition:all 0.15s; font-size:14px; color:var(–muted) !important; border:none; background:none; width:100%; text-align:left; -webkit-appearance:none; text-decoration:none !important; }
+.sidebar-item:hover { background:var(–sand); color:var(–ink); }
+.sidebar-item.active { background:var(–sand); color:var(–ink); font-weight:500; }
+.sidebar-item .icon { font-size:16px; width:20px; text-align:center; }
+.sidebar-item .lock { margin-left:auto; font-size:12px; opacity:0.4; }
+.sidebar-progress { margin-top:auto; background:var(–sand); border-radius:12px; padding:16px; }
+.sp-label { font-size:12px; color:var(–muted); margin-bottom:6px; }
+.sp-bar { height:6px; background:var(–border); border-radius:3px; overflow:hidden; }
+.sp-fill { height:100%; background:var(–terra); border-radius:3px; transition:width 0.5s ease; }
+.sp-stat { font-size:11px; color:var(–muted); margin-top:6px; }
+
+.main { flex:1; padding:32px 36px; overflow-y:auto; background:#f5f2eb; color:#0d0d0d; }
+.page { display:none; }
+.page.active { display:block; animation:fadeIn 0.25s ease; }
+
+/* ── CARDS ── */
+.page-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:28px; }
+.page-title { font-family:‘Syne’,sans-serif; font-size:28px; font-weight:800; letter-spacing:-0.02em; line-height:1.1; }
+.page-sub { color:var(–muted); font-size:14px; margin-top:4px; }
+.btn-add { display:flex; align-items:center; gap:6px; padding:9px 18px; background:var(–terra); color:white; border:none; border-radius:10px; font-family:‘Syne’,sans-serif; font-weight:700; font-size:13px; cursor:pointer; transition:all 0.15s; }
+.btn-add:hover { background:var(–terra-light); transform:translateY(-1px); }
+
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
+.stat-card { background:var(–surface); border-radius:16px; padding:22px; border:1px solid var(–border); position:relative; overflow:hidden; transition:transform 0.15s; }
+.stat-card:hover { transform:translateY(-2px); }
+.stat-card::before { content:’’; position:absolute; top:0; left:0; right:0; height:3px; }
+.stat-card.c1::before { background:var(–terra); }
+.stat-card.c2::before { background:var(–sage); }
+.stat-card.c3::before { background:var(–sky); }
+.stat-label { font-size:12px; color:var(–muted); text-transform:uppercase; letter-spacing:0.07em; font-weight:500; margin-bottom:8px; }
+.stat-value { font-family:‘Syne’,sans-serif; font-size:32px; font-weight:800; line-height:1; transition:all 0.3s; }
+.stat-note { font-size:12px; color:var(–muted); margin-top:6px; }
+
+.grid-2 { display:grid; grid-template-columns:1.4fr 1fr; gap:20px; }
+.card { background:var(–surface); border-radius:16px; padding:24px; border:1px solid var(–border); }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.card-title { font-family:‘Syne’,sans-serif; font-size:15px; font-weight:700; }
+.card-action { font-size:12px; color:var(–terra) !important; cursor:pointer; font-weight:500; }
+.card-action:hover { text-decoration:underline; }
+
+/* checklist */
+.checklist { display:flex; flex-direction:column; gap:8px; }
+.check-item { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; transition:background 0.15s; }
+.check-item:hover { background:var(–sand); }
+.check-box { width:20px; height:20px; border-radius:6px; border:2px solid var(–warm); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.15s; font-size:11px; }
+.check-box.done { background:var(–sage); border-color:var(–sage); color:white; }
+.check-text { font-size:14px; flex:1; }
+.check-text.done { text-decoration:line-through; color:var(–muted); }
+.check-tag { font-size:11px; padding:3px 8px; border-radius:6px; font-weight:500; }
+.tag-visa { background:#fff3ee; color:var(–terra); }
+.tag-housing { background:#eef6f4; color:var(–sage); }
+.tag-finance { background:#eef2f8; color:var(–sky); }
+.tag-health { background:#fdf6e8; color:var(–gold); }
+.tag-logistics { background:#f5f0ff; color:#7c5cbf; }
+
+/* activity */
+.activity-list { display:flex; flex-direction:column; gap:10px; max-height:280px; overflow-y:auto; }
+.activity-item { display:flex; gap:12px; align-items:flex-start; }
+.activity-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.ai-terra { background:#fff3ee; } .ai-sage { background:#eef6f4; } .ai-sky { background:#eef2f8; }
+.activity-text { font-size:13px; color:var(–muted); line-height:1.5; }
+.activity-text strong { color:var(–ink); font-weight:500; }
+.activity-time { font-size:11px; color:var(–warm); margin-top:2px; }
+
+/* ── PLANNER ── */
+.timeline { display:flex; flex-direction:column; gap:0; }
+.phase { display:flex; gap:0; position:relative; }
+.phase-spine { display:flex; flex-direction:column; align-items:center; width:40px; flex-shrink:0; }
+.phase-dot { width:16px; height:16px; border-radius:50%; background:var(–warm); border:3px solid var(–paper); box-shadow:0 0 0 2px var(–warm); flex-shrink:0; margin-top:3px; z-index:1; transition:all 0.2s; }
+.phase-dot.active { background:var(–terra); box-shadow:0 0 0 2px var(–terra); }
+.phase-dot.done { background:var(–sage); box-shadow:0 0 0 2px var(–sage); }
+.phase-line { flex:1; width:2px; background:var(–border); }
+.phase:last-child .phase-line { display:none; }
+.phase-body { flex:1; padding:0 0 24px 16px; }
+.phase-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.phase-title { font-family:‘Syne’,sans-serif; font-weight:700; font-size:15px; }
+.phase-month { font-size:11px; background:var(–sand); color:var(–muted); padding:3px 9px; border-radius:20px; font-weight:500; }
+.phase-progress { font-size:11px; color:var(–muted); margin-left:auto; }
+.phase-tasks { display:flex; flex-direction:column; gap:6px; }
+.phase-task { display:flex; align-items:center; gap:10px; padding:9px 14px; background:var(–surface); border-radius:10px; border:1px solid var(–border); font-size:13px; cursor:pointer; transition:all 0.15s; }
+.phase-task:hover { border-color:var(–warm); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+.phase-task.completed { opacity:0.6; }
+.phase-task.locked { opacity:0.5; cursor:default; }
+.phase-task.locked:hover { border-color:var(–border); box-shadow:none; }
+.phase-task-check { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
+.phase-task-text { flex:1; }
+.phase-task-text.done { text-decoration:line-through; color:var(–muted); }
+.phase-task-cat { font-size:11px; color:var(–muted); }
+.phase-task-delete { opacity:0; background:none; border:none; color:var(–muted); cursor:pointer; font-size:14px; padding:2px 6px; border-radius:4px; transition:all 0.15s; }
+.phase-task:hover .phase-task-delete { opacity:1; }
+.phase-task-delete:hover { background:var(–sand); color:var(–terra); }
+
+.filter-row { display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+.filter-btn { padding:7px 16px; border-radius:8px; border:1px solid var(–border); background:var(–surface); font-family:‘DM Sans’,sans-serif; font-size:13px; cursor:pointer; transition:all 0.15s; color:var(–muted); }
+.filter-btn:hover, .filter-btn.active { background:var(–ink); color:white; border-color:var(–ink); }
+
+/* ── DOCUMENTS ── */
+.doc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin-bottom:24px; }
+.doc-card { background:var(–surface); border-radius:14px; padding:20px; border:1.5px solid var(–border); cursor:pointer; transition:all 0.15s; position:relative; }
+.doc-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.07); border-color:var(–warm); }
+.doc-card.locked-card { opacity:0.55; }
+.doc-icon { font-size:26px; margin-bottom:10px; }
+.doc-name { font-family:‘Syne’,sans-serif; font-weight:700; font-size:14px; margin-bottom:6px; }
+.doc-status { font-size:12px; padding:3px 9px; border-radius:6px; display:inline-flex; align-items:center; gap:4px; font-weight:500; margin-bottom:8px; cursor:pointer; border:none; }
+.status-done { background:#eef6f4; color:var(–sage); }
+.status-pending { background:#fff3ee; color:var(–terra); }
+.status-missing { background:#fdf6e8; color:var(–gold); }
+.doc-meta { font-size:12px; color:var(–muted); }
+.doc-lock { position:absolute; top:14px; right:14px; font-size:16px; opacity:0.3; }
+.doc-delete { position:absolute; bottom:12px; right:12px; background:none; border:none; font-size:13px; cursor:pointer; opacity:0; color:var(–muted); transition:opacity 0.15s; }
+.doc-card:hover .doc-delete { opacity:1; }
+.doc-section-title { font-family:‘Syne’,sans-serif; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(–muted); margin-bottom:12px; margin-top:8px; display:flex; align-items:center; gap:10px; }
+.blur-lock { filter:blur(4px); pointer-events:none; user-select:none; }
+.btn-unlock { padding:6px 14px; background:var(–terra); color:white; border:none; border-radius:8px; font-family:‘Syne’,sans-serif; font-weight:700; font-size:12px; cursor:pointer; }
+
+/* ── BUDGET ── */
+.budget-header { display:flex; gap:16px; margin-bottom:28px; }
+.budget-summary { flex:1; background:var(–ink); color:white; border-radius:20px; padding:28px; position:relative; overflow:hidden; }
+.budget-summary::after { content:‘€’; position:absolute; right:24px; bottom:-10px; font-size:100px; font-family:‘Syne’,sans-serif; font-weight:800; opacity:0.06; line-height:1; }
+.bs-label { font-size:12px; opacity:0.6; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px; }
+.bs-amount { font-family:‘Syne’,sans-serif; font-size:40px; font-weight:800; line-height:1; }
+.bs-sub { font-size:13px; opacity:0.6; margin-top:6px; }
+.budget-breakdown { width:260px; background:var(–surface); border-radius:20px; padding:22px; border:1px solid var(–border); }
+.bb-title { font-family:‘Syne’,sans-serif; font-weight:700; font-size:14px; margin-bottom:14px; }
+.bb-item { display:flex; justify-content:space-between; font-size:13px; padding:6px 0; border-bottom:1px solid var(–border); }
+.bb-item:last-child { border-bottom:none; }
+.bb-item-label { color:var(–muted); }
+.bb-item-val { font-weight:500; }
+.city-compare { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+.city-card { background:var(–surface); border-radius:16px; padding:20px; border:2px solid var(–border); cursor:pointer; transition:all 0.15s; }
+.city-card:hover, .city-card.selected { border-color:var(–terra); }
+.city-flag { font-size:24px; margin-bottom:8px; }
+.city-name { font-family:‘Syne’,sans-serif; font-weight:700; font-size:15px; margin-bottom:4px; }
+.city-cost { font-size:22px; font-weight:700; color:var(–terra); }
+.city-cost span { font-size:12px; color:var(–muted); font-weight:400; }
+.city-index { font-size:12px; color:var(–muted); margin-top:4px; }
+.expense-table { background:var(–surface); border-radius:16px; border:1px solid var(–border); overflow:hidden; }
+.et-header { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:12px 20px; background:var(–sand); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(–muted); }
+.et-row { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; padding:13px 20px; border-top:1px solid var(–border); font-size:13px; align-items:center; transition:background 0.1s; }
+.et-row:hover { background:var(–sand); }
+.et-cat { display:flex; align-items:center; gap:8px; }
+.et-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.et-change.up { color:#e05c3a; font-size:12px; }
+.et-change.down { color:var(–sage); font-size:12px; }
+.country-selector { display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap; }
+.country-chip { padding:7px 14px; border-radius:20px; border:1.5px solid var(–border); font-size:13px; cursor:pointer; transition:all 0.15s; background:var(–surface); display:flex; align-items:center; gap:6px; }
+.country-chip:hover { border-color:var(–terra); }
+.country-chip.active { background:var(–ink); color:white; border-color:var(–ink); }
+
+/* ── AI CHAT ── */
+.ai-chat-page { display:flex; flex-direction:column; height:calc(100vh - 58px - 64px); }
+.chat-messages { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:14px; padding-bottom:16px; }
+.chat-msg { display:flex; gap:12px; max-width:85%; }
+.chat-msg.user { align-self:flex-end; flex-direction:row-reverse; }
+.chat-bubble { padding:13px 16px; border-radius:16px; font-size:14px; line-height:1.65; }
+.chat-msg.ai .chat-bubble { background:var(–surface); border:1px solid var(–border); border-radius:4px 16px 16px 16px; }
+.chat-msg.user .chat-bubble { background:var(–ink); color:white; border-radius:16px 4px 16px 16px; }
+.chat-avatar { width:34px; height:34px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.ai-avatar { background:linear-gradient(135deg,var(–terra),var(–gold)); }
+.user-avatar { background:var(–sand); }
+.chat-time { font-size:11px; color:var(–warm); margin-top:4px; text-align:right; }
+.chat-input-row { display:flex; gap:10px; padding-top:16px; border-top:1px solid var(–border); }
+.chat-input { flex:1; padding:13px 16px; border:1.5px solid var(–border); border-radius:12px; font-family:‘DM Sans’,sans-serif; font-size:14px; outline:none; background:var(–surface); transition:border-color 0.15s; resize:none; }
+.chat-input:focus { border-color:var(–terra); }
+.chat-send { padding:13px 20px; background:var(–terra); color:white; border:none; border-radius:12px; font-family:‘Syne’,sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:all 0.15s; }
+.chat-send:hover { background:var(–terra-light); }
+.chat-send:disabled { opacity:0.5; cursor:not-allowed; }
+.typing-indicator { display:flex; gap:4px; align-items:center; padding:13px 16px; }
+.typing-dot { width:6px; height:6px; background:var(–muted); border-radius:50%; animation:bounce 1.2s infinite; }
+.typing-dot:nth-child(2) { animation-delay:0.2s; }
+.typing-dot:nth-child(3) { animation-delay:0.4s; }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+.suggested-questions { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+.sq-btn { padding:7px 14px; background:var(–surface); border:1px solid var(–border); border-radius:20px; font-size:12px; cursor:pointer; color:var(–muted); transition:all 0.15s; }
+.sq-btn:hover { border-color:var(–terra); color:var(–terra); }
+
+/* notif position */
+.topbar-right { position:relative; }
+
+/* ── RESPONSIVE — iPad / Tablet ── */
+@media (max-width: 1024px) {
+.topbar { padding:0 16px; height:auto; flex-wrap:wrap; gap:0; }
+.topbar-nav { order:3; width:100%; padding:6px 0 6px; gap:2px; overflow-x:auto; -webkit-overflow-scrolling:touch; flex-wrap:nowrap; }
+.nav-tab { padding:6px 12px; font-size:12px; white-space:nowrap; }
+.logo { padding:10px 0; }
+.topbar-right { padding:10px 0; }
+.topbar-search { width:140px; }
+.topbar-search:focus { width:160px; }
+.free-badge { display:none; }
+.app-body { flex-direction:column; }
+.sidebar { width:100%; flex-direction:row; flex-wrap:wrap; padding:12px 16px; gap:4px; border-right:none; border-bottom:1px solid rgba(13,13,13,0.1); min-height:auto; }
+.sidebar-section { width:100%; padding:8px 8px 2px; }
+.sidebar-progress { width:100%; margin-top:8px; }
+.main { padding:20px 16px; }
+.stats-row { grid-template-columns:repeat(3,1fr); gap:10px; }
+.stat-value { font-size:24px; }
+.grid-2 { grid-template-columns:1fr; }
+.city-compare { grid-template-columns:repeat(3,1fr); gap:10px; }
+.budget-header { flex-direction:column; }
+.budget-breakdown { width:100%; }
+.page-title { font-size:22px; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+
+<div id="toast-container"></div>
+
+<!-- ADD TASK MODAL -->
+
+<div class="modal-overlay" id="modal-task">
+  <div class="modal">
+    <h3>➕ Add New Task</h3>
+    <div class="form-group">
+      <label>Task Name</label>
+      <input type="text" id="new-task-name" placeholder="e.g. Open Spanish bank account">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phase</label>
+        <select id="new-task-phase">
+          <option value="1">Phase 1 — Pre-Application</option>
+          <option value="2">Phase 2 — Visa Documents</option>
+          <option value="3" selected>Phase 3 — Pre-Departure</option>
+          <option value="4">Phase 4 — Arrival</option>
+          <option value="5">Phase 5 — Citizenship</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="new-task-cat">
+          <option value="visa">🛂 Visa</option>
+          <option value="finance">💳 Finance</option>
+          <option value="housing">🏠 Housing</option>
+          <option value="health">🏥 Health</option>
+          <option value="logistics">📦 Logistics</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-task')">Cancel</button>
+      <button class="btn-primary" onclick="addTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD DOC MODAL -->
+
+<div class="modal-overlay" id="modal-doc">
+  <div class="modal">
+    <h3>📁 Add New Document</h3>
+    <div class="form-group">
+      <label>Document Name</label>
+      <input type="text" id="new-doc-name" placeholder="e.g. Marriage Certificate">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Category</label>
+        <select id="new-doc-cat">
+          <option value="visa">🛂 Visa</option>
+          <option value="finance">💳 Financial</option>
+          <option value="health">🏥 Health</option>
+          <option value="housing">🏠 Housing</option>
+          <option value="other">📎 Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="new-doc-status">
+          <option value="missing">⚠ Not Started</option>
+          <option value="pending">⏳ In Progress</option>
+          <option value="done">✓ Ready</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Notes (optional)</label>
+      <input type="text" id="new-doc-notes" placeholder="e.g. Request from embassy website">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-doc')">Cancel</button>
+      <button class="btn-primary" onclick="addDocument()">Add Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYWALL -->
+
+<div id="paywall">
+  <div class="paywall-card">
+    <div class="paywall-emoji">🌍</div>
+    <h2>Unlock Your Relocation OS</h2>
+    <p>You've hit the free limit. Upgrade to track unlimited documents, compare 50+ cities, and get personalized AI relocation advice.</p>
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-name">Wanderer</div>
+        <div class="plan-price">$9<span>/mo</span></div>
+        <ul class="plan-features">
+          <li>10 documents</li><li>5 cities</li><li>AI checklist</li><li>Basic budget</li>
+        </ul>
+      </div>
+      <div class="plan featured">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Nomad Pro</div>
+        <div class="plan-price">$19<span>/mo</span></div>
+        <ul class="plan-features">
+          <li>Unlimited docs</li><li>50+ cities</li><li>AI advisor</li><li>Full budget suite</li>
+        </ul>
+      </div>
+    </div>
+    <button class="btn-subscribe" onclick="dismissPaywall()">Start 7-Day Free Trial →</button>
+    <button class="btn-dismiss" onclick="dismissPaywall()">Maybe later</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+
+<div class="topbar">
+  <div class="logo"><div class="logo-dot"></div> Nomadly</div>
+  <nav class="topbar-nav">
+    <div class="nav-tab active" onclick="showPage('dashboard',this)">Overview</div>
+    <div class="nav-tab" onclick="showPage('planner',this)">Planner</div>
+    <div class="nav-tab" onclick="showPage('documents',this)">Documents</div>
+    <div class="nav-tab" onclick="showPage('budget',this)">Budget</div>
+    <div class="nav-tab" onclick="showPage('ai',this)">🤖 AI Advisor</div>
+    <div class="nav-tab" onclick="showPage('resources',this)">🗂 Resources</div>
+  </nav>
+  <div class="topbar-right">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="topbar-search" placeholder="Search tasks, docs..." oninput="handleSearch(this.value)" onblur="setTimeout(()=>closeSearch(),200)">
+      <div class="search-results" id="search-results"></div>
+    </div>
+    <button class="notif-btn" onclick="toggleNotif(event)" id="notif-btn">
+      🔔<span class="notif-dot" id="notif-dot"></span>
+    </button>
+    <div class="notif-panel" id="notif-panel">
+      <div class="notif-header"><span>Notifications</span><button class="notif-clear" onclick="clearNotifs()">Clear all</button></div>
+      <div id="notif-list"></div>
+    </div>
+    <span class="free-badge">Free Plan</span>
+    <button class="btn-upgrade" onclick="showPaywall()">Upgrade →</button>
+  </div>
+</div>
+
+<div class="app-body">
+  <aside class="sidebar">
+    <div class="sidebar-section">My Relocations</div>
+    <div class="sidebar-item active" style="color:#0d0d0d !important;"><span class="icon">🇪🇸</span> Spain — Madrid</div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPaywall()"><span class="icon">🇵🇹</span> Portugal — Lisbon<span class="lock">🔒</span></div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPaywall()"><span class="icon">➕</span> Add destination<span class="lock">🔒</span></div>
+    <div class="sidebar-section">Tools</div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1])"><span class="icon">📋</span> Planner</div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPage('documents',document.querySelectorAll('.nav-tab')[2])"><span class="icon">📁</span> Documents</div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPage('budget',document.querySelectorAll('.nav-tab')[3])"><span class="icon">💰</span> Budget</div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[4])"><span class="icon">🤖</span> AI Advisor</div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPage('resources',document.querySelectorAll('.nav-tab')[5])"><span class="icon">🗂</span> Resources</div>
+    <div class="sidebar-item" style="color:#7a7060 !important;" onclick="showPaywall()"><span class="icon">🏠</span> Housing Search<span class="lock">🔒</span></div>
+    <div class="sidebar-progress">
+      <div class="sp-label">Relocation progress</div>
+      <div class="sp-bar"><div class="sp-fill" id="sidebar-progress-fill" style="width:34%"></div></div>
+      <div class="sp-stat" id="sidebar-progress-stat">Loading...</div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+```
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Good morning ✦</div>
+      <div class="page-sub">Spain — Madrid · <span id="days-to-go">127</span> days to go</div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card c1">
+      <div class="stat-label">Tasks Remaining</div>
+      <div class="stat-value" id="stat-remaining">—</div>
+      <div class="stat-note" id="stat-urgent">Loading...</div>
+    </div>
+    <div class="stat-card c2">
+      <div class="stat-label">Documents Ready</div>
+      <div class="stat-value" id="stat-docs">—</div>
+      <div class="stat-note" id="stat-docs-note">Loading...</div>
+    </div>
+    <div class="stat-card c3">
+      <div class="stat-label">Monthly Budget</div>
+      <div class="stat-value">€2,100</div>
+      <div class="stat-note">Est. for Madrid</div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">This Week's Tasks</span>
+        <a class="card-action" onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1])">See all →</a>
+      </div>
+      <div class="checklist" id="dashboard-tasks"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Activity Feed</span></div>
+      <div class="activity-list" id="activity-feed"></div>
+    </div>
+  </div>
+  <div style="margin-top:20px;background:var(--ink);color:white;border-radius:16px;padding:24px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--terra),var(--gold));"></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;">Nomadly AI</div><div style="font-size:12px;opacity:0.5;">Your relocation advisor</div></div>
+    </div>
+    <div style="font-size:13px;opacity:0.8;line-height:1.7;padding:14px;background:rgba(255,255,255,0.06);border-radius:10px;margin-bottom:12px;" id="ai-daily-tip">
+      💡 Loading today's tip...
+    </div>
+    <div style="display:flex;gap:8px;">
+      <input style="flex:1;padding:10px 14px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;" placeholder="Ask anything about your move..." onclick="showPage('ai',document.querySelectorAll('.nav-tab')[4])" readonly>
+      <button style="padding:10px 18px;background:var(--terra);border:none;border-radius:10px;color:white;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;font-size:13px;" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[4])">Ask →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLANNER -->
+<div class="page" id="page-planner">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Relocation Planner</div>
+      <div class="page-sub">Spain — Non-Lucrative Visa track · <span id="planner-count">Loading...</span></div>
+    </div>
+    <button class="btn-add" onclick="openModal('modal-task')">+ Add Task</button>
+  </div>
+  <div class="filter-row" id="planner-filters">
+    <button class="filter-btn active" onclick="filterTasks('all',this)">All phases</button>
+    <button class="filter-btn" onclick="filterTasks('visa',this)">🛂 Visa</button>
+    <button class="filter-btn" onclick="filterTasks('finance',this)">💳 Finance</button>
+    <button class="filter-btn" onclick="filterTasks('housing',this)">🏠 Housing</button>
+    <button class="filter-btn" onclick="filterTasks('health',this)">🏥 Health</button>
+    <button class="filter-btn" onclick="filterTasks('logistics',this)">📦 Logistics</button>
+  </div>
+  <div class="timeline" id="timeline"></div>
+</div>
+
+<!-- DOCUMENTS -->
+<div class="page" id="page-documents">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Document Tracker</div>
+      <div class="page-sub">Track and manage all your relocation paperwork</div>
+    </div>
+    <button class="btn-add" onclick="openModal('modal-doc')">+ Add Document</button>
+  </div>
+  <div class="filter-row" id="doc-filters">
+    <button class="filter-btn active" onclick="filterDocs('all',this)">All</button>
+    <button class="filter-btn" onclick="filterDocs('visa',this)">🛂 Visa</button>
+    <button class="filter-btn" onclick="filterDocs('finance',this)">💳 Financial</button>
+    <button class="filter-btn" onclick="filterDocs('health',this)">🏥 Health</button>
+    <button class="filter-btn" onclick="filterDocs('housing',this)">🏠 Housing</button>
+  </div>
+  <div id="doc-stats-row" style="display:flex;gap:10px;margin-bottom:20px;font-size:13px;"></div>
+  <div class="doc-section-title">Required for NLV Application</div>
+  <div class="doc-grid" id="doc-grid"></div>
+  <div class="doc-section-title">After Arrival (Pro) <button class="btn-unlock" onclick="showPaywall()">Unlock</button></div>
+  <div class="doc-grid blur-lock">
+    <div class="doc-card locked-card"><div class="doc-lock">🔒</div><div class="doc-icon">🪪</div><div class="doc-name">NIE / TIE Card</div><div class="doc-status status-missing">⚠ Not Started</div><div class="doc-meta">Apply within 30 days of arrival</div></div>
+    <div class="doc-card locked-card"><div class="doc-lock">🔒</div><div class="doc-icon">🏛️</div><div class="doc-name">Empadronamiento</div><div class="doc-status status-missing">⚠ Not Started</div><div class="doc-meta">City hall registration</div></div>
+    <div class="doc-card locked-card"><div class="doc-lock">🔒</div><div class="doc-icon">🏠</div><div class="doc-name">Rental Contract</div><div class="doc-status status-missing">⚠ Not Started</div><div class="doc-meta">Required for empadronamiento</div></div>
+  </div>
+</div>
+
+<!-- BUDGET -->
+<div class="page" id="page-budget">
+  <div class="page-header">
+    <div><div class="page-title">Budget Planner</div><div class="page-sub">Compare cost of living across cities worldwide</div></div>
+  </div>
+  <div class="country-selector">
+    <div class="country-chip active" onclick="selectCountry('spain',this)">🇪🇸 Spain</div>
+    <div class="country-chip" onclick="selectCountry('portugal',this)">🇵🇹 Portugal</div>
+    <div class="country-chip" onclick="selectCountry('mexico',this)">🇲🇽 Mexico</div>
+    <div class="country-chip" onclick="showPaywall()">🇩🇪 Germany 🔒</div>
+    <div class="country-chip" onclick="showPaywall()">+ 45 more 🔒</div>
+  </div>
+  <div class="city-compare" id="city-compare"></div>
+  <div class="budget-header" id="budget-header"></div>
+  <div class="expense-table" id="expense-table"></div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-header"><span class="card-title">💡 One-Time Relocation Costs</span><a class="card-action" onclick="showPaywall()">Full breakdown →</a></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+      <div style="text-align:center;padding:16px;background:var(--sand);border-radius:12px"><div style="font-size:20px;margin-bottom:4px">✈️</div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Flight</div><div style="font-family:'Syne',sans-serif;font-weight:700">$400–800</div></div>
+      <div style="text-align:center;padding:16px;background:var(--sand);border-radius:12px"><div style="font-size:20px;margin-bottom:4px">🛂</div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">NLV Fees</div><div style="font-family:'Syne',sans-serif;font-weight:700">~$200</div></div>
+      <div style="text-align:center;padding:16px;background:var(--sand);border-radius:12px"><div style="font-size:20px;margin-bottom:4px">🏠</div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Deposit</div><div style="font-family:'Syne',sans-serif;font-weight:700">€1,800</div></div>
+      <div style="text-align:center;padding:16px;background:var(--sand);border-radius:12px;opacity:0.5;cursor:pointer" onclick="showPaywall()"><div style="font-size:20px;margin-bottom:4px">🔒</div><div style="font-size:11px;color:var(--muted);margin-bottom:4px">+8 more</div><div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--terra)">Unlock</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- RESOURCES -->
+<div class="page" id="page-resources">
+  <div class="page-header">
+    <div>
+      <div class="page-title">🗂 Resource Database</div>
+      <div class="page-sub">Vetted services, providers & tools for your relocation — community-built</div>
+    </div>
+    <button class="btn-add" onclick="openModal('modal-resource')">+ Add Resource</button>
+  </div>
+  <div class="filter-row" id="resource-filters">
+    <button class="filter-btn active" onclick="filterResources('all',this)">All</button>
+    <button class="filter-btn" onclick="filterResources('health',this)">🏥 Health Insurance</button>
+    <button class="filter-btn" onclick="filterResources('legal',this)">⚖️ Legal / Visa</button>
+    <button class="filter-btn" onclick="filterResources('housing',this)">🏠 Housing</button>
+    <button class="filter-btn" onclick="filterResources('finance',this)">💳 Finance</button>
+    <button class="filter-btn" onclick="filterResources('relocation',this)">🧳 Relocation Services</button>
+    <button class="filter-btn" onclick="filterResources('community',this)">🤝 Community</button>
+  </div>
+  <div id="resource-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;"></div>
+</div>
+
+<!-- AI ADVISOR -->
+<div class="page" id="page-ai">
+  <div class="page-header">
+    <div><div class="page-title">🤖 AI Advisor</div><div class="page-sub">Powered by Claude · Ask anything about your relocation</div></div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+    <div style="padding:7px 14px;background:#ffffff;border:1.5px solid rgba(13,13,13,0.1);border-radius:20px;font-size:12px;cursor:pointer;color:#7a7060;" onclick="askSuggested(this)">How do I get my PR citizenship certificate?</div>
+    <div style="padding:7px 14px;background:#ffffff;border:1.5px solid rgba(13,13,13,0.1);border-radius:20px;font-size:12px;cursor:pointer;color:#7a7060;" onclick="askSuggested(this)">What apostilles do I need in Puerto Rico?</div>
+    <div style="padding:7px 14px;background:#ffffff;border:1.5px solid rgba(13,13,13,0.1);border-radius:20px;font-size:12px;cursor:pointer;color:#7a7060;" onclick="askSuggested(this)">How does the 2-year citizenship fast track work?</div>
+    <div style="padding:7px 14px;background:#ffffff;border:1.5px solid rgba(13,13,13,0.1);border-radius:20px;font-size:12px;cursor:pointer;color:#7a7060;" onclick="askSuggested(this)">San Juan consulate tips for the NLV?</div>
+    <div style="padding:7px 14px;background:#ffffff;border:1.5px solid rgba(13,13,13,0.1);border-radius:20px;font-size:12px;cursor:pointer;color:#7a7060;" onclick="askSuggested(this)">What are my tax obligations leaving PR?</div>
+    <div style="padding:7px 14px;background:#ffffff;border:1.5px solid rgba(13,13,13,0.1);border-radius:20px;font-size:12px;cursor:pointer;color:#7a7060;" onclick="askSuggested(this)">Best neighborhoods in Málaga for expats?</div>
+  </div>
+  <div id="chat-messages" style="display:flex;flex-direction:column;gap:14px;min-height:300px;max-height:480px;overflow-y:auto;padding-bottom:16px;margin-bottom:16px;"></div>
+  <div style="display:flex;gap:10px;padding-top:16px;border-top:1px solid rgba(13,13,13,0.1);">
+    <textarea id="chat-input" placeholder="Ask about visas, housing, costs, documents..." rows="2" onkeydown="handleChatKey(event)" style="flex:1;padding:13px 16px;border:1.5px solid rgba(13,13,13,0.1);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;background:#ffffff;resize:none;color:#0d0d0d !important;-webkit-text-fill-color:#0d0d0d !important;"></textarea>
+    <div id="chat-send" onclick="sendChat()" style="padding:13px 20px;background:#c4622d;color:white;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;white-space:nowrap;">Send →</div>
+  </div>
+</div>
+```
+
+  </main>
+</div>
+
+<!-- ADD RESOURCE MODAL -->
+
+<div class="modal-overlay" id="modal-resource">
+  <div class="modal">
+    <h3>🗂 Add New Resource</h3>
+    <div class="form-group"><label>Resource Name</label><input type="text" id="new-res-name" placeholder="e.g. Cigna Global Health Insurance"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Category</label>
+        <select id="new-res-cat">
+          <option value="health">🏥 Health Insurance</option>
+          <option value="legal">⚖️ Legal / Visa</option>
+          <option value="housing">🏠 Housing</option>
+          <option value="finance">💳 Finance</option>
+          <option value="relocation">🧳 Relocation Services</option>
+          <option value="community">🤝 Community</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Cost / Pricing</label><input type="text" id="new-res-cost" placeholder="e.g. ~$89/mo or Free"></div>
+    </div>
+    <div class="form-group"><label>Description</label><textarea id="new-res-desc" rows="2" placeholder="What is it, why is it useful..."></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label>Website (optional)</label><input type="text" id="new-res-url" placeholder="https://..."></div>
+      <div class="form-group"><label>Your Rating</label>
+        <select id="new-res-rating">
+          <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+          <option value="4">⭐⭐⭐⭐ Very Good</option>
+          <option value="3">⭐⭐⭐ Good</option>
+          <option value="2">⭐⭐ Fair</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label>Pro Tip (optional)</label><input type="text" id="new-res-tip" placeholder="e.g. Ask for the PR expat discount code"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-resource')">Cancel</button>
+      <button class="btn-primary" onclick="addResource()">Add Resource</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── MOCK DATABASE (localStorage-backed) ──
+const DB = {
+  get(key, def) { try { return JSON.parse(localStorage.getItem('nomadly_'+key)) ?? def; } catch{ return def; } },
+  set(key, val) { localStorage.setItem('nomadly_'+key, JSON.stringify(val)); },
+};
+
+// ── SEED DATA ──
+function seedData() {
+  if (!DB.get('seeded', false)) {
+    DB.set('tasks', [
+      {id:1,phase:1,text:'Request FBI Background Check',cat:'visa',done:true},
+      {id:2,phase:1,text:'Get Background Check Apostilled',cat:'visa',done:true},
+      {id:3,phase:1,text:'Schedule NLV Consulate Appointment',cat:'visa',done:true},
+      {id:4,phase:2,text:'Certified passport translation',cat:'visa',done:false},
+      {id:5,phase:2,text:'Proof of income / bank statements (3 months)',cat:'finance',done:false},
+      {id:6,phase:2,text:'International health insurance policy',cat:'health',done:false},
+      {id:7,phase:2,text:'Complete NLV application (EX-01 form)',cat:'visa',done:false},
+      {id:8,phase:2,text:'Attend consulate appointment',cat:'visa',done:false},
+      {id:9,phase:3,text:'Book one-way flight to Madrid',cat:'logistics',done:false},
+      {id:10,phase:3,text:'Secure housing for first 3 months',cat:'housing',done:false},
+      {id:11,phase:3,text:'Open Spanish bank account (Wise / N26)',cat:'finance',done:false},
+      {id:12,phase:3,text:'Ship belongings / storage plan',cat:'logistics',done:false,locked:true},
+      {id:13,phase:3,text:'Notify IRS / Puerto Rico tax obligations',cat:'finance',done:false,locked:true},
+      {id:14,phase:4,text:'Register at Ayuntamiento (empadronamiento)',cat:'visa',done:false,locked:true},
+      {id:15,phase:4,text:'Apply for NIE / TIE at Foreigners Office',cat:'visa',done:false,locked:true},
+      {id:16,phase:4,text:'Open Spanish bank account in person',cat:'finance',done:false,locked:true},
+      {id:17,phase:5,text:'Document Puerto Rican heritage for 2-year track',cat:'visa',done:false,locked:true},
+      {id:18,phase:5,text:'Apply for Spanish citizenship',cat:'visa',done:false,locked:true},
+    ]);
+    DB.set('docs', [
+      {id:1,name:'Passport',icon:'🛂',cat:'visa',status:'done',meta:'Expires Jan 2031 · Valid ✓'},
+      {id:2,name:'FBI Background Check',icon:'🔍',cat:'visa',status:'done',meta:'Issued Mar 2026 · Valid 3 mos'},
+      {id:3,name:'Health Insurance Policy',icon:'🏥',cat:'health',status:'pending',meta:'Citibank Travel quote pending'},
+      {id:4,name:'Proof of Income / Savings',icon:'🏦',cat:'finance',status:'pending',meta:'Need 3-month bank statements'},
+      {id:5,name:'EX-01 Visa Form',icon:'📋',cat:'visa',status:'missing',meta:'Download from consulate site'},
+      {id:6,name:'Passport Photos',icon:'📸',cat:'visa',status:'done',meta:'35×45mm biometric format'},
+    ]);
+    DB.set('activity', [
+      {icon:'📄',type:'terra',text:'<strong>Passport</strong> marked as ready',time:'2 hours ago'},
+      {icon:'✅',type:'sage',text:'<strong>NLV appointment</strong> task completed',time:'Yesterday'},
+      {icon:'💡',type:'sky',text:'AI suggested <strong>3 housing areas</strong> in Madrid',time:'2 days ago'},
+    ]);
+    DB.set('resources', [
+      {id:1,name:'Spanish Relocators Health Plan',cat:'health',cost:'~$89/mo',desc:'Affordable NLV-compliant health insurance sourced through a Spanish relocation service. Meets all consulate requirements with zero copay.',url:'',rating:5,tip:'Found via a PR expat relocation group — significantly cheaper than Cigna or Aetna for the same coverage level.',addedBy:'You',date:'Mar 2026'},
+      {id:2,name:'Wise (Multi-currency Account)',cat:'finance',cost:'Free + low FX fees',desc:'Best way to hold and transfer USD→EUR. Gives you a real Spanish IBAN before you arrive. Works at all Spanish ATMs and stores.',url:'https://wise.com',rating:5,tip:'Open before you leave PR — takes 2 days to verify. Use the referral link for fee-free first transfer.',addedBy:'You',date:'Mar 2026'},
+      {id:3,name:'Spotahome',cat:'housing',cost:'Varies by listing',desc:'Verified furnished apartment rentals across Spain. Great for booking remotely from PR before arrival. All listings are visited and verified.',url:'https://spotahome.com',rating:4,tip:'Filter for "flexible cancellation" listings when booking your first 3 months — you may want to change neighborhoods.',addedBy:'You',date:'Mar 2026'},
+      {id:4,name:'PR State Dept — Apostille Service',cat:'legal',cost:'~$10/document',desc:'Official apostille service for Puerto Rico-issued documents (birth certificates, police records, marriage certs). Required for NLV application.',url:'https://estado.pr.gov',rating:4,tip:'Go in person to the San Juan office — walk-in processing is faster than mail. Bring originals + 2 copies.',addedBy:'You',date:'Mar 2026'},
+      {id:5,name:'Idealista',cat:'housing',cost:'Free to browse',desc:'Largest Spanish real estate platform. Best for comparing long-term rental prices across neighborhoods in Madrid, Málaga, and Sevilla.',url:'https://idealista.com',rating:5,tip:'Set up price alerts for Pedregalejo and El Palo in Málaga — best value beachside neighborhoods.',addedBy:'You',date:'Mar 2026'},
+      {id:6,name:'Internations — Spain Expat Community',cat:'community',cost:'Free / Premium €9.99/mo',desc:'Largest expat networking platform. Active groups in Madrid, Málaga, and Sevilla with regular meetups. Great for finding local service recommendations.',url:'https://internations.org',rating:4,tip:'Join the Puerto Rico / Latin America subgroup — many members have done the same NLV route.',addedBy:'You',date:'Mar 2026'},
+    ]);
+    DB.set('seeded', true);
+  }
+}
+
+// ── CITY DATA ──
+const CITIES = {
+  spain: [
+    {flag:'🏙️',name:'Madrid',cost:'€2,100',index:'68 · Mid-range',selected:true,breakdown:{rent:900,food:300,transport:80,health:150,utilities:120,leisure:300,other:250}},
+    {flag:'🌴',name:'Málaga',cost:'€1,700',index:'56 · Affordable',breakdown:{rent:680,food:260,transport:50,health:130,utilities:100,leisure:240,other:240}},
+    {flag:'🌞',name:'Sevilla',cost:'€1,600',index:'52 · Most affordable',breakdown:{rent:650,food:250,transport:55,health:120,utilities:95,leisure:220,other:210}},
+  ],
+  portugal: [
+    {flag:'🌊',name:'Lisbon',cost:'€1,950',index:'63 · Mid-range',selected:true,breakdown:{rent:850,food:280,transport:70,health:140,utilities:110,leisure:280,other:220}},
+    {flag:'🌅',name:'Porto',cost:'€1,600',index:'52 · Affordable',breakdown:{rent:650,food:240,transport:55,health:120,utilities:100,leisure:230,other:205}},
+    {flag:'🏖️',name:'Algarve',cost:'€1,450',index:'47 · Budget-friendly',breakdown:{rent:580,food:220,transport:80,health:110,utilities:90,leisure:200,other:170}},
+  ],
+  mexico: [
+    {flag:'🌮',name:'Mexico City',cost:'$1,200',index:'38 · Very affordable',selected:true,breakdown:{rent:450,food:180,transport:30,health:100,utilities:80,leisure:200,other:160}},
+    {flag:'🌊',name:'Puerto Vallarta',cost:'$1,100',index:'35 · Very affordable',breakdown:{rent:420,food:160,transport:40,health:90,utilities:75,leisure:190,other:125}},
+    {flag:'🏜️',name:'Oaxaca',cost:'$900',index:'28 · Budget',breakdown:{rent:350,food:140,transport:25,health:80,utilities:60,leisure:160,other:85}},
+  ],
+};
+
+let currentCountry = 'spain';
+let selectedCityIdx = 0;
+
+// ── AI RESPONSES — Expanded Puerto Rico Fast Track Edition ──
+const AI_RESPONSES = {
+
+  'nlv income': `💰 <strong>NLV Income Requirements (2026):</strong><br><br>Spain requires proof of passive income or savings. The minimum for a single applicant is roughly <strong>€2,259/month</strong> (400% of IPREM). For savings, most consulates expect <strong>€27,000–€32,000</strong> in liquid assets shown across 3–6 months of bank statements.<br><br>📌 <strong>Puerto Rico tip:</strong> Your statements will be in English and USD — you'll need a <strong>sworn translator (traductor jurado)</strong> to convert them to Spanish. Budget ~$150–300 for this. The San Juan consulate accepts notarized translations.`,
+
+  'malaga cost': `🌴 <strong>Málaga vs Madrid Cost Comparison:</strong><br><br>Málaga is about <strong>€400/month cheaper</strong> than Madrid overall. Rent is ~24% lower (€680 vs €900 for a 1BR central). Transport, dining, and leisure are all cheaper too.<br><br>For someone relocating from Puerto Rico, Málaga's climate is the closest to home — warm, coastal, relaxed pace. It's also the best base for eventually buying property on the Costa del Sol. Long-term, it's the smarter choice for your citizenship track too.`,
+
+  'tie card': `🪪 <strong>TIE Card (Tarjeta de Identidad de Extranjero):</strong><br><br>Apply within <strong>30 days of arrival</strong>. Processing takes 2–6 weeks. You'll need: passport + NLV visa, empadronamiento certificate, passport photos, and Form EX-17.<br><br>📌 <strong>Puerto Rico tip:</strong> Málaga and Sevilla have significantly faster appointment availability than Madrid. If you're flexible on where you land first, Sevilla's foreigners office is known for being efficient.`,
+
+  'empadronamiento': `🏛️ <strong>Empadronamiento (Municipal Registration):</strong><br><br>This is registering your address at the local Ayuntamiento (city hall). It's free, takes ~15 minutes, and is required for your TIE card, healthcare access, and almost everything else in Spain.<br><br>You need: passport + rental contract (or a signed letter from your landlord). Some cities now allow online pre-registration. Get this done in your <strong>first week</strong> of arrival.`,
+
+  'work remotely': `💻 <strong>Working Remotely on the NLV:</strong><br><br>The NLV technically prohibits working for Spanish companies or clients. However, working remotely for a <strong>US-based employer or your own foreign business</strong> is widely tolerated in practice.<br><br>If you have active income, Spain's <strong>Digital Nomad Visa</strong> (launched 2023) is a better fit — it's legal, comes with the Beckham Law flat 24% tax rate, and is designed for remote workers. It also counts toward residency and eventually citizenship.`,
+
+  'citizenship': `🇪🇸 <strong>Spanish Citizenship Fast Track for Puerto Ricans:</strong><br><br>As a Puerto Rican, you qualify for the <strong>Iberoamerican nationals fast track</strong> — citizenship after just <strong>2 years of legal residency</strong> instead of the standard 10 years.<br><br><strong>Requirements:</strong><br>• 2 years continuous legal residency in Spain<br>• Proof of Puerto Rican / Latin American origin (birth certificate, heritage docs)<br>• Basic Spanish language test (DELE A2 minimum)<br>• No serious criminal record<br>• Renounce any other nationalities (except US — there's a treaty exemption for Americans)<br><br>📌 <strong>Key:</strong> Your NLV counts toward the 2 years from day one. Start your clock as soon as you land.`,
+
+  'pr certificate': `📜 <strong>Certificado de Ciudadanía Puertorriqueña:</strong><br><br>This certificate officially recognizes your Puerto Rican identity and is useful for the Spanish citizenship fast track application. Here's how to get it:<br><br><strong>Process:</strong><br>1. Apply through the <strong>Puerto Rico State Department</strong> (Estado Libre Asociado)<br>2. Submit: birth certificate, proof of PR residency, valid ID<br>3. Processing time: 4–8 weeks<br>4. Cost: ~$10–15<br><br>📌 You'll also want to get your birth certificate <strong>apostilled</strong> at the PR State Department and then have it officially translated to Spanish by a sworn translator before submitting to Spanish authorities.`,
+
+  'san juan consulate': `🏢 <strong>Spanish Consulate in San Juan, Puerto Rico:</strong><br><br>The consulate is located at <strong>1607 Ponce de León Ave, San Juan, PR 00909</strong>.<br><br><strong>NLV appointment tips:</strong><br>• Book as early as possible — wait times are currently <strong>4–10 weeks</strong><br>• Appointments fill up fast; check early morning on Tuesdays when slots reset<br>• Bring ALL documents in originals + 2 photocopies<br>• English documents need sworn Spanish translations<br>• Dress professionally — first impressions matter<br><br>📌 <strong>Common rejections:</strong> incomplete translations, bank statements older than 3 months, or missing the EX-01 form signature.`,
+
+  'documents pr': `📁 <strong>Documents to Gather in Puerto Rico Before You Leave:</strong><br><br><strong>From Registro Demográfico (births, marriages):</strong><br>• Birth certificate (certified, apostilled)<br>• Marriage certificate if applicable<br><br><strong>From Puerto Rico Police (PRPD):</strong><br>• Local background check (good conduct certificate)<br><br><strong>From FBI:</strong><br>• Federal background check (takes 3–8 weeks — start NOW)<br>• Get it apostilled at the US Dept of State<br><br><strong>Financial:</strong><br>• 3–6 months bank statements (sworn translated to Spanish)<br>• Proof of passive income or investment accounts<br><br><strong>Other:</strong><br>• Valid US passport (must have 1+ year validity beyond visa date)<br>• Passport photos (35x45mm biometric format)<br>• International health insurance policy (must cover Spain, min €30,000 coverage)`,
+
+  'apostille': `🔏 <strong>Apostilles — What They Are and Where to Get Them in PR:</strong><br><br>An apostille is an international certification that makes your documents legally valid abroad. For Spain, all official documents need one.<br><br><strong>In Puerto Rico:</strong><br>• PR documents (birth cert, police record): apostille at the <strong>Puerto Rico State Department</strong>, 787-722-2121<br>• Federal documents (FBI check): apostille at the <strong>US Dept of State Authentications Office</strong> in Washington DC (or via mail)<br><br><strong>Cost:</strong> ~$10 per document in PR, ~$20 federal<br><strong>Timing:</strong> PR apostilles take 1–2 weeks. Federal takes 6–8 weeks — use an expediting service (~$150) to cut it to 2 weeks.`,
+
+  'taxes': `💳 <strong>Tax Obligations When Leaving Puerto Rico for Spain:</strong><br><br>This is one of the most important things to sort before you leave.<br><br><strong>US Federal taxes:</strong> Puerto Ricans are US citizens — you still file US federal taxes if you earn US-source income. The Foreign Earned Income Exclusion (FEIE) can help once you're abroad.<br><br><strong>Puerto Rico Act 60:</strong> If you had Act 60 / Act 22 benefits in PR, you need to formally terminate residency and notify the PR Treasury.<br><br><strong>Spain taxes:</strong> After 183 days in Spain you become a Spanish tax resident. The <strong>Beckham Law</strong> (if on Digital Nomad Visa) caps your rate at 24% flat for 6 years — a huge benefit.<br><br>📌 <strong>Strongly recommend</strong> consulting a cross-border CPA familiar with PR → Spain transitions before you move.`,
+
+  'health insurance': `🏥 <strong>Health Insurance for the NLV:</strong><br><br>Spain requires private health insurance as part of the NLV application. It must:<br>• Cover the full duration of your stay in Spain<br>• Have <strong>minimum €30,000 coverage</strong><br>• Have <strong>no copays or deductibles</strong> (reimbursement plans are sometimes rejected)<br>• Be from a company recognized in Spain<br><br><strong>Popular options for Puerto Ricans:</strong><br>• <strong>Cigna Global</strong> — widely accepted, ~$150–250/month<br>• <strong>Aetna International</strong> — good US-Spain coverage<br>• <strong>Allianz Care</strong> — often recommended by expats<br>• <strong>Asisa / Sanitas</strong> — Spanish insurers, buy after arrival for ongoing coverage<br><br>📌 Get the policy BEFORE your consulate appointment — it's a required document.`,
+
+  'housing': `🏠 <strong>Finding Housing in Spain from Puerto Rico:</strong><br><br><strong>Best platforms:</strong><br>• <strong>Idealista.com</strong> — largest Spanish property site<br>• <strong>Spotahome</strong> — verified rentals, great for remote booking<br>• <strong>Fotocasa</strong> — good for Málaga/Sevilla<br>• <strong>Uniplaces</strong> — furnished short-term options<br><br><strong>Strategy:</strong> Book your first 2–3 months in a furnished apartment or Airbnb. Don't sign a long-term lease before you've lived there — neighborhoods matter a lot.<br><br><strong>Budget for Málaga:</strong> €600–800/month for a nice 1BR. €400–600 for a studio outside center.<br><br>📌 Landlords will ask for your NIE/passport + 2 months deposit. Some require a Spanish guarantor — Spotahome offers guarantor services for expats.`,
+
+  'malaga neighborhoods': `🏘️ <strong>Best Málaga Neighborhoods for Expats from PR:</strong><br><br>• <strong>El Centro / Soho</strong> — walkable, vibrant, great food scene. Best for your first months.<br>• <strong>Pedregalejo / El Palo</strong> — beachside, relaxed, local vibe. Closest to PR beach life.<br>• <strong>Lagunillas</strong> — up-and-coming, affordable, artsy crowd.<br>• <strong>Teatinos</strong> — university area, very affordable, quieter.<br><br>📌 Avoid committing to the tourist center long-term — rents are inflated. Pedregalejo gives you the coastal lifestyle at a fraction of the cost.`,
+
+  'banking': `🏦 <strong>Banking Strategy for the Move:</strong><br><br><strong>Before you leave PR:</strong><br>• Open a <strong>Wise</strong> account — gives you a real Euro IBAN, works everywhere in Spain<br>• Keep your US bank account active (USAA or a national bank) for US income/transfers<br><br><strong>After arriving in Spain:</strong><br>• Open a Spanish bank account in person with your passport + empadronamiento<br>• <strong>Best options:</strong> N26 (digital, no fees), BBVA (large network), CaixaBank (most ATMs)<br><br>📌 You'll need a Spanish account to pay rent long-term and set up utilities. Do it in your first month.`,
+};
+
+function getAIResponse(msg) {
+  const m = msg.toLowerCase();
+  // Puerto Rico specific
+  if (m.includes('certificado') || m.includes('certificate of citizenship') || m.includes('pr cert') || m.includes('puerto rican cert')) return AI_RESPONSES['pr certificate'];
+  if (m.includes('apostille') || m.includes('apostillar') || m.includes('apostilla')) return AI_RESPONSES['apostille'];
+  if (m.includes('consulate') || m.includes('consulado') || m.includes('san juan') || m.includes('appointment')) return AI_RESPONSES['san juan consulate'];
+  if (m.includes('document') || m.includes('papers') || m.includes('gather') || m.includes('registro') || m.includes('fbi')) return AI_RESPONSES['documents pr'];
+  if (m.includes('tax') || m.includes('irs') || m.includes('act 60') || m.includes('hacienda') || m.includes('beckham')) return AI_RESPONSES['taxes'];
+  if (m.includes('citizenship') || m.includes('ciudadan') || m.includes('passport') || m.includes('fast track') || m.includes('2 year') || m.includes('iberoamerican')) return AI_RESPONSES['citizenship'];
+  // Visa & income
+  if (m.includes('income') || m.includes('nlv') || m.includes('money') || m.includes('savings') || m.includes('financial')) return AI_RESPONSES['nlv income'];
+  if (m.includes('work') || m.includes('remote') || m.includes('job') || m.includes('nomad') || m.includes('digital')) return AI_RESPONSES['work remotely'];
+  if (m.includes('health') || m.includes('insurance') || m.includes('medical') || m.includes('seguro')) return AI_RESPONSES['health insurance'];
+  // Cities & cost
+  if (m.includes('málaga') || m.includes('malaga') || m.includes('cheaper') || m.includes('cost') || m.includes('compare')) return AI_RESPONSES['malaga cost'];
+  if (m.includes('neighborhood') || m.includes('barrio') || m.includes('area') || m.includes('where to live')) return AI_RESPONSES['malaga neighborhoods'];
+  if (m.includes('housing') || m.includes('apartment') || m.includes('rent') || m.includes('flat') || m.includes('piso') || m.includes('idealista')) return AI_RESPONSES['housing'];
+  // Admin
+  if (m.includes('tie') || m.includes('nie') || m.includes('card') || m.includes('tarjeta')) return AI_RESPONSES['tie card'];
+  if (m.includes('empadron') || m.includes('register') || m.includes('address') || m.includes('ayuntamiento')) return AI_RESPONSES['empadronamiento'];
+  if (m.includes('bank') || m.includes('wise') || m.includes('account') || m.includes('money transfer')) return AI_RESPONSES['banking'];
+  return `I can help with your Puerto Rico → Spain relocation! Try asking me about:<br><br>🇵🇷 <strong>Puerto Rico specific:</strong> apostilles, San Juan consulate, PR citizenship certificate, FBI background check, tax obligations<br><br>🇪🇸 <strong>Spain process:</strong> NLV income requirements, TIE card, empadronamiento, citizenship fast track<br><br>🏠 <strong>Practical:</strong> housing in Málaga, neighborhoods, banking, health insurance`;
+}
+
+const DAILY_TIPS = [
+  '🇵🇷 <strong>PR Fast Track Tip:</strong> As a Puerto Rican, you qualify for Spanish citizenship after just <strong>2 years</strong> of legal residency — vs 10 years for most nationalities. Your NLV starts the clock from day one. Don\'t wait to move.',
+  '📜 <strong>Apostille Tip:</strong> Start your FBI background check NOW — it takes 3–8 weeks. Get it apostilled at the US Dept of State, then translated by a sworn translator (traductor jurado). This is the longest step in your NLV application.',
+  '🏢 <strong>San Juan Consulate Tip:</strong> NLV appointments at the Spanish Consulate in San Juan currently take 4–10 weeks to get. Check early Tuesday mornings when new slots are released. Book as early as possible.',
+  '💳 <strong>Banking Tip:</strong> Open a Wise account before you leave PR — it gives you a real Euro IBAN, works in all Spanish stores and ATMs, and has the best USD→EUR exchange rates. Essential for your first months in Spain.',
+  '🏠 <strong>Málaga Tip:</strong> The Pedregalejo neighborhood in Málaga is the closest thing to Puerto Rico beach life in Europe — coastal, relaxed, local vibe, and 30% cheaper than the tourist center. Perfect base before buying property.',
+  '📋 <strong>Citizenship Tip:</strong> Get your Puerto Rican birth certificate apostilled at the PR State Department and officially translated to Spanish now — you\'ll need it for both the NLV and the citizenship application later.',
+];
+
+// ── INIT ──
+function init() {
+  seedData();
+  renderDashboard();
+  renderPlanner('all');
+  renderDocuments('all');
+  renderBudget('spain');
+  renderResources('all');
+  initChat();
+  renderNotifications();
+  updateProgress();
+  document.getElementById('ai-daily-tip').innerHTML = DAILY_TIPS[Math.floor(Math.random() * DAILY_TIPS.length)];
+}
+
+// ── PROGRESS ──
+function updateProgress() {
+  const tasks = DB.get('tasks', []);
+  const total = tasks.filter(t => !t.locked).length;
+  const done = tasks.filter(t => t.done && !t.locked).length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  document.getElementById('sidebar-progress-fill').style.width = pct + '%';
+  document.getElementById('sidebar-progress-stat').textContent = `${pct}% complete · ${done} of ${total} tasks done`;
+}
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  const tasks = DB.get('tasks', []);
+  const docs = DB.get('docs', []);
+  const activity = DB.get('activity', []);
+
+  const remaining = tasks.filter(t => !t.done && !t.locked).length;
+  const doneDocs = docs.filter(d => d.status === 'done').length;
+  const pendingDocs = docs.filter(d => d.status === 'pending').length;
+
+  document.getElementById('stat-remaining').textContent = remaining;
+  document.getElementById('stat-urgent').textContent = '3 urgent this week';
+  document.getElementById('stat-docs').textContent = `${doneDocs}/${docs.length}`;
+  document.getElementById('stat-docs-note').textContent = `${pendingDocs} in progress`;
+
+  // dashboard tasks: first 5 non-locked tasks
+  const dashTasks = tasks.filter(t => !t.locked).slice(0,5);
+  const catClass = {visa:'tag-visa',finance:'tag-finance',housing:'tag-housing',health:'tag-health',logistics:'tag-logistics'};
+  const catLabel = {visa:'Visa',finance:'Finance',housing:'Housing',health:'Health',logistics:'Logistics'};
+  document.getElementById('dashboard-tasks').innerHTML = dashTasks.map(t => `
+    <div class="check-item">
+      <div class="check-box ${t.done?'done':''}" onclick="toggleDashTask(${t.id},this)">${t.done?'✓':''}</div>
+      <span class="check-text ${t.done?'done':''}">${t.text}</span>
+      <span class="check-tag ${catClass[t.cat]||'tag-visa'}">${catLabel[t.cat]||'Visa'}</span>
+    </div>`).join('');
+
+  // activity
+  document.getElementById('activity-feed').innerHTML = activity.slice(0,6).map(a => `
+    <div class="activity-item">
+      <div class="activity-icon ai-${a.type}">${a.icon}</div>
+      <div>
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleDashTask(id, el) {
+  const tasks = DB.get('tasks', []);
+  const t = tasks.find(x => x.id === id);
+  if (!t) return;
+  t.done = !t.done;
+  DB.set('tasks', tasks);
+  el.classList.toggle('done');
+  el.textContent = t.done ? '✓' : '';
+  const textEl = el.parentElement.querySelector('.check-text');
+  if (textEl) textEl.classList.toggle('done');
+  logActivity(t.done ? '✅' : '⬜', 'sage', `<strong>${t.text}</strong> ${t.done?'completed':'uncompleted'}`);
+  renderDashboard(); updateProgress();
+  showToast(t.done ? `✅ "${t.text}" done!` : `↩ Task uncompleted`, 'success');
+}
+
+// ── ACTIVITY LOG ──
+function logActivity(icon, type, text) {
+  const activity = DB.get('activity', []);
+  activity.unshift({icon, type, text, time:'Just now'});
+  DB.set('activity', activity.slice(0, 20));
+}
+
+// ── PLANNER ──
+const phaseInfo = {
+  1: {title:'Phase 1 — Pre-Application', month:'Jan – Feb'},
+  2: {title:'Phase 2 — Visa Documents', month:'Mar – Apr'},
+  3: {title:'Phase 3 — Pre-Departure', month:'May – Jul'},
+  4: {title:'Phase 4 — Arrival in Spain', month:'Jul – Sep'},
+  5: {title:'Phase 5 — Citizenship Track', month:'Year 2+'},
+};
+const catClass = {visa:'tag-visa',finance:'tag-finance',housing:'tag-housing',health:'tag-health',logistics:'tag-logistics'};
+const catEmoji = {visa:'🛂',finance:'💳',housing:'🏠',health:'🏥',logistics:'📦'};
+
+function renderPlanner(filter) {
+  const tasks = DB.get('tasks', []);
+  const filtered = filter === 'all' ? tasks : tasks.filter(t => t.cat === filter);
+  const total = tasks.filter(t=>!t.locked).length;
+  const done = tasks.filter(t=>t.done&&!t.locked).length;
+  document.getElementById('planner-count').textContent = `${done} of ${total} tasks complete`;
+
+  let html = '';
+  for (let p = 1; p <= 5; p++) {
+    const phaseTasks = filtered.filter(t => t.phase === p);
+    if (!phaseTasks.length) continue;
+    const allDone = phaseTasks.every(t => t.done);
+    const anyActive = phaseTasks.some(t => !t.done && !t.locked);
+    const dotClass = allDone ? 'done' : (anyActive ? 'active' : '');
+    const doneCount = phaseTasks.filter(t=>t.done).length;
+    html += `<div class="phase">
+      <div class="phase-spine"><div class="phase-dot ${dotClass}"></div><div class="phase-line"></div></div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <span class="phase-title">${phaseInfo[p].title}</span>
+          <span class="phase-month">${phaseInfo[p].month}</span>
+          <span class="phase-progress">${doneCount}/${phaseTasks.length} done</span>
+        </div>
+        <div class="phase-tasks">
+          ${phaseTasks.map(t => `
+          <div class="phase-task ${t.done?'completed':''} ${t.locked?'locked':''}" onclick="${t.locked?'showPaywall()':'toggleTask('+t.id+',this)'}">
+            <span class="phase-task-check">${t.locked?'🔒':t.done?'✅':'⬜'}</span>
+            <span class="phase-task-text ${t.done?'done':''}">${t.text}</span>
+            <span class="phase-task-cat check-tag ${catClass[t.cat]||''}">${catEmoji[t.cat]||''} ${t.cat}</span>
+            ${!t.locked?`<button class="phase-task-delete" onclick="deleteTask(event,${t.id})">🗑</button>`:''}
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+  document.getElementById('timeline').innerHTML = html;
+}
+
+function toggleTask(id, el) {
+  const tasks = DB.get('tasks', []);
+  const t = tasks.find(x => x.id === id);
+  if (!t || t.locked) return;
+  t.done = !t.done;
+  DB.set('tasks', tasks);
+  renderPlanner(currentFilter);
+  renderDashboard();
+  updateProgress();
+  logActivity(t.done?'✅':'↩', 'sage', `<strong>${t.text}</strong> ${t.done?'completed':'reopened'}`);
+  showToast(t.done ? `✅ Task done!` : `↩ Task reopened`, 'success');
+  addNotification('✅', `Task ${t.done?'completed':'reopened'}`, `"${t.text}"`);
+}
+
+function deleteTask(e, id) {
+  e.stopPropagation();
+  if (!confirm('Delete this task?')) return;
+  const tasks = DB.get('tasks', []).filter(t => t.id !== id);
+  DB.set('tasks', tasks);
+  renderPlanner(currentFilter);
+  renderDashboard();
+  updateProgress();
+  showToast('🗑 Task deleted', 'info');
+}
+
+let currentFilter = 'all';
+function filterTasks(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('#planner-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPlanner(cat);
+}
+
+function addTask() {
+  const name = document.getElementById('new-task-name').value.trim();
+  const phase = parseInt(document.getElementById('new-task-phase').value);
+  const cat = document.getElementById('new-task-cat').value;
+  if (!name) { showToast('⚠ Please enter a task name', 'warning'); return; }
+  const tasks = DB.get('tasks', []);
+  const newId = Math.max(...tasks.map(t=>t.id), 0) + 1;
+  tasks.push({id:newId, phase, text:name, cat, done:false});
+  DB.set('tasks', tasks);
+  closeModal('modal-task');
+  document.getElementById('new-task-name').value = '';
+  renderPlanner(currentFilter);
+  renderDashboard();
+  updateProgress();
+  logActivity('➕', 'terra', `New task added: <strong>${name}</strong>`);
+  showToast(`✅ Task added to Phase ${phase}!`, 'success');
+  addNotification('➕', 'New task added', name);
+}
+
+// ── DOCUMENTS ──
+let currentDocFilter = 'all';
+
+function renderDocuments(filter) {
+  currentDocFilter = filter;
+  const docs = DB.get('docs', []);
+  const filtered = filter === 'all' ? docs : docs.filter(d => d.cat === filter);
+  const doneCount = docs.filter(d=>d.status==='done').length;
+  const pendingCount = docs.filter(d=>d.status==='pending').length;
+  const missingCount = docs.filter(d=>d.status==='missing').length;
+
+  document.getElementById('doc-stats-row').innerHTML = `
+    <span style="padding:6px 14px;background:#eef6f4;color:var(--sage);border-radius:20px;font-weight:600;">✓ ${doneCount} Ready</span>
+    <span style="padding:6px 14px;background:#fff3ee;color:var(--terra);border-radius:20px;font-weight:600;">⏳ ${pendingCount} In Progress</span>
+    <span style="padding:6px 14px;background:#fdf6e8;color:var(--gold);border-radius:20px;font-weight:600;">⚠ ${missingCount} Not Started</span>
+  `;
+
+  const statusClass = {done:'status-done',pending:'status-pending',missing:'status-missing'};
+  const statusLabel = {done:'✓ Ready',pending:'⏳ In Progress',missing:'⚠ Not Started'};
+  document.getElementById('doc-grid').innerHTML = filtered.map(d => `
+    <div class="doc-card">
+      <div class="doc-icon">${d.icon}</div>
+      <div class="doc-name">${d.name}</div>
+      <button class="doc-status ${statusClass[d.status]}" onclick="cycleDocStatus(${d.id})">${statusLabel[d.status]}</button>
+      <div class="doc-meta">${d.meta||''}</div>
+      <button class="doc-delete" onclick="deleteDoc(event,${d.id})">🗑</button>
+    </div>`).join('');
+}
+
+function cycleDocStatus(id) {
+  const docs = DB.get('docs', []);
+  const d = docs.find(x => x.id === id);
+  if (!d) return;
+  const cycle = {missing:'pending', pending:'done', done:'missing'};
+  d.status = cycle[d.status];
+  DB.set('docs', docs);
+  renderDocuments(currentDocFilter);
+  renderDashboard();
+  logActivity('📄', 'terra', `<strong>${d.name}</strong> status → ${d.status}`);
+  showToast(`📄 ${d.name} → ${d.status}`, 'success');
+}
+
+function deleteDoc(e, id) {
+  e.stopPropagation();
+  if (!confirm('Delete this document?')) return;
+  const docs = DB.get('docs', []).filter(d => d.id !== id);
+  DB.set('docs', docs);
+  renderDocuments(currentDocFilter);
+  renderDashboard();
+  showToast('🗑 Document removed', 'info');
+}
+
+function filterDocs(cat, btn) {
+  document.querySelectorAll('#doc-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDocuments(cat);
+}
+
+function addDocument() {
+  const name = document.getElementById('new-doc-name').value.trim();
+  const cat = document.getElementById('new-doc-cat').value;
+  const status = document.getElementById('new-doc-status').value;
+  const notes = document.getElementById('new-doc-notes').value.trim();
+  if (!name) { showToast('⚠ Please enter a document name', 'warning'); return; }
+  const docs = DB.get('docs', []);
+  const icons = {visa:'🛂',finance:'🏦',health:'🏥',housing:'🏠',other:'📎'};
+  const newId = Math.max(...docs.map(d=>d.id), 0) + 1;
+  docs.push({id:newId, name, icon:icons[cat]||'📎', cat, status, meta:notes});
+  DB.set('docs', docs);
+  closeModal('modal-doc');
+  document.getElementById('new-doc-name').value = '';
+  document.getElementById('new-doc-notes').value = '';
+  renderDocuments(currentDocFilter);
+  renderDashboard();
+  logActivity('📁', 'terra', `Document added: <strong>${name}</strong>`);
+  showToast(`📁 "${name}" added!`, 'success');
+}
+
+// ── RESOURCES ──
+const catMeta = {
+  health:     {emoji:'🏥', label:'Health Insurance', color:'#eef6f4', text:'#4a7c6f'},
+  legal:      {emoji:'⚖️', label:'Legal / Visa',     color:'#fff3ee', text:'#c4622d'},
+  housing:    {emoji:'🏠', label:'Housing',           color:'#eef2f8', text:'#3b6fa0'},
+  finance:    {emoji:'💳', label:'Finance',           color:'#fdf6e8', text:'#d4a843'},
+  relocation: {emoji:'🧳', label:'Relocation',        color:'#f5f0ff', text:'#7c5cbf'},
+  community:  {emoji:'🤝', label:'Community',         color:'#f0f9f7', text:'#4a7c6f'},
+};
+
+function renderResources(filter) {
+  const all = DB.get('resources', []);
+  const list = filter === 'all' ? all : all.filter(r => r.cat === filter);
+  const stars = n => '⭐'.repeat(n);
+  document.getElementById('resource-grid').innerHTML = list.length ? list.map(r => {
+    const m = catMeta[r.cat] || catMeta.relocation;
+    return `
+    <div style="background:#ffffff;border-radius:16px;padding:22px;border:1.5px solid rgba(13,13,13,0.1);position:relative;transition:all 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+        <div>
+          <span style="font-size:11px;padding:3px 9px;border-radius:6px;background:${m.color};color:${m.text};font-weight:600;">${m.emoji} ${m.label}</span>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-top:8px;color:#0d0d0d;">${r.name}</div>
+        </div>
+        <button onclick="deleteResource(${r.id})" style="background:none;border:none;cursor:pointer;font-size:14px;opacity:0.3;padding:4px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3">🗑</button>
+      </div>
+      <div style="font-size:13px;color:#7a7060;line-height:1.6;margin-bottom:12px;">${r.desc}</div>
+      ${r.tip ? `<div style="font-size:12px;background:#fff8f5;border-left:3px solid #c4622d;padding:8px 12px;border-radius:0 8px 8px 0;color:#7a7060;margin-bottom:12px;">💡 <strong>Tip:</strong> ${r.tip}</div>` : ''}
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#c4622d;">${r.cost}</span>
+          <span style="font-size:12px;color:#c8b89a;">${stars(r.rating)}</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          ${r.url ? `<a href="${r.url}" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:500;">Visit →</a>` : ''}
+          <span style="font-size:11px;color:#c8b89a;">Added by ${r.addedBy} · ${r.date}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('') : `<div style="grid-column:1/-1;text-align:center;padding:60px;color:#7a7060;font-size:14px;">No resources in this category yet.<br><br><strong>Be the first to add one!</strong></div>`;
+}
+
+function filterResources(cat, btn) {
+  document.querySelectorAll('#resource-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderResources(cat);
+}
+
+function addResource() {
+  const name = document.getElementById('new-res-name').value.trim();
+  const cat = document.getElementById('new-res-cat').value;
+  const cost = document.getElementById('new-res-cost').value.trim();
+  const desc = document.getElementById('new-res-desc').value.trim();
+  const url = document.getElementById('new-res-url').value.trim();
+  const rating = parseInt(document.getElementById('new-res-rating').value);
+  const tip = document.getElementById('new-res-tip').value.trim();
+  if (!name) { showToast('⚠ Please enter a resource name', 'warning'); return; }
+  if (!desc) { showToast('⚠ Please add a description', 'warning'); return; }
+  const resources = DB.get('resources', []);
+  const newId = Math.max(...resources.map(r=>r.id), 0) + 1;
+  const now = new Date().toLocaleDateString('en-US', {month:'short', year:'numeric'});
+  resources.push({id:newId, name, cat, cost:cost||'—', desc, url, rating, tip, addedBy:'You', date:now});
+  DB.set('resources', resources);
+  closeModal('modal-resource');
+  ['new-res-name','new-res-cost','new-res-desc','new-res-url','new-res-tip'].forEach(id => document.getElementById(id).value = '');
+  renderResources('all');
+  document.querySelectorAll('#resource-filters .filter-btn')[0].click();
+  logActivity('🗂', 'sky', `Resource added: <strong>${name}</strong>`);
+  showToast(`🗂 "${name}" added to resources!`, 'success');
+  addNotification('🗂', 'Resource added', name);
+}
+
+function deleteResource(id) {
+  if (!confirm('Remove this resource?')) return;
+  const resources = DB.get('resources', []).filter(r => r.id !== id);
+  DB.set('resources', resources);
+  renderResources('all');
+  showToast('🗑 Resource removed', 'info');
+}
+
+// ── BUDGET ──
+function renderBudget(country) {
+  currentCountry = country;
+  const cities = CITIES[country];
+  const selIdx = cities.findIndex(c=>c.selected) || 0;
+  selectedCityIdx = selIdx;
+
+  document.getElementById('city-compare').innerHTML = cities.map((c,i) => `
+    <div class="city-card ${i===selIdx?'selected':''}" onclick="selectCity(${i})">
+      <div class="city-flag">${c.flag}</div>
+      <div class="city-name">${c.name}</div>
+      <div class="city-cost">${c.cost} <span>/mo</span></div>
+      <div class="city-index">Cost index: ${c.index}</div>
+    </div>`).join('');
+
+  renderCityDetail(cities[selIdx], cities[0]);
+}
+
+function selectCity(idx) {
+  selectedCityIdx = idx;
+  const cities = CITIES[currentCountry];
+  document.querySelectorAll('.city-card').forEach((c,i) => c.classList.toggle('selected', i===idx));
+  renderCityDetail(cities[idx], cities[0]);
+}
+
+function renderCityDetail(city, baseCity) {
+  const b = city.breakdown;
+  const total = Object.values(b).reduce((a,v)=>a+v,0);
+  document.getElementById('budget-header').innerHTML = `
+    <div class="budget-summary">
+      <div class="bs-label">Estimated Monthly Budget</div>
+      <div class="bs-amount">${city.cost}</div>
+      <div class="bs-sub">${city.name} · Single adult · Mid-range lifestyle</div>
+    </div>
+    <div class="budget-breakdown">
+      <div class="bb-title">Quick Breakdown</div>
+      ${Object.entries({rent:['🏠','Rent (1BR)'],food:['🛒','Food'],transport:['🚇','Transport'],health:['🏥','Health'],utilities:['📱','Utilities'],leisure:['🎭','Leisure'],other:['💡','Other']}).map(([k,[emoji,label]])=>`
+      <div class="bb-item"><span class="bb-item-label">${emoji} ${label}</span><span class="bb-item-val">€${b[k]}</span></div>`).join('')}
+    </div>`;
+
+  const base = baseCity.breakdown;
+  const cats = [
+    {label:'Rent (1BR)',key:'rent',color:'var(--terra)'},
+    {label:'Groceries',key:'food',color:'var(--sage)'},
+    {label:'Transport',key:'transport',color:'var(--sky)'},
+    {label:'Dining out',key:'leisure',color:'var(--gold)'},
+  ];
+  document.getElementById('expense-table').innerHTML = `
+    <div class="et-header"><div>Category</div><div>${baseCity.name}</div><div>${city.name}</div><div>vs ${baseCity.name}</div></div>
+    ${cats.map(c => {
+      const diff = city===baseCity ? 0 : Math.round(((b[c.key]-base[c.key])/base[c.key])*100);
+      const arrow = diff === 0 ? '—' : diff < 0 ? `<span class="et-change down">↓ ${Math.abs(diff)}%</span>` : `<span class="et-change up">↑ ${diff}%</span>`;
+      return `<div class="et-row"><div class="et-cat"><div class="et-dot" style="background:${c.color}"></div>${c.label}</div><div>€${base[c.key]}</div><div>€${b[c.key]}</div><div>${arrow}</div></div>`;
+    }).join('')}
+    <div class="et-row" style="opacity:0.4"><div class="et-cat"><div class="et-dot" style="background:var(--warm)"></div>Coworking 🔒</div><div>—</div><div>—</div><div><a onclick="showPaywall()" style="cursor:pointer;color:var(--terra);font-size:12px">Unlock</a></div></div>`;
+}
+
+function selectCountry(country, el) {
+  document.querySelectorAll('.country-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderBudget(country);
+}
+
+// ── AI CHAT ──
+let chatHistory = [];
+
+function initChat() {
+  chatHistory = [];
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML = `
+    <div class="chat-msg ai">
+      <div class="chat-avatar ai-avatar">🌍</div>
+      <div>
+        <div class="chat-bubble">Hey! I'm your Nomadly AI advisor. I can help with <strong>NLV visa requirements</strong>, <strong>cost of living</strong>, <strong>housing tips</strong>, and your <strong>citizenship timeline</strong> for Spain. What do you want to know?</div>
+        <div class="chat-time">Just now</div>
+      </div>
+    </div>`;
+}
+
+function askSuggested(btn) {
+  document.getElementById('chat-input').value = btn.textContent;
+  sendChat();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  document.getElementById('chat-send').style.opacity = '0.5';
+  document.getElementById('chat-send').style.pointerEvents = 'none';
+
+  const msgs = document.getElementById('chat-messages');
+  const now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+
+  msgs.innerHTML += `
+    <div class="chat-msg user">
+      <div class="chat-avatar user-avatar">👤</div>
+      <div>
+        <div class="chat-bubble">${msg}</div>
+        <div class="chat-time">${now}</div>
+      </div>
+    </div>`;
+
+  // typing indicator
+  const typingId = 'typing-' + Date.now();
+  msgs.innerHTML += `
+    <div class="chat-msg ai" id="${typingId}">
+      <div class="chat-avatar ai-avatar">🌍</div>
+      <div class="chat-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>
+    </div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+
+  await new Promise(r => setTimeout(r, 900 + Math.random()*600));
+
+  document.getElementById(typingId)?.remove();
+  const response = getAIResponse(msg);
+
+  msgs.innerHTML += `
+    <div class="chat-msg ai">
+      <div class="chat-avatar ai-avatar">🌍</div>
+      <div>
+        <div class="chat-bubble">${response}</div>
+        <div class="chat-time">${now}</div>
+      </div>
+    </div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  document.getElementById('chat-send').style.opacity = '1';
+  document.getElementById('chat-send').style.pointerEvents = 'auto';
+  logActivity('🤖', 'sky', `AI answered: <strong>${msg.slice(0,40)}${msg.length>40?'...':''}</strong>`);
+}
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+// ── SEARCH ──
+function handleSearch(q) {
+  const panel = document.getElementById('search-results');
+  if (!q.trim()) { panel.classList.remove('active'); return; }
+  const tasks = DB.get('tasks', []);
+  const docs = DB.get('docs', []);
+  const lower = q.toLowerCase();
+  const taskHits = tasks.filter(t => t.text.toLowerCase().includes(lower)).slice(0,3);
+  const docHits = docs.filter(d => d.name.toLowerCase().includes(lower)).slice(0,3);
+  if (!taskHits.length && !docHits.length) {
+    panel.innerHTML = `<div class="sr-empty">No results for "${q}"</div>`;
+  } else {
+    panel.innerHTML = [
+      ...taskHits.map(t => `<div class="sr-item" onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1]);closeSearch()"><div class="sr-icon">📋</div><div class="sr-text"><strong>${t.text}</strong><span>Phase ${t.phase} · ${t.cat}</span></div></div>`),
+      ...docHits.map(d => `<div class="sr-item" onclick="showPage('documents',document.querySelectorAll('.nav-tab')[2]);closeSearch()"><div class="sr-icon">${d.icon}</div><div class="sr-text"><strong>${d.name}</strong><span>${d.cat} · ${d.status}</span></div></div>`),
+    ].join('');
+  }
+  panel.classList.add('active');
+}
+
+function closeSearch() {
+  document.getElementById('search-results').classList.remove('active');
+}
+
+// ── NOTIFICATIONS ──
+function renderNotifications() {
+  const notifs = DB.get('notifications', [
+    {icon:'🛂',text:'<strong>NLV appointment</strong> scheduled — prepare your documents.',time:'2h ago',read:false},
+    {icon:'📄',text:'<strong>Health insurance</strong> quote is still pending.',time:'1d ago',read:false},
+    {icon:'💡',text:'New AI tip: Málaga rent is <strong>24% cheaper</strong> than Madrid.',time:'2d ago',read:true},
+  ]);
+  const unread = notifs.filter(n => !n.read).length;
+  document.getElementById('notif-dot').style.display = unread ? 'block' : 'none';
+  document.getElementById('notif-list').innerHTML = notifs.length
+    ? notifs.map(n => `<div class="notif-item ${n.read?'':'notif-unread'}" onclick="markRead()"><div class="notif-item-icon">${n.icon}</div><div><div class="notif-item-text">${n.text}</div><div class="notif-item-time">${n.time}</div></div></div>`).join('')
+    : '<div style="padding:16px;text-align:center;font-size:13px;color:var(--muted)">No notifications</div>';
+}
+
+function addNotification(icon, title, text) {
+  const notifs = DB.get('notifications', []);
+  notifs.unshift({icon, text:`<strong>${title}</strong> — ${text}`, time:'Just now', read:false});
+  DB.set('notifications', notifs.slice(0,10));
+  renderNotifications();
+}
+
+function toggleNotif(e) {
+  e.stopPropagation();
+  const panel = document.getElementById('notif-panel');
+  panel.classList.toggle('active');
+  if (panel.classList.contains('active')) {
+    const notifs = DB.get('notifications', []);
+    notifs.forEach(n => n.read = true);
+    DB.set('notifications', notifs);
+    setTimeout(() => renderNotifications(), 300);
+  }
+}
+
+function clearNotifs() {
+  DB.set('notifications', []);
+  renderNotifications();
+  document.getElementById('notif-panel').classList.remove('active');
+  showToast('🔔 Notifications cleared', 'info');
+}
+
+function markRead() {
+  document.getElementById('notif-panel').classList.remove('active');
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#notif-btn') && !e.target.closest('#notif-panel')) {
+    document.getElementById('notif-panel').classList.remove('active');
+  }
+});
+
+// ── MODALS ──
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); });
+});
+
+// ── PAYWALL ──
+function showPaywall() { document.getElementById('paywall').classList.add('active'); }
+function dismissPaywall() { document.getElementById('paywall').classList.remove('active'); }
+document.getElementById('paywall').addEventListener('click', function(e) { if(e.target===this) dismissPaywall(); });
+
+// ── PAGE NAV ──
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ── TOAST ──
+function showToast(msg, type='info') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ── BOOT ──
+init();
+</script>
+
+</body>
+</html>
