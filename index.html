@@ -419,6 +419,61 @@ body{background:#f5f2eb;color:#0d0d0d;font-family:-apple-system,BlinkMacSystemFo
   </div>
 </div>
 
+<!-- QUIZ FUNCTIONS — defined early so buttons work even if main JS fails -->
+
+<script>
+var qAnswers={};var qCurrent=1;var qTotal=7;
+function quizGo(step){
+  for(var i=1;i<=qTotal;i++){var e=document.getElementById('qstep-'+i);if(e)e.style.display=(i===step)?'block':'none';}
+  qCurrent=step;
+  var bar=document.getElementById('quiz-progress-bar');if(bar)bar.style.width=Math.round((step/qTotal)*100)+'%';
+  var lbl=document.getElementById('quiz-step-label');if(lbl)lbl.textContent='Step '+step+' of '+qTotal;
+}
+function quizPick(step,value){
+  qAnswers['q'+step]=value;
+  if(step===2){if(value==='couple'){var b=document.getElementById('prof-couple');if(b&&typeof setProfile!=='undefined')setProfile('couple',b);}else if(value==='family'){var b=document.getElementById('prof-family');if(b&&typeof setProfile!=='undefined')setProfile('family',b);}}
+  setTimeout(function(){if(step<qTotal){quizGo(step+1);}else{quizFinish();}},150);
+}
+function quizLangEN(){
+  currentLang='en';
+  var e=document.getElementById('qlang-en');if(e){e.style.background='#0d0d0d';e.style.color='white';e.style.borderColor='#0d0d0d';}
+  var s=document.getElementById('qlang-es');if(s){s.style.background='transparent';s.style.color='#7a7060';s.style.borderColor='rgba(13,13,13,0.2)';}
+}
+function quizLangES(){
+  currentLang='es';
+  var s=document.getElementById('qlang-es');if(s){s.style.background='#0d0d0d';s.style.color='white';s.style.borderColor='#0d0d0d';}
+  var e=document.getElementById('qlang-en');if(e){e.style.background='transparent';e.style.color='#7a7060';e.style.borderColor='rgba(13,13,13,0.2)';}
+}
+function quizFinish(){
+  var dest=qAnswers.q3||'Spain';var income=qAnswers.q5||'';var ancestry=qAnswers.q6||'';
+  var track=ancestry==='spanish'?'🇪🇸 Citizenship by Descent':income==='remote'?'💻 Digital Nomad Visa':'🛂 Non-Lucrative Visa (NLV)';
+  var color=ancestry==='spanish'?'#4a7c6f':income==='remote'?'#3b6fa0':'#c4622d';
+  var desc=ancestry==='spanish'?'You may qualify for Spanish citizenship through your Spanish parent or grandparent.':income==='remote'?'Remote workers qualify for the Digital Nomad Visa with 24% flat tax.':'The NLV is your best path — requires €2,259/mo income or €27k+ savings.';
+  var urgent=qAnswers.q4==='3months';
+  try{if(typeof DB!=='undefined'){DB.set('quiz_done',true);DB.set('quiz_answers',qAnswers);}}catch(e){}
+  var card=document.querySelector('#onboarding > div');
+  if(card)card.innerHTML='<div style="text-align:center;padding:8px">'
+    +'<div style="font-size:44px;margin-bottom:10px">🎯</div>'
+    +'<div style="font-weight:800;font-size:20px;color:#0d0d0d;margin-bottom:6px">Your path is clear.</div>'
+    +'<div style="font-size:13px;color:#7a7060;margin-bottom:16px">Moving to <strong>'+dest+'</strong></div>'
+    +'<div style="background:'+color+'18;border:1.5px solid '+color+'40;border-radius:12px;padding:14px;margin-bottom:14px;text-align:left">'
+    +'<div style="font-weight:700;font-size:14px;color:'+color+';margin-bottom:4px">'+track+'</div>'
+    +'<div style="font-size:12px;color:#7a7060">'+desc+'</div></div>'
+    +(urgent?'<div style="background:#fdf6e8;border-radius:10px;padding:10px;font-size:12px;color:#d4a843;margin-bottom:14px;text-align:left">⚡ <strong>Urgent!</strong> Check your Planner for immediate next steps.</div>':'')
+    +'<button onclick="quizClose()" style="width:100%;padding:14px;background:#c4622d;color:white;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer">Let\'s go →</button>'
+    +'</div>';
+}
+function quizClose(){
+  var el=document.getElementById('onboarding');
+  if(el){el.style.opacity='0';el.style.transition='opacity 0.3s';setTimeout(function(){el.style.display='none';},300);}
+  try{if(typeof renderDashboard!=='undefined')renderDashboard();if(typeof updateProgress!=='undefined')updateProgress();}catch(e){}
+}
+// Auto-hide if already done
+(function(){
+  try{var done=localStorage.getItem('nomadly3_quiz_done');if(done&&JSON.parse(done)===true){var el=document.getElementById('onboarding');if(el)el.style.display='none';}}catch(e){}
+})();
+</script>
+
 <!-- ONBOARDING QUIZ -->
 
 <div id="onboarding" style="position:fixed;inset:0;z-index:2000;background:#0d0d0d;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto">
