@@ -767,9 +767,9 @@ function resetQuiz(){
 <div class="app-body">
   <aside class="sidebar">
     <div class="sidebar-section" id="sb-relocations">My Relocations</div>
-    <div class="sidebar-item" onclick="showPage('dashboard',document.querySelectorAll('.nav-tab')[0])"><span class="icon">🇪🇸</span> <span id="sb-spain">Spain — Madrid</span></div>
-    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal — Lisbon</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
-    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇨🇴</span> <span id="sb-colombia">Colombia — Medellín</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
+    <div class="sidebar-item" onclick="showPage('dashboard',document.querySelectorAll('.nav-tab')[0])"><span class="icon">🇪🇸</span> <span id="sb-spain">Spain</span></div>
+    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
+    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇨🇴</span> <span id="sb-colombia">Colombia</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
     <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">➕</span> <span id="sb-add-dest">Add destination</span><span class="lock">🔒</span></div>
     <div class="sidebar-section" id="sb-tools">Tools</div>
@@ -1646,8 +1646,8 @@ const T = {
     'nav-overview':'Overview','nav-planner':'🗺️ My Journey','nav-documents':'Documents',
     'nav-budget':'Budget','nav-ai':'🤖 AI','nav-resources':'🗂 Resources',
     // Sidebar
-    'sb-relocations':'My Relocations','sb-spain':'Spain — Madrid','sb-portugal':'Portugal — Lisbon',
-    'sb-colombia':'Colombia — Medellín','sb-add-dest':'Add destination','sb-tools':'Tools',
+    'sb-relocations':'My Relocations','sb-spain':'Spain','sb-portugal':'Portugal',
+    'sb-colombia':'Colombia','sb-add-dest':'Add destination','sb-tools':'Tools',
     'sb-planner':'My Journey','sb-overview':'Overview','sb-documents':'Documents','sb-budget':'Budget',
     'sb-ai':'AI Advisor','sb-resources':'Resources','sb-housing':'Housing Search',
     'sb-progress-label':'Relocation progress',
@@ -1742,8 +1742,8 @@ const T = {
   es: {
     'nav-overview':'Inicio','nav-planner':'🗺️ Mi Viaje','nav-documents':'Documentos',
     'nav-budget':'Presupuesto','nav-ai':'🤖 IA','nav-resources':'🗂 Recursos',
-    'sb-relocations':'Mis Reubicaciones','sb-spain':'España — Madrid','sb-portugal':'Portugal — Lisboa',
-    'sb-colombia':'Colombia — Medellín','sb-add-dest':'Agregar destino','sb-tools':'Herramientas',
+    'sb-relocations':'Mis Reubicaciones','sb-spain':'España','sb-portugal':'Portugal',
+    'sb-colombia':'Colombia','sb-add-dest':'Agregar destino','sb-tools':'Herramientas',
     'sb-planner':'Mi Viaje','sb-overview':'Inicio','sb-documents':'Documentos','sb-budget':'Presupuesto',
     'sb-ai':'Asesor IA','sb-resources':'Recursos','sb-housing':'Búsqueda de Vivienda',
     'sb-progress-label':'Progreso de reubicación',
@@ -2530,7 +2530,7 @@ function renderPlanner(filter) {
             <span class="phase-task-check">${t.locked?'🔒':t.done?'✅':'⬜'}</span>
             <span class="phase-task-text ${t.done?'done':''}">${currentLang==='es'&&t.text_es?t.text_es:t.text}</span>
             <span class="check-tag ${catClassMap[t.cat]||''}" style="font-size:11px;padding:2px 7px;">${catEmoji[t.cat]||''}</span>
-            ${t.info?`<button class="phase-task-info" onclick="showTaskInfo(event,${t.id})" title="Info & Links" style="background:none;border:1px solid rgba(13,13,13,0.15);border-radius:6px;padding:2px 6px;font-size:10px;cursor:pointer;color:#3b6fa0;margin-left:4px;flex-shrink:0">ℹ️</button>`:''}
+            ${TASK_INFO[t.id]?`<button class="phase-task-info" onclick="showTaskInfo(event,${t.id})" title="Info & Links" style="background:none;border:1px solid rgba(13,13,13,0.15);border-radius:6px;padding:2px 6px;font-size:10px;cursor:pointer;color:#3b6fa0;margin-left:4px;flex-shrink:0">ℹ️</button>`:''}
             ${!t.locked?`<button class="phase-task-delete" onclick="deleteTask(event,${t.id})">🗑</button>`:''}
           </div>`).join('')}
         </div>
@@ -2561,12 +2561,35 @@ function deleteTask(e,id){
   showToast(currentLang==='es'?'🗑 Tarea eliminada':'🗑 Task deleted','info');
 }
 
+// Static task info — lives in code, not localStorage, so it always shows
+const TASK_INFO = {
+  1:{link:'https://www.identogo.com',linkLabel:'IdentoGo (FBI channeler)',cost:'~$18 federal fee',time:'3–8 weeks',detail:'Submit via FBI-authorized channeler IdentoGo. Get fingerprinted at a local provider — results mailed in 3–8 weeks. Start this FIRST — it\'s the longest step and must be done before apostilling.'},
+  2:{link:'https://travel.state.gov/content/travel/en/legal/travel-legal-considerations/internl-judicial-asst/authentications-and-apostilles/apostille-requirements.html',linkLabel:'US Dept of State — Apostille',cost:'$20 gov fee · expediting service ~$150 for 2-week turnaround',time:'6–8 weeks standard · 2 weeks expedited',detail:'FBI results must be apostilled by the US Dept of State — NOT Puerto Rico. Use a visa expediting service like USApostille or CitizenPath for faster turnaround. The FBI result is only valid for 3 months at the consulate, so time it carefully.'},
+  3:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/Inicio/Pages/inicio.aspx',linkLabel:'Consulado General — San Juan PR',cost:'Free to schedule',time:'Book 8–12 weeks in advance — slots fill fast',detail:'New appointment slots drop on Tuesday mornings. Address: Mercantil Plaza, Piso 11, Av. Ponce de León s/n, Hato Rey PR 00918. Phone: 787-758-6090. Hours: Mon–Fri 8:30am–1:30pm. Bring originals + 2 copies of every document. Dress professionally.'},
+  4:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/Inicio/Pages/inicio.aspx',linkLabel:'Consulate list of approved translators',cost:'~$50–80 per document',time:'3–5 business days',detail:'ALL English documents must be translated by a sworn translator (traductor jurado) certified by the Spanish Ministry of Foreign Affairs. This includes passport, bank statements, birth certificate, and health insurance. Ask the consulate for their recommended translator list.'},
+  5:{link:'',linkLabel:'',cost:'~$50–80 to translate',time:'Get statements same-day from your bank',detail:'Need 3–6 months of statements showing ≥€2,259/mo passive income OR ≥€27,000 in savings for NLV. Must be translated to Spanish by a sworn translator. Electronic statements accepted. If self-employed, include tax returns + business financials too.'},
+  6:{link:'',linkLabel:'Cigna Global · Aetna Int\'l · Sanitas',cost:'~$89–250/mo (age and coverage dependent)',time:'3–5 days to get a policy',detail:'Must cover full Spain stay, minimum €30,000 coverage, ZERO copays or deductibles — strictly enforced by the consulate. Popular options: Cigna Global, Aetna International, Allianz Care, or the Spanish Relocators Plan (~$89/mo, see Resources tab). Get the policy document BEFORE your consulate appointment.'},
+  7:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/ServiciosConsulares/Pages/Expedición-de-Visados.aspx',linkLabel:'Download EX-01 form',cost:'€80 visa fee (Form 790-052, paid at consulate)',time:'1–2 hrs to fill out; bring to appointment',detail:'Download EX-01 from the consulate website. Fill out in Spanish. Required attachments: proof of income/savings, health insurance, apostilled FBI check, birth certificate (apostilled + translated), medical certificate from doctor, 2 biometric photos (35×45mm), passport copy. Bring 2 copies of everything.'},
+  8:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/Inicio/Pages/inicio.aspx',linkLabel:'Consulate San Juan',cost:'€80 visa fee paid at appointment',time:'~4–6 weeks for decision after appointment',detail:'PR-specific: The San Juan consulate is known for strict document review. Arrive 15 min early. Bring EVERY original document + 2 photocopies. Pay €80 fee via Form 790-052 at the consulate window. Decision is mailed ~4–6 weeks later. If approved, you have 3 months to collect the visa in person.'},
+  9:{link:'https://www.google.com/flights',linkLabel:'Google Flights',cost:'~$300–600 from PR (SJU→MAD)',time:'Book 4–8 weeks before departure',detail:'No direct SJU→MAD flights — connect through BOS or JFK. JetBlue from SJU to JFK, then Iberia or Norwegian to Madrid. You have 90 days from visa issuance to enter Spain. Madrid, Málaga, and Barcelona are the most popular entry cities.'},
+  10:{link:'https://spotahome.com',linkLabel:'Spotahome (remote booking)',cost:'€600–1,200/mo depending on city',time:'Book 3–4 weeks before arrival',detail:'Use Spotahome or Idealista to book furnished apartments remotely. Choose flexible cancellation for the first stay. Málaga: €600–800/mo for 1BR. Madrid: €900–1,200/mo. Sevilla: €650–850/mo. Confirm the landlord will sign an empadronamiento certificate — you\'ll need it within 30 days of arrival.'},
+  11:{link:'https://wise.com',linkLabel:'Open Wise account',cost:'Free account · ~0.4% transfer fee',time:'2–5 days to verify',detail:'Open Wise BEFORE leaving PR — it gives you a real Spanish IBAN for receiving money and paying rent before you have a local bank. Best USD→EUR transfer rates. After arriving, open an in-person account at BBVA or CaixaBank for local payments and utilities.'},
+  12:{link:'',linkLabel:'Seven Seas Worldwide · U-Pack',cost:'~$800–2,500 depending on volume',time:'2–4 weeks sea freight · 5–7 days air',detail:'Most PR expats: ship 1–2 suitcases by air + ship boxes of books/essentials by sea. Options: Seven Seas Worldwide (affordable sea freight boxes), air cargo via UPS International, or international moving companies. Leave large furniture behind — Spain has furnished apartment options at fair prices.'},
+  13:{link:'',linkLabel:'Consult a cross-border CPA',cost:'CPA fees: ~$500–1,500',time:'Complete before or immediately after departure',detail:'File final PR return for the year you leave. Formally terminate PR residency with Hacienda (Treasury Dept). File US federal returns as a US citizen abroad — use FEIE (Foreign Earned Income Exclusion, up to $120k) to avoid double taxation. After 183 days in Spain = Spanish tax resident. Consult a CPA familiar with Puerto Rico + Spain.'},
+  14:{link:'',linkLabel:'Your local Ayuntamiento',cost:'Free',time:'Same day (walk-in)',detail:'Visit your local city hall (Ayuntamiento) with passport + rental/accommodation contract. They issue a certificado de empadronamiento — your official Spanish address proof. Required for TIE card, banking, and many services. Do this within the first 2 weeks of arriving.'},
+  15:{link:'https://www.interior.gob.es/opencms/es/servicios-al-ciudadano/tramites-y-gestiones/extranjeria/regimen-general/tarjeta-de-identidad-de-extranjero/',linkLabel:'Spanish Interior Ministry — TIE',cost:'~€16 (Modelo 790-052, paid at bank before appointment)',time:'Appointment required — 2–6 week wait',detail:'TIE = Tarjeta de Identidad de Extranjero (biometric residence card). Apply at the Oficina de Extranjeros or Comisaría Nacional. Bring: passport + copy, NLV visa sticker, empadronamiento, 1 biometric photo, paid Modelo 790-052. Apply within 30 days of arrival.'},
+  16:{link:'',linkLabel:'BBVA · CaixaBank · Santander',cost:'Free (basic account)',time:'1–3 days to activate',detail:'After getting NIE/TIE and empadronamiento, open a full Spanish bank account. BBVA and CaixaBank are most expat-friendly. Bring: passport, NIE, empadronamiento certificate. Needed for paying rent, utilities, and setting up direct debits. CaixaBank has English-speaking staff in major cities.'},
+  17:{link:'https://estado.pr.gov',linkLabel:'PR Dept of State',cost:'~$10–15 per document + apostille',time:'4–8 weeks for all documents',detail:'PR-born residents are Iberoamericanos and qualify for Spanish citizenship after just 2 years of legal residency (vs 10 years for most nationalities). Gather: PR birth certificate (apostilled), passport. The consulate in San Juan can advise on exact documentation. No DELE Spanish test required if you\'re already fluent.'},
+  18:{link:'https://sede.mjusticia.gob.es/es/tramites/nacionalidad-espanola-residencia',linkLabel:'Ministry of Justice — Citizenship',cost:'~€100 application fee',time:'1–2 years processing',detail:'Apply at the Ministerio de Justicia online portal. Requirements: 2 years continuous legal residency (Iberoamericanos/PR), good conduct certificate, CCSE civics test, DELE A2 Spanish test, no serious criminal record. US citizenship is NOT required to be renounced under the US–Spain treaty. Allow 1–2 years for processing.'},
+};
+
 function showTaskInfo(e, id) {
   e.stopPropagation();
+  const info = TASK_INFO[id];
+  if (!info) return;
   const tasks = DB.get('tasks', []);
   const t = tasks.find(x => x.id === id);
-  if (!t || !t.info) return;
-  const info = t.info;
+  const taskName = t ? t.text : 'Task Details';
   const existing = document.getElementById('task-info-modal');
   if (existing) existing.remove();
   const modal = document.createElement('div');
@@ -2575,7 +2598,7 @@ function showTaskInfo(e, id) {
   modal.innerHTML = `
     <div style="background:#fff;border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.25);max-height:85vh;overflow-y:auto">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#0d0d0d;line-height:1.4;flex:1;padding-right:12px">${t.text}</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#0d0d0d;line-height:1.4;flex:1;padding-right:12px">${taskName}</div>
         <button onclick="document.getElementById('task-info-modal').remove()" style="background:none;border:none;font-size:20px;color:#7a7060;cursor:pointer;flex-shrink:0;line-height:1">✕</button>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
