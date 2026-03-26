@@ -889,6 +889,7 @@ function resetQuiz(){
     <div class="filter-btn active" onclick="showBudgetSection('cost-section',this)">🌍 Cost of Living</div>
     <div class="filter-btn" onclick="showBudgetSection('personal-section',this)">💰 My Budget</div>
     <div class="filter-btn" onclick="showBudgetSection('property-section',this)">🏠 Property & Land</div>
+    <div class="filter-btn" onclick="showBudgetSection('investment-section',this)">📈 Investment Analysis <span style="background:#c4622d;color:white;font-size:9px;padding:1px 5px;border-radius:8px;margin-left:3px">PRO</span></div>
   </div>
 
   <!-- COST OF LIVING SECTION -->
@@ -1011,13 +1012,40 @@ function resetQuiz(){
         </div>
         <div id="bvr-insight" style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px;background:#fff;border-radius:8px"></div>
       </div>
-      <!-- PRO TEASER -->
-      <div style="margin-top:14px;padding:14px;background:linear-gradient(135deg,#fff8f5,#f5f2eb);border:1.5px solid rgba(196,98,45,0.15);border-radius:12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="showPaywall()">
+      <!-- PRO TEASER (shown to non-Pro) -->
+      <div id="bvr-pro-teaser" style="margin-top:14px;padding:14px;background:linear-gradient(135deg,#fff8f5,#f5f2eb);border:1.5px solid rgba(196,98,45,0.15);border-radius:12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="showPaywall()">
         <div>
           <div style="font-size:13px;font-weight:600;color:#0d0d0d" id="bvr-pro-title">🔒 Pro: Full 10-year projection + mortgage simulator</div>
           <div style="font-size:12px;color:#7a7060;margin-top:2px" id="bvr-pro-sub">Spanish bank rates, notary fees, ITP tax, rental yield calculator</div>
         </div>
         <div style="font-size:12px;color:#c4622d;font-weight:600;white-space:nowrap;margin-left:12px" id="bvr-pro-cta">Unlock →</div>
+      </div>
+
+      <!-- PRO: 10-YEAR PROJECTION + MORTGAGE SIMULATOR (Pro only) -->
+      <div id="bvr-pro-section" style="display:none;margin-top:14px">
+        <div style="background:linear-gradient(135deg,#fff8f5,#fff);border:1.5px solid rgba(196,98,45,0.2);border-radius:14px;padding:20px">
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#0d0d0d;margin-bottom:4px">📊 10-Year Buy vs. Rent Projection <span style="background:#c4622d;color:white;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;vertical-align:middle">PRO</span></div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:16px">Spanish bank rates · ITP resale tax · notary + registry fees · true total cost</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+            <div>
+              <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Mortgage Rate (%)</label>
+              <input type="number" id="pro-rate" value="3.5" step="0.1" min="1" max="10" oninput="calcPro10yr()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
+            </div>
+            <div>
+              <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Term (years)</label>
+              <input type="number" id="pro-term" value="25" step="5" min="10" max="30" oninput="calcPro10yr()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
+            </div>
+            <div>
+              <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Property Type</label>
+              <select id="pro-prop-type" onchange="calcPro10yr()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
+                <option value="resale">Resale (ITP 8–10%)</option>
+                <option value="new">New build (IVA 10%)</option>
+              </select>
+            </div>
+          </div>
+          <div id="pro-10yr-table" style="overflow-x:auto;margin-bottom:14px"></div>
+          <div id="pro-10yr-insight" style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px 14px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d"></div>
+        </div>
       </div>
     </div>
 
@@ -1046,11 +1074,59 @@ function resetQuiz(){
       <div id="land-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px"></div>
     </div>
 
-    <!-- PRO TEASER -->
+    <!-- PRO TEASER for property section -->
     <div style="margin-top:20px;padding:18px;background:linear-gradient(135deg,#fff8f5,#f5f2eb);border:1.5px solid rgba(196,98,45,0.15);border-radius:14px;cursor:pointer" onclick="showPaywall()">
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:6px">🔒 Pro: Property Search & Investment Analysis</div>
-      <div style="font-size:12px;color:#7a7060;line-height:1.7">Rental yield calculator · Property management costs · Foreign buyer rules in Spain (NIE required) · Golden Visa thresholds · Best areas for appreciation · Off-plan vs resale comparison</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:6px">🔒 Pro: Full Investment Analysis</div>
+      <div style="font-size:12px;color:#7a7060;line-height:1.7">Rental yield calculator · Net ROI · Foreign buyer rules in Spain (NIE required) · Best neighborhoods for appreciation · Off-plan vs resale · Mortgage simulator</div>
       <div style="margin-top:10px;font-size:13px;color:#c4622d;font-weight:600">Unlock Pro →</div>
+    </div>
+  </div>
+
+  <!-- INVESTMENT ANALYSIS SECTION (Pro) -->
+  <div id="investment-section" style="display:none">
+    <div style="background:linear-gradient(135deg,#fff8f5,#fff);border:1.5px solid rgba(196,98,45,0.2);border-radius:14px;padding:20px;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#0d0d0d;margin-bottom:4px">📈 Spain Property Investment Analysis <span style="background:#c4622d;color:white;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;vertical-align:middle">PRO</span></div>
+      <div style="font-size:12px;color:#7a7060;margin-bottom:20px">Rental yield · Net ROI · Cash-flow projection · Spain foreign buyer rules</div>
+
+      <!-- RENTAL YIELD CALCULATOR -->
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:12px">🏘️ Rental Yield Calculator</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+        <div>
+          <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Property Price (€)</label>
+          <input type="number" id="inv-price" value="180000" oninput="calcInvestment()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
+        </div>
+        <div>
+          <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Monthly Rent (€)</label>
+          <input type="number" id="inv-rent" value="900" oninput="calcInvestment()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
+        </div>
+        <div>
+          <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Vacancy (months/yr)</label>
+          <input type="number" id="inv-vacancy" value="1" min="0" max="6" oninput="calcInvestment()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
+        </div>
+      </div>
+      <div id="inv-results" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;text-align:center"></div>
+      <div id="inv-insight" style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px 14px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d;margin-bottom:20px"></div>
+
+      <!-- SPAIN FOREIGN BUYER GUIDE -->
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:12px">🇪🇸 Spain Foreign Buyer Rules (PR / US Citizens)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:#f5f2eb;border-radius:10px;padding:14px">
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">✅ You Can Buy If</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8">• You have a valid NIE number<br>• You have a Spanish bank account<br>• You can show proof of funds for purchase<br>• No minimum residency required to buy<br>• Non-residents can get a mortgage (20–30% down)</div>
+        </div>
+        <div style="background:#f5f2eb;border-radius:10px;padding:14px">
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">💸 Buying Costs to Budget</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8">• ITP tax (resale): 8–10% of price<br>• IVA (new build): 10% + 1.5% AJD<br>• Notary + registry: ~1–2%<br>• Gestor (agent) fees: ~1%<br>• Mortgage arrangement: ~0.5–1%<br>• Total buying cost: <strong style="color:#c4622d">~10–13% on top of price</strong></div>
+        </div>
+        <div style="background:#f5f2eb;border-radius:10px;padding:14px">
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">🏙️ Best Areas for Appreciation</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8">• <strong>Málaga</strong> — 8–12% YoY, coastal, expat demand<br>• <strong>Valencia</strong> — 6–9% YoY, undervalued vs Barcelona<br>• <strong>Madrid outskirts</strong> — new transport links boosting values<br>• <strong>Alicante / Costa Blanca</strong> — strong rental market<br>• <strong>Seville</strong> — lowest entry price, growing tourism</div>
+        </div>
+        <div style="background:#f5f2eb;border-radius:10px;padding:14px">
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">🏦 Non-Resident Mortgage</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8">• Max loan: 70% of appraised value<br>• Min down: 30% + 10–13% buying costs<br>• Rate: ~3.2–4.5% variable / 3.5–5% fixed<br>• Best banks for non-residents: Sabadell, Bankinter, Santander<br>• NIE + Spanish bank account required</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1169,6 +1245,26 @@ function resetQuiz(){
           <div class="vc-footer">
             <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">4–6 months</strong></span>
             <span style="color:#4a7c6f;font-weight:600;font-size:11px">🔒 Full Guide →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPAIN STUDENT VISA -->
+      <div class="visa-card" data-tags="spain" onclick="showVisaDetail('student')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+        <div class="vc-header" style="background:linear-gradient(135deg,#7c5cbf,#b07cd4)">
+          <div style="font-size:26px;margin-bottom:6px">🎓</div>
+          <div style="font-weight:800;font-size:15px">Spain — Student Visa</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">University · language school · programs</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#f5f0ff;color:#7c5cbf;border-radius:6px;font-weight:600">€600/mo funds</span>
+            <span style="font-size:10px;padding:2px 8px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">→ NLV/DNV path</span>
+          </div>
+          <div class="vc-desc">Attend an accredited Spanish school 90+ days. Strategy: language school → switch to NLV/DNV → start 2-year citizenship clock.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">2–8 weeks</strong></span>
+            <span style="color:#7c5cbf;font-weight:600;font-size:11px">Full Guide →</span>
           </div>
         </div>
       </div>
@@ -1542,7 +1638,6 @@ function resetQuiz(){
     <div style="text-align:center;margin-top:10px;font-size:11px;color:#7a7060" id="coaching-note">Via Calendly · Payment at booking · All times EST</div>
   </div>
 </div>
-```
 
   </main>
 </div>
@@ -1637,13 +1732,13 @@ const T = {
     'journey-title':'🗺️ My Journey to Spain','journey-sub':'Your personalized step-by-step roadmap',
     // Coaching
     'coaching-cta-title':'Book a Coaching Session',
-    'coaching-cta-sub':'15 min · $15 · Talk to someone who did this',
+    'coaching-cta-sub':'Intro $15 · Deep Dive $49 · Real experience',
     'coaching-modal-title':'📞 Book a Coaching Session',
     'coaching-modal-sub':'Talk to someone who actually made this move',
     'coaching-intro-title':'Intro Call',
-    'coaching-intro-desc':'15 min · Zoom or phone\nPerfect for: Is this right for me?',
+    'coaching-intro-desc':'15 min · Zoom or phone\nIs this move right for me?',
     'coaching-deep-title':'Deep Dive',
-    'coaching-deep-desc':'60 min · Full review\nPerfect for: Document review, visa strategy',
+    'coaching-deep-desc':'60 min · Full review\nDocument review & visa strategy',
     'coaching-bio':'<strong style="color:#0d0d0d">About your coach:</strong> Puerto Rican currently navigating the Spain NLV process firsthand. Consulate appointment completed, documents in progress, flight booked for July. Real experience, real answers.',
     'coaching-book-btn':'Book Your Session →',
     'coaching-note':'Sessions via Calendly · Payment at booking · All times EST',
@@ -1723,7 +1818,7 @@ const T = {
     'journey-title':'🗺️ Mi Viaje a España','journey-sub':'Tu hoja de ruta paso a paso personalizada',
     // Coaching
     'coaching-cta-title':'Reservar una Sesión de Coaching',
-    'coaching-cta-sub':'15 min · $15 · Habla con alguien que hizo este proceso',
+    'coaching-cta-sub':'Intro $15 · Deep Dive $49 · Experiencia real',
     'coaching-modal-title':'📞 Reservar Sesión de Coaching',
     'coaching-modal-sub':'Habla con alguien que realmente hizo esta mudanza',
     'coaching-intro-title':'Llamada Intro',
@@ -1764,9 +1859,13 @@ function setLang(lang, btn) {
 function t(key) { return T[currentLang][key] || T['en'][key] || key; }
 
 function applyTranslations() {
+  const htmlKeys = new Set(['coaching-bio']);
   Object.keys(T.en).forEach(key => {
     const el = document.getElementById(key);
-    if (el) el.textContent = t(key);
+    if (el) {
+      if (htmlKeys.has(key)) el.innerHTML = t(key);
+      else el.textContent = t(key);
+    }
   });
   document.getElementById('dash-ai-placeholder').placeholder = t('dash-ai-placeholder');
   document.getElementById('chat-input').placeholder = currentLang === 'es' ? 'Pregunta sobre visas, vivienda, costos...' : 'Ask about visas, housing, costs...';
@@ -1842,31 +1941,49 @@ const DB = {
 
 function seedData() {
   // Force clean v3 seed — wipes any old nomadly_ or nomadly3_ data
-  const freshKey = 'nomadly3_fresh3';
+  const freshKey = 'nomadly3_fresh4';
   if (!localStorage.getItem(freshKey)) {
     Object.keys(localStorage).filter(k=>k.startsWith('nomadly')).forEach(k=>localStorage.removeItem(k));
     localStorage.setItem(freshKey,'1');
   }
   if (!DB.get('seeded',false)) {
     DB.set('tasks',[
-      {id:1,phase:1,text:'Request FBI Background Check',text_es:'Solicitar Verificación de Antecedentes del FBI',cat:'visa',done:true},
-      {id:2,phase:1,text:'Get Background Check Apostilled',text_es:'Apostillar la Verificación de Antecedentes',cat:'visa',done:true},
-      {id:3,phase:1,text:'Schedule NLV Consulate Appointment',text_es:'Programar Cita en el Consulado para NLV',cat:'visa',done:true},
-      {id:4,phase:2,text:'Certified passport translation',text_es:'Traducción certificada del pasaporte',cat:'visa',done:false},
-      {id:5,phase:2,text:'Proof of income / bank statements (3 months)',text_es:'Prueba de ingresos / estados de cuenta (3 meses)',cat:'finance',done:false},
-      {id:6,phase:2,text:'International health insurance policy',text_es:'Póliza de seguro médico internacional',cat:'health',done:false},
-      {id:7,phase:2,text:'Complete NLV application (EX-01 form)',text_es:'Completar solicitud NLV (formulario EX-01)',cat:'visa',done:false},
-      {id:8,phase:2,text:'Attend consulate appointment',text_es:'Asistir a la cita consular',cat:'visa',done:false},
-      {id:9,phase:3,text:'Book one-way flight to Madrid',text_es:'Reservar vuelo de ida a Madrid',cat:'logistics',done:false},
-      {id:10,phase:3,text:'Secure housing for first 3 months',text_es:'Asegurar vivienda para los primeros 3 meses',cat:'housing',done:false},
-      {id:11,phase:3,text:'Open Spanish bank account (Wise / N26)',text_es:'Abrir cuenta bancaria española (Wise / N26)',cat:'finance',done:false},
-      {id:12,phase:3,text:'Ship belongings / storage plan',text_es:'Enviar pertenencias / plan de almacenamiento',cat:'logistics',done:false,locked:true},
-      {id:13,phase:3,text:'Notify IRS / Puerto Rico tax obligations',text_es:'Notificar al IRS / obligaciones fiscales de Puerto Rico',cat:'finance',done:false,locked:true},
-      {id:14,phase:4,text:'Register at Ayuntamiento (empadronamiento)',text_es:'Registrarse en el Ayuntamiento (empadronamiento)',cat:'visa',done:false,locked:true},
-      {id:15,phase:4,text:'Apply for NIE / TIE at Foreigners Office',text_es:'Solicitar NIE / TIE en la Oficina de Extranjeros',cat:'visa',done:false,locked:true},
-      {id:16,phase:4,text:'Open Spanish bank account in person',text_es:'Abrir cuenta bancaria española en persona',cat:'finance',done:false,locked:true},
-      {id:17,phase:5,text:'Document Puerto Rican heritage for 2-year track',text_es:'Documentar herencia puertorriqueña para vía de 2 años',cat:'visa',done:false,locked:true},
-      {id:18,phase:5,text:'Apply for Spanish citizenship',text_es:'Solicitar la ciudadanía española',cat:'visa',done:false,locked:true},
+      {id:1,phase:1,text:'Request FBI Background Check',text_es:'Solicitar Verificación de Antecedentes del FBI',cat:'visa',done:true,
+        info:{link:'https://www.identogo.com',linkLabel:'IdentoGo (FBI channeler)',cost:'~$18 federal fee',time:'3–8 weeks',detail:'Submit via FBI-authorized channeler IdentoGo. Get fingerprinted at a local provider, results mailed in 3–8 weeks. Start this FIRST — it\'s the longest step before apostilling.'}},
+      {id:2,phase:1,text:'Get Background Check Apostilled (US Dept of State)',text_es:'Apostillar la Verificación de Antecedentes (Dept. de Estado EE.UU.)',cat:'visa',done:true,
+        info:{link:'https://travel.state.gov/content/travel/en/legal/travel-legal-considerations/internl-judicial-asst/authentications-and-apostilles/apostille-requirements.html',linkLabel:'US Dept of State — Apostille',cost:'$20 gov fee · $150 via expediter for 2-week turnaround',time:'6–8 weeks standard · 2 weeks expedited',detail:'FBI results must be apostilled by the US Dept of State (NOT PR). Use an expediting service like USApostille or CitizenPath for faster processing. Do NOT let the FBI result sit — it\'s only valid for 3 months for the consulate.'}},
+      {id:3,phase:1,text:'Schedule NLV Consulate Appointment (San Juan)',text_es:'Programar Cita en el Consulado para NLV (San Juan)',cat:'visa',done:true,
+        info:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/Inicio/Pages/inicio.aspx',linkLabel:'Consulado General — San Juan PR',cost:'Free to schedule',time:'Book 8–12 weeks in advance — slots fill fast',detail:'New slots drop on Tuesday mornings. Address: Mercantil Plaza, Piso 11, Av. Ponce de León s/n, Hato Rey PR 00918. Phone: 787-758-6090. Hours: Mon–Fri 8:30am–1:30pm. Bring originals + 2 copies of every document. Dress professionally.'}},
+      {id:4,phase:2,text:'Certified passport translation (traductor jurado)',text_es:'Traducción certificada del pasaporte (traductor jurado)',cat:'visa',done:false,
+        info:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/Inicio/Pages/inicio.aspx',linkLabel:'Consulate list of approved translators',cost:'~$50–80 per document',time:'3–5 business days',detail:'ALL English documents must be translated by a sworn translator (traductor jurado) certified by the Spanish Ministry of Foreign Affairs. This includes passport, bank statements, birth certificate, and health insurance. Ask the consulate for their recommended translator list.'}},
+      {id:5,phase:2,text:'Proof of income / bank statements (3–6 months)',text_es:'Prueba de ingresos / estados de cuenta (3–6 meses)',cat:'finance',done:false,
+        info:{link:'',linkLabel:'',cost:'~$50–80 to translate',time:'Get statements same-day from your bank',detail:'Need 3–6 months of statements showing ≥€2,259/mo passive income OR ≥€27,000 in savings for NLV. Must be translated to Spanish by a sworn translator. Electronic statements accepted. If self-employed: include tax returns + business financials too.'}},
+      {id:6,phase:2,text:'International health insurance (NLV-compliant)',text_es:'Seguro médico internacional (cumple con NLV)',cat:'health',done:false,
+        info:{link:'',linkLabel:'Cigna Global · Aetna Int\'l · Sanitas',cost:'~$89–250/mo (age and coverage dependent)',time:'3–5 days to get policy',detail:'Must cover full Spain stay, minimum €30,000 coverage, ZERO copays or deductibles — this is strictly enforced. Popular: Cigna Global, Aetna International, Allianz Care, or the Spanish Relocators Plan (~$89/mo, see Resources tab). Get the policy document BEFORE your consulate appointment.'}},
+      {id:7,phase:2,text:'Complete NLV application (EX-01 form)',text_es:'Completar solicitud NLV (formulario EX-01)',cat:'visa',done:false,
+        info:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/ServiciosConsulares/Pages/Expedición-de-Visados.aspx',linkLabel:'Download EX-01 form',cost:'€80 visa fee (Form 790-052, paid at consulate)',time:'1–2 hrs to fill out; bring to appointment',detail:'Download EX-01 from consulate website. Fill out in Spanish. Required attachments: proof of income/savings, health insurance, apostilled FBI check, birth certificate (apostilled + translated), medical certificate from doctor, 2 biometric photos (35×45mm), passport copy. Bring 2 copies of everything.'}},
+      {id:8,phase:2,text:'Attend NLV consulate appointment',text_es:'Asistir a la cita consular NLV',cat:'visa',done:false,
+        info:{link:'https://www.exteriores.gob.es/Consulados/SanJuandePuertoRico/es/Inicio/Pages/inicio.aspx',linkLabel:'Consulate San Juan',cost:'€80 visa fee paid at appointment',time:'~4–6 weeks for decision after appointment',detail:'PR-specific: The San Juan consulate is known for strict document review. Arrive 15 min early. Bring EVERY original document + 2 photocopies. Pay €80 fee via Form 790-052 at the consulate window. Decision is mailed ~4–6 weeks later. If approved, you have 3 months to pick up the visa in person.'}},
+      {id:9,phase:3,text:'Book one-way flight to Spain',text_es:'Reservar vuelo de ida a España',cat:'logistics',done:false,
+        info:{link:'https://www.google.com/flights',linkLabel:'Google Flights',cost:'~$300–600 from PR (SJU→MAD)',time:'Book 4–8 weeks before departure',detail:'No direct SJU→MAD flights — connect through BOS or JFK. JetBlue from SJU to JFK, then Iberia or Norwegian to Madrid. Budget $300–600. You have 90 days from visa issuance to enter Spain. Madrid, Málaga, or Barcelona are the most popular entry cities.'}},
+      {id:10,phase:3,text:'Secure housing for first 3 months',text_es:'Asegurar vivienda para los primeros 3 meses',cat:'housing',done:false,
+        info:{link:'https://spotahome.com',linkLabel:'Spotahome (remote booking)',cost:'€600–1,200/mo depending on city',time:'Book 3–4 weeks before arrival',detail:'Use Spotahome or Idealista to book furnished apartments remotely. Choose flexible cancellation for first stay. Málaga: €600–800/mo for 1BR. Madrid: €900–1,200/mo. Sevilla: €650–850/mo. You\'ll need a permanent address for empadronamiento — confirm the landlord will sign the certificate.'}},
+      {id:11,phase:3,text:'Open Wise account (USD→EUR)',text_es:'Abrir cuenta Wise (USD→EUR)',cat:'finance',done:false,
+        info:{link:'https://wise.com',linkLabel:'Open Wise account',cost:'Free account · Low transfer fees (~0.4%)',time:'2–5 days to verify',detail:'Open Wise BEFORE leaving PR — it gives you a real Spanish IBAN for receiving income and paying rent before you have a local bank. Best USD→EUR transfer rates. After arriving, open an in-person account at BBVA or CaixaBank (needed for local payments, utilities, and rent contracts).'}},
+      {id:12,phase:3,text:'Ship belongings / storage plan',text_es:'Enviar pertenencias / plan de almacenamiento',cat:'logistics',done:false,locked:true,
+        info:{link:'',linkLabel:'Seven Seas Worldwide · U-Pack',cost:'~$800–2,500 depending on volume',time:'2–4 weeks sea freight; 5–7 days air',detail:'Most PR expats: ship 1–2 suitcases by air + boxes of books/essentials by sea. Options: Seven Seas Worldwide (affordable sea freight), air cargo via UPS International, or international moving companies. Leave large furniture — Spain has furnished apartment options at fair prices.'}},
+      {id:13,phase:3,text:'Handle IRS / PR tax obligations before departure',text_es:'Manejar obligaciones fiscales IRS / PR antes de partir',cat:'finance',done:false,locked:true,
+        info:{link:'',linkLabel:'Consult a cross-border CPA',cost:'CPA fees: ~$500–1,500',time:'Complete this before or immediately after departure',detail:'File final PR return for the year you leave. Formally terminate PR residency with Hacienda (Treasury Dept). File US federal returns as a US citizen abroad — use FEIE (Foreign Earned Income Exclusion, up to $120k) to avoid double taxation. After 183 days in Spain = Spanish tax resident. Consult a CPA familiar with Puerto Rico + Spain tax treaties.'}},
+      {id:14,phase:4,text:'Register at Ayuntamiento (empadronamiento)',text_es:'Registrarse en el Ayuntamiento (empadronamiento)',cat:'visa',done:false,locked:true,
+        info:{link:'',linkLabel:'Your local Ayuntamiento',cost:'Free',time:'Same day (walk-in)',detail:'Visit your local city hall (Ayuntamiento) with passport + rental/accommodation contract. They issue a certificado de empadronamiento — your official Spanish address proof. Required for TIE card, banking, and many services. Do this within the first 2 weeks of arriving. Valid for 6 months — renew if needed.'}},
+      {id:15,phase:4,text:'Apply for NIE / TIE card at Foreigners Office',text_es:'Solicitar NIE / TIE en la Oficina de Extranjeros',cat:'visa',done:false,locked:true,
+        info:{link:'https://www.interior.gob.es/opencms/es/servicios-al-ciudadano/tramites-y-gestiones/extranjeria/regimen-general/tarjeta-de-identidad-de-extranjero/',linkLabel:'Spanish Interior Ministry — TIE',cost:'~€16 (Modelo 790-052, paid at bank before appointment)',time:'Appointment required — 2–6 week wait',detail:'TIE = Tarjeta de Identidad de Extranjero (biometric residence card). Apply at the Oficina de Extranjeros or Comisaría Nacional. Bring: passport + copy, NLV sticker, empadronamiento, 1 biometric photo, paid Modelo 790-052. This replaces your visa sticker and is your ID in Spain. Apply within 30 days of arrival.'}},
+      {id:16,phase:4,text:'Open in-person Spanish bank account',text_es:'Abrir cuenta bancaria española en persona',cat:'finance',done:false,locked:true,
+        info:{link:'',linkLabel:'BBVA · CaixaBank · Santander',cost:'Free (basic account)',time:'1–3 days to activate',detail:'After getting NIE/TIE and empadronamiento, open a full Spanish bank account. BBVA and CaixaBank are most expat-friendly. Bring: passport, NIE, empadronamiento certificate. Useful for paying rent, utilities, setting up direct debits, and Spanish payroll. CaixaBank has English-speaking staff in major cities.'}},
+      {id:17,phase:5,text:'Document Puerto Rican heritage (2-year citizenship track)',text_es:'Documentar herencia puertorriqueña (vía ciudadanía 2 años)',cat:'visa',done:false,locked:true,
+        info:{link:'https://estado.pr.gov',linkLabel:'PR Dept of State',cost:'~$10–15 per document + apostille',time:'4–8 weeks for all documents',detail:'PR-born residents are Iberoamericanos and qualify for Spanish citizenship after just 2 years of legal residency (vs 10 years for most nationalities). Gather: PR birth certificate (apostilled), passport. The consulate in San Juan can advise on exact documentation needed. No DELE Spanish test required for those already fluent.'}},
+      {id:18,phase:5,text:'Apply for Spanish citizenship',text_es:'Solicitar la ciudadanía española',cat:'visa',done:false,locked:true,
+        info:{link:'https://sede.mjusticia.gob.es/es/tramites/nacionalidad-espanola-residencia',linkLabel:'Ministry of Justice — Citizenship',cost:'~€100 application fee',time:'1–2 years processing',detail:'Apply at the Ministerio de Justicia online portal. Requirements: 2 years continuous legal residency (Iberoamericanos/PR), certificado de antecedentes penales, CCSE civics test (available in Spanish), DELE A2 Spanish test (if not Spanish speaker), renunciation of US citizenship is NOT required for Puerto Ricans under US–Spain treaty. Allow 1–2 years for processing.'}},
     ]);
     DB.set('docs',[
       {id:1,name:'Passport',name_es:'Pasaporte',icon:'🛂',cat:'visa',status:'done',meta:'Expires Jan 2031 · Valid ✓',meta_es:'Vence Jan 2031 · Válido ✓'},
@@ -2140,8 +2257,9 @@ function showBudgetSection(id, btn) {
   if(target) target.style.display = 'block';
   document.querySelectorAll('#budget-subnav .filter-btn').forEach(b => b.classList.remove('active'));
   if(btn) btn.classList.add('active');
-  if(id==='personal-section'){calcRunway();calcBuyVsRent();}
+  if(id==='personal-section'){calcRunway();calcBuyVsRent();if(currentPlan==='pro'||currentPlan==='wanderer')try{calcPro10yr();}catch(e){}}
   if(id==='property-section') renderPropertyData('spain');
+  if(id==='investment-section') try{calcInvestment();}catch(e){}
 }
 
 // ── RUNWAY CALCULATOR ──
@@ -2210,6 +2328,102 @@ function calcBuyVsRent() {
     } else {
       insightEl.innerHTML=`Monthly mortgage: <strong>${mortgage}</strong> vs rent: <strong>${rentStr}</strong>. ${breakeven&&breakeven<=10?`Buying breaks even in <strong>${breakeven} years</strong> — worth considering if you plan to stay long-term.`:'Renting is cheaper short-term. Consider buying after citizenship and stable Spanish income.'} Spanish banks typically require <strong>20-30% down</strong> for non-residents.`;
     }
+  }
+}
+
+// ── PRO 10-YEAR PROJECTION ──
+function calcPro10yr() {
+  const rent = parseFloat(document.getElementById('bvr-rent')?.value) || 900;
+  const rentIncrease = (parseFloat(document.getElementById('bvr-rent-increase')?.value) || 3) / 100;
+  const price = parseFloat(document.getElementById('bvr-price')?.value) || 180000;
+  const downPct = (parseFloat(document.getElementById('bvr-down')?.value) || 20) / 100;
+  const rate = (parseFloat(document.getElementById('pro-rate')?.value) || 3.5) / 100 / 12;
+  const termYrs = parseInt(document.getElementById('pro-term')?.value) || 25;
+  const propType = document.getElementById('pro-prop-type')?.value || 'resale';
+  const tableEl = document.getElementById('pro-10yr-table');
+  const insightEl = document.getElementById('pro-10yr-insight');
+  if (!tableEl) return;
+
+  const itpRate = propType === 'new' ? 0.10 : 0.09; // IVA 10% new, ITP ~9% resale avg
+  const notaryReg = price * 0.015;
+  const buyingCosts = price * itpRate + notaryReg + price * 0.01; // ITP/IVA + notary + gestor
+  const down = price * downPct;
+  const loan = price - down;
+  const termMonths = termYrs * 12;
+  const monthlyMortgage = loan > 0 ? loan * (rate * Math.pow(1+rate, termMonths)) / (Math.pow(1+rate, termMonths) - 1) : 0;
+  const annualAppreciation = 0.06; // Conservative Spain avg 6% YoY
+
+  let rows = '<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="background:#f5f2eb">';
+  rows += '<th style="padding:6px 8px;text-align:left;color:#7a7060;font-weight:600">Year</th>';
+  rows += '<th style="padding:6px 8px;text-align:right;color:#7a7060;font-weight:600">Cumulative Rent</th>';
+  rows += '<th style="padding:6px 8px;text-align:right;color:#7a7060;font-weight:600">Cumulative Buy</th>';
+  rows += '<th style="padding:6px 8px;text-align:right;color:#7a7060;font-weight:600">Property Value</th>';
+  rows += '<th style="padding:6px 8px;text-align:right;color:#7a7060;font-weight:600">Net Equity</th>';
+  rows += '</tr></thead><tbody>';
+
+  let cumRent = 0, cumBuy = down + buyingCosts, mr = rent, propValue = price, breakeven = 0;
+  for (let y = 1; y <= 10; y++) {
+    cumRent += mr * 12;
+    cumBuy += monthlyMortgage * 12;
+    mr *= (1 + rentIncrease);
+    propValue *= (1 + annualAppreciation);
+    const paidPrincipal = down + loan - (loan > 0 ? loan * Math.pow(1+rate, y*12) / (Math.pow(1+rate,termMonths)/(Math.pow(1+rate,termMonths)-1)) / (rate > 0 ? 1 : 1) : 0);
+    const equity = propValue - (loan > 0 ? loan * Math.pow(1+rate, 0) : 0) + (price - loan) * annualAppreciation * y;
+    const netEquity = propValue - loan + (monthlyMortgage * 12 * y * 0.3); // simplified
+    if (cumBuy <= cumRent + netEquity - propValue && breakeven === 0) breakeven = y;
+    const bg = y % 2 === 0 ? '' : 'background:#fafafa';
+    rows += `<tr style="${bg}">
+      <td style="padding:6px 8px;font-weight:600;color:#0d0d0d">Year ${y}</td>
+      <td style="padding:6px 8px;text-align:right;color:#c4622d">€${Math.round(cumRent/1000)}k</td>
+      <td style="padding:6px 8px;text-align:right;color:#3b6fa0">€${Math.round(cumBuy/1000)}k</td>
+      <td style="padding:6px 8px;text-align:right;color:#4a7c6f">€${Math.round(propValue/1000)}k</td>
+      <td style="padding:6px 8px;text-align:right;color:#4a7c6f;font-weight:600">+€${Math.round((propValue-price)/1000)}k</td>
+    </tr>`;
+  }
+  rows += '</tbody></table>';
+  tableEl.innerHTML = rows;
+
+  const totalRent10 = Math.round(cumRent / 1000);
+  const finalPropValue = Math.round(propValue / 1000);
+  const appreciation10 = Math.round((propValue - price) / 1000);
+  if (insightEl) {
+    insightEl.innerHTML = `Over 10 years, renting costs <strong>€${totalRent10}k</strong> with nothing to show for it. The property would appreciate to <strong>~€${finalPropValue}k</strong> (+€${appreciation10}k). Buying costs include <strong>€${Math.round(buyingCosts/1000)}k</strong> in taxes/fees upfront (${propType === 'new' ? 'IVA 10% + notary' : 'ITP ~9% + notary'}). Monthly mortgage: <strong>€${Math.round(monthlyMortgage)}</strong>. Spanish banks require min <strong>${Math.round(downPct*100)}% down</strong> for non-residents — budget for this well in advance.`;
+  }
+}
+
+// ── INVESTMENT ANALYSIS ──
+function calcInvestment() {
+  const price = parseFloat(document.getElementById('inv-price')?.value) || 180000;
+  const monthlyRent = parseFloat(document.getElementById('inv-rent')?.value) || 900;
+  const vacancyMonths = parseFloat(document.getElementById('inv-vacancy')?.value) || 1;
+  const resultsEl = document.getElementById('inv-results');
+  const insightEl = document.getElementById('inv-insight');
+  if (!resultsEl) return;
+
+  const annualRent = monthlyRent * (12 - vacancyMonths);
+  const annualExpenses = price * 0.02 + monthlyRent * 0.1 * 12; // IBI ~1%, insurance ~1%, mgmt ~10%
+  const netAnnualRent = annualRent - annualExpenses;
+  const grossYield = (annualRent / price) * 100;
+  const netYield = (netAnnualRent / price) * 100;
+  const buyingCosts = price * 0.11; // ~11% avg
+  const totalInvestment = price + buyingCosts;
+  const cashOnCash = (netAnnualRent / (price * 0.30 + buyingCosts)) * 100; // assuming 70% LTV
+
+  const metrics = [
+    {label:'Gross Yield',value:grossYield.toFixed(1)+'%',color:'#4a7c6f'},
+    {label:'Net Yield',value:netYield.toFixed(1)+'%',color:'#3b6fa0'},
+    {label:'Annual Net Income',value:'€'+Math.round(netAnnualRent/100)*100,color:'#c4622d'},
+    {label:'Cash-on-Cash (30% down)',value:cashOnCash.toFixed(1)+'%',color:'#d4a843'},
+  ];
+  resultsEl.innerHTML = metrics.map(m => `
+    <div style="background:#f5f2eb;border-radius:10px;padding:12px 8px;text-align:center">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:${m.color}">${m.value}</div>
+      <div style="font-size:10px;color:#7a7060;margin-top:3px">${m.label}</div>
+    </div>`).join('');
+
+  if (insightEl) {
+    const rating = grossYield >= 6 ? '🟢 Excellent' : grossYield >= 4 ? '🟡 Good' : '🔴 Below average';
+    insightEl.innerHTML = `<strong>${rating}</strong> rental yield for Spain. Málaga and Valencia average <strong>5–7%</strong> gross yield; Madrid averages <strong>4–5%</strong>. Net yield after expenses (IBI, insurance, occasional repairs) is ~${netYield.toFixed(1)}%. At a 30% down payment, your cash-on-cash return is <strong>${cashOnCash.toFixed(1)}%</strong>. Spain's rental demand is growing — expat and digital nomad demand is pushing yields up in coastal cities.`;
   }
 }
 
@@ -2322,6 +2536,7 @@ function renderPlanner(filter) {
             <span class="phase-task-check">${t.locked?'🔒':t.done?'✅':'⬜'}</span>
             <span class="phase-task-text ${t.done?'done':''}">${currentLang==='es'&&t.text_es?t.text_es:t.text}</span>
             <span class="check-tag ${catClassMap[t.cat]||''}" style="font-size:11px;padding:2px 7px;">${catEmoji[t.cat]||''}</span>
+            ${t.info?`<button class="phase-task-info" onclick="showTaskInfo(event,${t.id})" title="Info & Links" style="background:none;border:1px solid rgba(13,13,13,0.15);border-radius:6px;padding:2px 6px;font-size:10px;cursor:pointer;color:#3b6fa0;margin-left:4px;flex-shrink:0">ℹ️</button>`:''}
             ${!t.locked?`<button class="phase-task-delete" onclick="deleteTask(event,${t.id})">🗑</button>`:''}
           </div>`).join('')}
         </div>
@@ -2350,6 +2565,40 @@ function deleteTask(e,id){
   DB.set('tasks',tasks);
   renderPlanner(currentFilter);renderDashboard();updateProgress();
   showToast(currentLang==='es'?'🗑 Tarea eliminada':'🗑 Task deleted','info');
+}
+
+function showTaskInfo(e, id) {
+  e.stopPropagation();
+  const tasks = DB.get('tasks', []);
+  const t = tasks.find(x => x.id === id);
+  if (!t || !t.info) return;
+  const info = t.info;
+  const existing = document.getElementById('task-info-modal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'task-info-modal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:2000;background:rgba(13,13,13,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:18px;padding:24px;max-width:460px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.25);max-height:85vh;overflow-y:auto">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#0d0d0d;line-height:1.4;flex:1;padding-right:12px">${t.text}</div>
+        <button onclick="document.getElementById('task-info-modal').remove()" style="background:none;border:none;font-size:20px;color:#7a7060;cursor:pointer;flex-shrink:0;line-height:1">✕</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="background:#f5f2eb;border-radius:10px;padding:10px 12px">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:#7a7060;font-weight:600;margin-bottom:3px">💰 Cost</div>
+          <div style="font-size:13px;font-weight:600;color:#0d0d0d">${info.cost||'Varies'}</div>
+        </div>
+        <div style="background:#f5f2eb;border-radius:10px;padding:10px 12px">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;color:#7a7060;font-weight:600;margin-bottom:3px">⏱ Timeline</div>
+          <div style="font-size:13px;font-weight:600;color:#0d0d0d">${info.time||'Varies'}</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#0d0d0d;line-height:1.7;margin-bottom:14px;background:#fff3ee;border-left:3px solid #c4622d;padding:12px 14px;border-radius:0 8px 8px 0">${info.detail||''}</div>
+      ${info.link?`<a href="${info.link}" target="_blank" rel="noopener" style="display:block;width:100%;padding:12px;background:#c4622d;color:white;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-align:center;text-decoration:none;box-sizing:border-box">${info.linkLabel||'Open Link'} →</a>`:''}
+    </div>`;
+  modal.addEventListener('click', ev => { if (ev.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
 }
 
 function filterTasks(cat,btn){
@@ -2451,12 +2700,22 @@ function renderBudget(country){
   currentCountry=country;
   const csEl=document.getElementById('country-selector');
   const ccEl=document.getElementById('city-compare');
+  const budgetHeader=document.getElementById('budget-header');
+  const expenseTable=document.getElementById('expense-table');
   if(!csEl||!ccEl)return;
   const chips=COUNTRY_CHIPS;
   csEl.innerHTML=chips.map(c=>`
     <div class="country-chip ${c.key===country&&!c.locked?'active':''}" onclick="${c.locked?'showPaywall()':'selectCountry(\''+c.key+'\',this)'}">
       ${c.flag} ${currentLang==='es'?c.label_es:c.label}
     </div>`).join('');
+  if(country!=='spain'){
+    const countryName=chips.find(c=>c.key===country);
+    const name=countryName?(currentLang==='es'?countryName.label_es:countryName.label):country;
+    ccEl.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:32px 24px;background:#fff;border-radius:14px;border:1.5px dashed rgba(13,13,13,0.12)"><div style="font-size:36px;margin-bottom:10px">${countryName?countryName.flag:'🌍'}</div><div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#0d0d0d;margin-bottom:6px">${name} — Coming Soon</div><div style="font-size:13px;color:#7a7060;line-height:1.7;max-width:360px;margin:0 auto">Full cost of living data and budget tools for ${name} are in development. Currently focused on <strong>Spain</strong>.</div><div style="margin-top:14px;display:inline-block;padding:6px 16px;background:#f5f2eb;color:#7a7060;border-radius:20px;font-size:12px;font-weight:600">🚧 Spain fully supported now</div></div>`;
+    if(budgetHeader) budgetHeader.innerHTML='';
+    if(expenseTable) expenseTable.innerHTML='';
+    return;
+  }
   const cities=CITIES[country]||CITIES.spain;
   const selIdx=cities.findIndex(c=>c.selected)||0;
   selectedCityIdx=selIdx;
@@ -2990,6 +3249,13 @@ function showVisaSection(id, btn) {
 }
 
 function showVisaDetail(visa) {
+  // Student visa: redirect to Journey page with the student track
+  if (visa === 'student') {
+    showPage('journey', document.querySelector('.nav-tab[onclick*="journey"]'));
+    setTimeout(() => { renderJourney('spain'); }, 100);
+    showToast('🎓 Student Visa full guide is in My Journey → Spain', 'info');
+    return;
+  }
   const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
   if (!isPaid) { showPaywall(); return; }
   const cards = document.getElementById('visa-cards');
@@ -3126,6 +3392,22 @@ function applyPlanRestrictions() {
     const item = lock.closest('.sidebar-item');
     if (item && f.cities > 3) lock.style.opacity = '0.3';
   });
+
+  // BVR pro section — show to Pro, hide teaser
+  const bvrTeaser = document.getElementById('bvr-pro-teaser');
+  const bvrProSec = document.getElementById('bvr-pro-section');
+  if (bvrTeaser) bvrTeaser.style.display = f.mortgage ? 'none' : 'flex';
+  if (bvrProSec) {
+    bvrProSec.style.display = f.mortgage ? 'block' : 'none';
+    if (f.mortgage) { try { calcPro10yr(); } catch(e){} }
+  }
+
+  // Investment analysis section — Pro only
+  const invSection = document.getElementById('investment-section');
+  if (invSection) {
+    invSection.style.display = f.mortgage ? 'block' : 'none';
+    if (f.mortgage) { try { calcInvestment(); } catch(e){} }
+  }
 
   // Update paywall free plan banner
   const pwBanner = document.querySelector('#paywall [style*="fff8f5"]');
@@ -3269,6 +3551,51 @@ const JOURNEYS = {
         ],
         tip:'⚠️ 2025 law change: great-grandchildren no longer qualify for new applications. Act now if your ancestor is a grandparent.',
         consulate:'Consulado General de España · Edificio Mercantil Plaza, Piso 11 · Hato Rey PR 00918 · 787-758-6090',
+      },
+      {
+        id:'student', icon:'🎓', color:'#7c5cbf', bg:'#f5f0ff',
+        title:'Student Visa (Type D)',
+        subtitle:'University · language school · professional courses',
+        who:'Enrolled in a Spanish university, accredited language school, or professional program for 90+ days. Must attend min. 20 hrs/week of instruction.',
+        timeline:'2–8 weeks processing · Duration of program · Can apply to switch status after 1 year',
+        phases:[
+          {phase:'Phase 1 — Secure Enrollment',icon:'🎓',color:'#7c5cbf',steps:[
+            'Apply to an accredited Spanish university or language school',
+            'Receive official acceptance/enrollment letter (letter must be original)',
+            'Confirm program is 90+ days and ≥20 hrs/week of instruction',
+            'Verify school is officially accredited (check MEFP registry or ask consulate)',
+          ]},
+          {phase:'Phase 2 — Documents',icon:'📁',color:'#d4a843',steps:[
+            'Original enrollment/acceptance letter from institution',
+            'Proof of sufficient funds: min €600/mo × program duration (e.g. €7,200 for 12 months)',
+            'Health insurance valid in Spain (no copays, no deductibles)',
+            'FBI Background Check (apostilled at US Dept of State)',
+            'Medical certificate (no infectious diseases — from any licensed US doctor)',
+            'Passport valid for at least 6 months beyond program end date',
+            '2 biometric passport photos (35×45mm)',
+            'Sworn Spanish translation of all English documents (traductor jurado)',
+          ]},
+          {phase:'Phase 3 — Apply at Consulate',icon:'🏢',color:'#7c5cbf',steps:[
+            'Schedule appointment at Consulado General San Juan (787-758-6090)',
+            'Submit complete application package at appointment',
+            'Pay visa fee (~€80 via Form 790-052)',
+            'Processing: 2–8 weeks · Collect visa in person within 30 days of approval',
+          ]},
+          {phase:'Phase 4 — Arrive & Register',icon:'✈️',color:'#3b6fa0',steps:[
+            'Enter Spain within the visa validity period',
+            'Register at Ayuntamiento (empadronamiento) within 30 days — Free',
+            'Apply for TIE student residence card at Oficina de Extranjeros',
+            'Maintain ≥80% class attendance — required to keep student status',
+          ]},
+          {phase:'Phase 5 — Path to Residency',icon:'🛂',color:'#4a7c6f',steps:[
+            'After 1 year, apply to switch permit to work authorization if needed',
+            'Student years count as 50% toward residency (2 student years = 1 residency year)',
+            'Consider switching to NLV or Digital Nomad Visa after completing studies',
+            'PR students: strategy — language school (1yr) → NLV or DNV → start 2yr citizenship clock',
+          ]},
+        ],
+        tip:'🎓 Best PR strategy: 6–12 month intensive language program (Salamanca, Madrid, or Barcelona) → switch to NLV or DNV → start the 2-year citizenship clock. Costs less than you think: top language schools from €300–800/mo tuition.',
+        consulate:'Consulado General de España · Mercantil Plaza, Piso 11, Hato Rey PR 00918 · 787-758-6090',
       },
     ]
   },
