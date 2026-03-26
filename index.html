@@ -524,28 +524,28 @@ function resetQuiz(){
 
 <!-- ONBOARDING QUIZ -->
 
-<div id="onboarding" style="position:fixed;inset:0;z-index:2000;background:#0d0d0d;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto">
-  <div style="background:#f5f2eb;border-radius:24px;padding:28px;max-width:500px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.4);margin:auto;position:relative">
+<div id="onboarding" style="position:fixed;inset:0;z-index:2000;background:rgba(13,13,13,0.95);display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto">
+  <div style="background:#f5f2eb;border-radius:24px;padding:36px 32px;max-width:520px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.5);position:relative">
 
 ```
 <!-- Progress bar -->
-<div style="position:absolute;top:0;left:0;right:0;height:4px;background:rgba(13,13,13,0.1);border-radius:24px 24px 0 0;overflow:hidden;pointer-events:none">
+<div style="position:absolute;top:0;left:0;right:0;height:5px;background:rgba(13,13,13,0.1);border-radius:24px 24px 0 0;overflow:hidden;pointer-events:none">
   <div id="quiz-progress-bar" style="height:100%;background:#c4622d;border-radius:inherit;transition:width 0.4s ease;width:20%;pointer-events:none"></div>
 </div>
 
 <!-- Header -->
-<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;margin-top:6px">
-  <div style="font-weight:800;font-size:17px;color:#0d0d0d">• Nomadly</div>
-  <div id="quiz-step-label" style="font-size:12px;color:#7a7060;font-weight:500">Step 1 of 5</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;margin-top:8px">
+  <div style="font-weight:800;font-size:18px;color:#0d0d0d;letter-spacing:-0.3px">• Nomadly</div>
+  <div id="quiz-step-label" style="font-size:12px;color:#7a7060;font-weight:600;background:rgba(13,13,13,0.06);padding:4px 10px;border-radius:20px">Step 1 of 5</div>
 </div>
 
 <!-- Q1: Origin -->
 <div class="qstep" id="qstep-1">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">🌎</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Where are you relocating from?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Desde dónde te mudas?</span></div>
+    <div style="font-size:40px;margin-bottom:10px">🌎</div>
+    <div style="font-weight:800;font-size:20px;color:#0d0d0d;line-height:1.3">Where are you relocating from?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Desde dónde te mudas?</span></div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:10px">
+  <div style="display:flex;flex-direction:column;gap:12px">
     <button class="qopt" onclick="quizPick(1,'Puerto Rico')">🇵🇷 Puerto Rico</button>
     <button class="qopt" onclick="quizPick(1,'USA')">🇺🇸 USA (mainland)</button>
   </div>
@@ -554,10 +554,10 @@ function resetQuiz(){
 <!-- Q2: Who -->
 <div class="qstep" id="qstep-2" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">👥</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Who is making this move?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Quién se muda?</span></div>
+    <div style="font-size:40px;margin-bottom:10px">👥</div>
+    <div style="font-weight:800;font-size:20px;color:#0d0d0d;line-height:1.3">Who is making this move?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Quién se muda?</span></div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:10px">
+  <div style="display:flex;flex-direction:column;gap:12px">
     <button class="qopt" onclick="quizPick(2,'solo')">👤 Just me / Solo yo</button>
     <button class="qopt" onclick="quizPick(2,'couple')">👫 Me and my partner / Yo y mi pareja</button>
     <button class="qopt" onclick="quizPick(2,'family')">👨‍👩‍👧 Family with kids / Familia con hijos</button>
@@ -569,10 +569,10 @@ function resetQuiz(){
 <!-- Q3: Timeline -->
 <div class="qstep" id="qstep-3" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">📅</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">When are you planning to move?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Cuándo planeas mudarte?</span></div>
+    <div style="font-size:40px;margin-bottom:10px">📅</div>
+    <div style="font-weight:800;font-size:20px;color:#0d0d0d;line-height:1.3">When are you planning to move?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Cuándo planeas mudarte?</span></div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:10px">
+  <div style="display:flex;flex-direction:column;gap:12px">
     <button class="qopt" onclick="quizPick(3,'3months')">🔥 In the next 3 months / Próximos 3 meses</button>
     <button class="qopt" onclick="quizPick(3,'6months')">📆 3–6 months / 3–6 meses</button>
     <button class="qopt" onclick="quizPick(3,'1year')">🗓️ 6–12 months / 6–12 meses</button>
@@ -585,13 +585,13 @@ function resetQuiz(){
 <!-- Q4: Income -->
 <div class="qstep" id="qstep-4" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">💳</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">What is your main income type?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Tipo de ingresos?</span></div>
+    <div style="font-size:40px;margin-bottom:10px">💳</div>
+    <div style="font-weight:800;font-size:20px;color:#0d0d0d;line-height:1.3">What is your main income type?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Tipo de ingresos?</span></div>
   </div>
   <div id="income-note" style="display:none;background:#fff3ee;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;color:#7a7060;line-height:1.6">
     <strong style="color:#c4622d">NLV Income Requirement (Family):</strong> Base €2,259/mo + 100% IPREM (~€600) per additional family member. 2 kids = ~€3,459/mo minimum.
   </div>
-  <div style="display:flex;flex-direction:column;gap:10px">
+  <div style="display:flex;flex-direction:column;gap:12px">
     <button class="qopt" onclick="quizPick(4,'remote')">💻 Remote job / freelance (active income)</button>
     <button class="qopt" onclick="quizPick(4,'passive')">📈 Savings / investments / passive income</button>
     <button class="qopt" onclick="quizPick(4,'both')">💼 Both / Ambos</button>
@@ -603,11 +603,11 @@ function resetQuiz(){
 <!-- Q5: Ancestry -->
 <div class="qstep" id="qstep-5" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">🧬</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Do you have a Spanish parent or grandparent?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Tienes padre o abuelo español?</span></div>
+    <div style="font-size:40px;margin-bottom:10px">🧬</div>
+    <div style="font-weight:800;font-size:20px;color:#0d0d0d;line-height:1.3">Do you have a Spanish parent or grandparent?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Tienes padre o abuelo español?</span></div>
   </div>
   <div style="font-size:12px;color:#7a7060;background:#eef6f4;border-radius:10px;padding:10px 13px;margin-bottom:12px;line-height:1.6">🇵🇷 Puerto Ricans with Spanish ancestry may qualify for citizenship in just <strong style="color:#4a7c6f">2 years</strong> instead of 10.</div>
-  <div style="display:flex;flex-direction:column;gap:10px">
+  <div style="display:flex;flex-direction:column;gap:12px">
     <button class="qopt" onclick="quizPick(5,'spanish')">🇪🇸 Yes — parent or grandparent born in Spain / Sí</button>
     <button class="qopt" onclick="quizPick(5,'none')">❌ No Spanish ancestry / No</button>
   </div>
@@ -624,9 +624,11 @@ function resetQuiz(){
 .visa-card .vc-body{padding:18px;flex:1;display:flex;flex-direction:column}
 .visa-card .vc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;flex-shrink:0}
 .visa-card .vc-desc{font-size:12px;color:#7a7060;margin-bottom:12px;flex:1;line-height:1.5}
-.visa-card .vc-footer{display:flex;justify-content:space-between;font-size:12px;align-items:center;flex-shrink:0;margin-top:auto}background:#fff;border:2px solid rgba(13,13,13,0.12);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block;line-height:1.4}
-.qopt:hover,.qopt:active{border-color:#c4622d;background:#fff8f5}
-.qback{width:100%;margin-top:12px;padding:8px;background:none;border:none;color:#7a7060;cursor:pointer;font-size:13px;font-family:inherit;text-align:center;-webkit-appearance:none}
+.visa-card .vc-footer{display:flex;justify-content:space-between;font-size:12px;align-items:center;flex-shrink:0;margin-top:auto}
+.qopt{width:100%;padding:14px 18px;background:#fff;border:2px solid rgba(13,13,13,0.1);border-radius:12px;cursor:pointer;font-size:15px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block;line-height:1.4;margin:0;box-shadow:none;-webkit-tap-highlight-color:transparent}
+.qopt:hover{border-color:#c4622d;background:#fff8f5}
+.qopt:active{border-color:#c4622d;background:#fff3ee}
+.qback{width:100%;margin-top:14px;padding:10px;background:none;border:none;color:#7a7060;cursor:pointer;font-size:13px;font-family:inherit;text-align:center;-webkit-appearance:none;display:block}
 </style>
 
 <!-- PAYWALL -->
@@ -1361,7 +1363,6 @@ function resetQuiz(){
       </div>
 
     </div>
-  </div>
 
   <!-- VISA DETAIL PANELS (hidden by default) -->
   <div id="visa-detail-nlv" style="display:none">
@@ -1573,9 +1574,6 @@ function resetQuiz(){
     </div>
     <div id="consulate-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
   </div>
-
-  <!-- CITIZENSHIP BY DESCENT SECTION -->
-</div>
 
 <!-- JOURNEY PAGE -->
 <div class="page" id="page-journey">
@@ -2852,7 +2850,7 @@ function applyPersonalization() {
       + '<div style="font-size:12px;color:#7a7060;margin-top:2px">'
       + (urgent ? '⚡ Urgent timeline — start your checklist today' : '📍 Your personalized roadmap is ready in My Journey')
       + '</div></div>'
-      + '<button onclick="var t=document.querySelectorAll(\'.nav-tab\')[7];showPage(\'journey\',t)" style="padding:7px 14px;background:' + trackColor + ';color:white;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap">My Journey →</button>';
+      + '<button onclick="var t=document.querySelectorAll(\'.nav-tab\')[1];showPage(\'journey\',t)" style="padding:7px 14px;background:' + trackColor + ';color:white;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap">My Journey →</button>';
     const profileBanner = document.getElementById('profile-banner');
     if (profileBanner && profileBanner.parentNode) {
       profileBanner.parentNode.insertBefore(banner, profileBanner.nextSibling);
