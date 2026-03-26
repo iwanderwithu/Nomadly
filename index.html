@@ -619,7 +619,12 @@ function resetQuiz(){
 </div>
 
 <style>
-.qopt{width:100%;padding:13px 16px;background:#fff;border:2px solid rgba(13,13,13,0.12);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block;line-height:1.4}
+.visa-card{display:flex;flex-direction:column;background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;transition:all 0.15s}
+.visa-card .vc-header{padding:20px;color:white;flex-shrink:0}
+.visa-card .vc-body{padding:18px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.visa-card .vc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.visa-card .vc-desc{font-size:12px;color:#7a7060;margin-bottom:12px;flex:1;line-height:1.5}
+.visa-card .vc-footer{display:flex;justify-content:space-between;font-size:12px;align-items:center}background:#fff;border:2px solid rgba(13,13,13,0.12);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block;line-height:1.4}
 .qopt:hover,.qopt:active{border-color:#c4622d;background:#fff8f5}
 .qback{width:100%;margin-top:12px;padding:8px;background:none;border:none;color:#7a7060;cursor:pointer;font-size:13px;font-family:inherit;text-align:center;-webkit-appearance:none}
 </style>
@@ -763,16 +768,16 @@ function resetQuiz(){
   <aside class="sidebar">
     <div class="sidebar-section" id="sb-relocations">My Relocations</div>
     <div class="sidebar-item active"><span class="icon">🇪🇸</span> <span id="sb-spain">Spain — Madrid</span></div>
-    <div class="sidebar-item" onclick="currentJourneyCountry='portugal';showJourneyCountry('portugal',null);showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal — Lisbon</span></div>
-    <div class="sidebar-item" onclick="showPaywall()"><span class="icon">🇨🇴</span> <span id="sb-colombia">Colombia — Medellín</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
-    <div class="sidebar-item" onclick="currentJourneyCountry='costarica';showJourneyCountry('costarica',null);showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span></div>
+    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal — Lisbon</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
+    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇨🇴</span> <span id="sb-colombia">Colombia — Medellín</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
+    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">➕</span> <span id="sb-add-dest">Add destination</span><span class="lock">🔒</span></div>
     <div class="sidebar-section" id="sb-tools">Tools</div>
     <div class="sidebar-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🗺️</span> <span id="sb-planner">My Journey</span></div>
     <div class="sidebar-item" onclick="showPage('budget',document.querySelectorAll('.nav-tab')[2])"><span class="icon">💰</span> <span id="sb-budget">Budget</span></div>
-    <div class="sidebar-item" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[2])"><span class="icon">🤖</span> <span id="sb-ai">AI Advisor</span></div>
-    <div class="sidebar-item" onclick="showPage('resources',document.querySelectorAll('.nav-tab')[2])"><span class="icon">🗂</span> <span id="sb-resources">Resources</span></div>
-    <div class="sidebar-item" onclick="showPage('visas',document.querySelectorAll('.nav-tab')[2])"><span class="icon">🛂</span> <span id="sb-visas">Visas & Consulates</span></div>
+    <div class="sidebar-item" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[3])"><span class="icon">🤖</span> <span id="sb-ai">AI Advisor</span></div>
+    <div class="sidebar-item" onclick="showPage('resources',document.querySelectorAll('.nav-tab')[4])"><span class="icon">🗂</span> <span id="sb-resources">Resources</span></div>
+    <div class="sidebar-item" onclick="showPage('visas',document.querySelectorAll('.nav-tab')[5])"><span class="icon">🛂</span> <span id="sb-visas">Visas & Consulates</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">🏠</span> <span id="sb-housing">Housing Search</span><span class="lock">🔒</span></div>
     <!-- COACHING CTA -->
     <div onclick="openCoaching()" style="margin:12px 8px 0;background:linear-gradient(135deg,#c4622d,#d4a843);border-radius:12px;padding:14px;cursor:pointer;transition:opacity 0.15s" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
@@ -1095,181 +1100,180 @@ function resetQuiz(){
   <!-- VISA GUIDES SECTION -->
   <div id="visas-section">
 
-    <!-- FILTER BAR -->
+    <!-- FILTER BAR — by country only -->
     <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="visa-filter-bar">
       <div class="filter-btn active" onclick="filterVisaCards('all',this)">All</div>
       <div class="filter-btn" onclick="filterVisaCards('spain',this)">🇪🇸 Spain</div>
-      <div class="filter-btn" onclick="filterVisaCards('residency',this)">🛂 Residency Visas</div>
-      <div class="filter-btn" onclick="filterVisaCards('descent',this)">🧬 Citizenship by Descent</div>
+      <div class="filter-btn" onclick="filterVisaCards('portugal',this)">🇵🇹 Portugal</div>
+      <div class="filter-btn" onclick="filterVisaCards('costarica',this)">🇨🇷 Costa Rica</div>
+      <div class="filter-btn" onclick="filterVisaCards('italy',this)">🇮🇹 Italy</div>
+      <div class="filter-btn" onclick="filterVisaCards('ireland',this)">🇮🇪 Ireland</div>
+      <div class="filter-btn" onclick="filterVisaCards('germany',this)">🇩🇪 Germany</div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;" id="visa-cards">
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;" id="visa-cards">
 
-      <!-- SPAIN NLV — spain, residency -->
-      <div class="visa-card" data-tags="spain residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;cursor:pointer;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'" onclick="showVisaDetail('nlv')">
-        <div style="background:linear-gradient(135deg,#c4622d,#e8855a);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">🇪🇸</div>
-          <div style="font-weight:800;font-size:17px">Spain Non-Lucrative Visa</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">Reside in Spain without working</div>
+      <!-- SPAIN NLV -->
+      <div class="visa-card" data-tags="spain" onclick="showVisaDetail('nlv')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+        <div class="vc-header" style="background:linear-gradient(135deg,#c4622d,#e8855a)">
+          <div style="font-size:26px;margin-bottom:6px">🇪🇸</div>
+          <div style="font-weight:800;font-size:15px">Spain — Non-Lucrative Visa</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">Passive income · No work required</div>
         </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#fff3ee;color:#c4622d;border-radius:6px;font-weight:600">Passive Income</span>
-            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">1 Year Renewable</span>
-            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">2yr Citizenship for PR</span>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#fff3ee;color:#c4622d;border-radius:6px;font-weight:600">Passive Income</span>
+            <span style="font-size:10px;padding:2px 8px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">2yr PR→Citizenship</span>
           </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Min. €2,259/mo · No work allowed · Path to citizenship in 2 years for Puerto Ricans</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
+          <div class="vc-desc">Min. €2,259/mo or €27k savings. Path to citizenship in 2 years for Puerto Ricans. 1 year renewable.</div>
+          <div class="vc-footer">
             <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">1 month</strong></span>
-            <span style="color:#c4622d;font-weight:600">🔒 Full Guide →</span>
+            <span style="color:#c4622d;font-weight:600;font-size:11px">🔒 Full Guide →</span>
           </div>
         </div>
       </div>
 
-      <!-- SPAIN DNV — spain, residency -->
-      <div class="visa-card" data-tags="spain residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;cursor:pointer;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'" onclick="showVisaDetail('dnv')">
-        <div style="background:linear-gradient(135deg,#3b6fa0,#6aab9c);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">💻</div>
-          <div style="font-weight:800;font-size:17px">Spain Digital Nomad Visa</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">Work remotely for non-Spanish clients</div>
+      <!-- SPAIN DNV -->
+      <div class="visa-card" data-tags="spain" onclick="showVisaDetail('dnv')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+        <div class="vc-header" style="background:linear-gradient(135deg,#3b6fa0,#6aab9c)">
+          <div style="font-size:26px;margin-bottom:6px">🇪🇸</div>
+          <div style="font-weight:800;font-size:15px">Spain — Digital Nomad Visa</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">Remote workers · Beckham Law 24%</div>
         </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Remote Work</span>
-            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">Beckham Law 24%</span>
-            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">1-3 Years</span>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Remote Work</span>
+            <span style="font-size:10px;padding:2px 8px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">24% Flat Tax</span>
           </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Min. €2,646/mo · Remote workers only · 24% flat tax rate for 6 years</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">20-45 days</strong></span>
-            <span style="color:#c4622d;font-weight:600">🔒 Full Guide →</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SPAIN CITIZENSHIP BY DESCENT — spain, descent -->
-      <div class="visa-card" data-tags="spain descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;cursor:pointer;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'" onclick="showVisaDetail('spain-descent')">
-        <div style="background:linear-gradient(135deg,#4a7c6f,#2d8a5e);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">🇪🇸</div>
-          <div style="font-weight:800;font-size:17px">Spain — Citizenship by Descent</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">Spanish parent or grandparent</div>
-        </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">Parent/Grandparent</span>
-            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">No Income Required</span>
-            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Full EU Passport</span>
-          </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Spanish parent or grandparent born in Spain qualifies you. Fastest path to EU passport for eligible applicants.</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">4-6 months</strong></span>
-            <span style="color:#4a7c6f;font-weight:600">🔒 Full Guide →</span>
+          <div class="vc-desc">Min. €2,646/mo from non-Spanish employers. 24% flat income tax for 6 years under Beckham Law.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">20–45 days</strong></span>
+            <span style="color:#c4622d;font-weight:600;font-size:11px">🔒 Full Guide →</span>
           </div>
         </div>
       </div>
 
-      <!-- ITALY DESCENT — descent, coming soon -->
-      <div class="visa-card" data-tags="descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
-        <div style="background:linear-gradient(135deg,#3b6fa0,#6aab9c);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">🇮🇹</div>
-          <div style="font-weight:800;font-size:17px">Italy — Citizenship by Descent</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">Jure Sanguinis · Major 2025 law change</div>
+      <!-- SPAIN DESCENT -->
+      <div class="visa-card" data-tags="spain" onclick="showVisaDetail('spain-descent')" style="cursor:pointer" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+        <div class="vc-header" style="background:linear-gradient(135deg,#4a7c6f,#2d8a5e)">
+          <div style="font-size:26px;margin-bottom:6px">🇪🇸</div>
+          <div style="font-weight:800;font-size:15px">Spain — Citizenship by Descent</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">Spanish parent or grandparent</div>
         </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Child/Grandchild only</span>
-            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">2025 Law Change</span>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">No Income Required</span>
+            <span style="font-size:10px;padding:2px 8px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Full EU Passport</span>
           </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">As of March 2025, only children and grandchildren of Italian-born citizens may apply. Great-grandchildren no longer eligible for new applications.</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">4-18 months</strong></span>
-            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- IRELAND DESCENT — descent, coming soon -->
-      <div class="visa-card" data-tags="descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
-        <div style="background:linear-gradient(135deg,#2d8a5e,#4a7c6f);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">🇮🇪</div>
-          <div style="font-weight:800;font-size:17px">Ireland — Citizenship by Descent</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">Parent or grandparent born in Ireland</div>
-        </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">Parent/Grandparent</span>
-            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Full EU Passport</span>
-          </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Grandparent route requires Foreign Births Registration first. One of the most accessible EU citizenships by descent.</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">1-2 years</strong></span>
-            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          <div class="vc-desc">Parent or grandparent born in Spain qualifies you for direct citizenship — no long-term visa needed first.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">4–6 months</strong></span>
+            <span style="color:#4a7c6f;font-weight:600;font-size:11px">🔒 Full Guide →</span>
           </div>
         </div>
       </div>
 
-      <!-- GERMANY DESCENT — descent, coming soon -->
-      <div class="visa-card" data-tags="descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
-        <div style="background:linear-gradient(135deg,#555,#888);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">🇩🇪</div>
-          <div style="font-weight:800;font-size:17px">Germany — Citizenship by Descent</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">German parent or grandparent</div>
+      <!-- PORTUGAL D7 -->
+      <div class="visa-card" data-tags="portugal" style="opacity:0.8">
+        <div class="vc-header" style="background:linear-gradient(135deg,#4a7c6f,#6aab9c)">
+          <div style="font-size:26px;margin-bottom:6px">🇵🇹</div>
+          <div style="font-weight:800;font-size:15px">Portugal — D7 Passive Income Visa</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">NHR tax · 5yr citizenship path</div>
         </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Parent/Grandparent</span>
-            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">2025 Law Expanded</span>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">€820/mo minimum</span>
+            <span style="font-size:10px;padding:2px 8px;background:#fff3ee;color:#c4622d;border-radius:6px;font-weight:600">NHR 10% Tax</span>
           </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">2025 law now allows automatic citizenship restoration for descendants of Nazi-era persecution victims. Parent or grandparent route available.</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">1-3 years</strong></span>
-            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- PORTUGAL D7 — residency, coming soon -->
-      <div class="visa-card" data-tags="residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
-        <div style="background:linear-gradient(135deg,#4a7c6f,#6aab9c);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">🇵🇹</div>
-          <div style="font-weight:800;font-size:17px">Portugal D7 Passive Income Visa</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">Live in Portugal on passive income</div>
-        </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">€820/mo minimum</span>
-            <span style="font-size:11px;padding:3px 9px;background:#fff3ee;color:#c4622d;border-radius:6px;font-weight:600">NHR Tax Regime</span>
-            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">5yr→Citizenship</span>
-          </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Lower income threshold than Spain · NHR 10% flat tax on foreign income · Citizenship after 5 years</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">2-3 months</strong></span>
-            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          <div class="vc-desc">Lower threshold than Spain. NHR regime gives 10% flat tax on foreign income for 10 years. Citizenship after 5 years.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">2–3 months</strong></span>
+            <span style="font-size:10px;padding:2px 8px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
           </div>
         </div>
       </div>
 
-      <!-- COSTA RICA RENTISTA — residency, coming soon -->
-      <div class="visa-card" data-tags="residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
-        <div style="background:linear-gradient(135deg,#d4a843,#e8855a);padding:20px;color:white">
-          <div style="font-size:28px;margin-bottom:8px">🇨🇷</div>
-          <div style="font-weight:800;font-size:17px">Costa Rica Rentista Visa</div>
-          <div style="font-size:12px;opacity:0.8;margin-top:4px">Passive income or bank deposit</div>
+      <!-- COSTA RICA RENTISTA -->
+      <div class="visa-card" data-tags="costarica" style="opacity:0.8">
+        <div class="vc-header" style="background:linear-gradient(135deg,#d4a843,#e8855a)">
+          <div style="font-size:26px;margin-bottom:6px">🇨🇷</div>
+          <div style="font-weight:800;font-size:15px">Costa Rica — Rentista Visa</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">Passive income · No capital gains tax</div>
         </div>
-        <div style="padding:18px">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">$2,500/mo or $60k</span>
-            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">No Capital Gains Tax</span>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">$2,500/mo or $60k</span>
+            <span style="font-size:10px;padding:2px 8px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">Tropical Climate</span>
           </div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">$2,500/mo passive income OR $60k bank deposit. Tropical climate, Spanish-speaking, strong US expat community.</div>
-          <div style="display:flex;justify-content:space-between;font-size:12px">
-            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">3-6 months</strong></span>
-            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          <div class="vc-desc">$2,500/mo passive income OR $60k bank deposit. No capital gains tax. Spanish-speaking, strong expat community.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">3–6 months</strong></span>
+            <span style="font-size:10px;padding:2px 8px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
           </div>
         </div>
       </div>
 
-    </div><!-- end visa-cards -->
+      <!-- ITALY DESCENT -->
+      <div class="visa-card" data-tags="italy" style="opacity:0.8">
+        <div class="vc-header" style="background:linear-gradient(135deg,#3b6fa0,#6aab9c)">
+          <div style="font-size:26px;margin-bottom:6px">🇮🇹</div>
+          <div style="font-weight:800;font-size:15px">Italy — Citizenship by Descent</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">Jure Sanguinis · 2025 law change</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Child/Grandchild only</span>
+            <span style="font-size:10px;padding:2px 8px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">2025 Law Change</span>
+          </div>
+          <div class="vc-desc">As of March 2025, only children and grandchildren of Italian-born citizens may apply. Great-grandchildren no longer eligible.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">4–18 months</strong></span>
+            <span style="font-size:10px;padding:2px 8px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- IRELAND DESCENT -->
+      <div class="visa-card" data-tags="ireland" style="opacity:0.8">
+        <div class="vc-header" style="background:linear-gradient(135deg,#2d8a5e,#4a7c6f)">
+          <div style="font-size:26px;margin-bottom:6px">🇮🇪</div>
+          <div style="font-weight:800;font-size:15px">Ireland — Citizenship by Descent</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">Parent or grandparent born in Ireland</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">Parent/Grandparent</span>
+            <span style="font-size:10px;padding:2px 8px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Full EU Passport</span>
+          </div>
+          <div class="vc-desc">Grandparent route requires Foreign Births Registration first. One of the most accessible EU citizenship by descent routes.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">1–2 years</strong></span>
+            <span style="font-size:10px;padding:2px 8px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GERMANY DESCENT -->
+      <div class="visa-card" data-tags="germany" style="opacity:0.8">
+        <div class="vc-header" style="background:linear-gradient(135deg,#555,#888)">
+          <div style="font-size:26px;margin-bottom:6px">🇩🇪</div>
+          <div style="font-weight:800;font-size:15px">Germany — Citizenship by Descent</div>
+          <div style="font-size:11px;opacity:0.8;margin-top:3px">German parent or grandparent</div>
+        </div>
+        <div class="vc-body">
+          <div class="vc-tags">
+            <span style="font-size:10px;padding:2px 8px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Parent/Grandparent</span>
+            <span style="font-size:10px;padding:2px 8px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">2025 Expanded</span>
+          </div>
+          <div class="vc-desc">2025 law expanded eligibility to include descendants of Nazi-era persecution victims. Parent or grandparent route available.</div>
+          <div class="vc-footer">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">1–3 years</strong></span>
+            <span style="font-size:10px;padding:2px 8px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
       <!-- SPAIN NLV -->
