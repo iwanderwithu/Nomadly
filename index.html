@@ -487,7 +487,7 @@ function quizClose(){
       // q1=origin, q2=profile, q3=timeline, q4=income, q5=ancestry
       currentJourneyCountry = 'spain';
       if(typeof applyPersonalization!=='undefined') applyPersonalization();
-      var journeyTab = document.querySelectorAll('.nav-tab')[7];
+      var journeyTab = document.querySelectorAll('.nav-tab')[1];
       if(typeof showPage!=='undefined') showPage('journey', journeyTab);
     } catch(e){ console.warn(e); }
   }, 400);
@@ -720,13 +720,11 @@ function resetQuiz(){
   <div class="logo"><div class="logo-dot"></div> Nomadly</div>
   <nav class="topbar-nav">
     <div class="nav-tab active" onclick="showPage('dashboard',this)" id="nav-overview">Overview</div>
-    <div class="nav-tab" onclick="showPage('planner',this)" id="nav-planner">Planner</div>
-    <div class="nav-tab" onclick="showPage('documents',this)" id="nav-documents">Documents</div>
+    <div class="nav-tab" onclick="showPage('journey',this)" id="nav-planner">🗺️ My Journey</div>
     <div class="nav-tab" onclick="showPage('budget',this)" id="nav-budget">Budget</div>
-    <div class="nav-tab" onclick="showPage('ai',this)" id="nav-ai">🤖 AI Advisor</div>
+    <div class="nav-tab" onclick="showPage('ai',this)" id="nav-ai">🤖 AI</div>
     <div class="nav-tab" onclick="showPage('resources',this)" id="nav-resources">🗂 Resources</div>
-    <div class="nav-tab" onclick="showPage('visas',this)" id="nav-visas">🛂 Visas & Consulates</div>
-    <div class="nav-tab" onclick="showPage('journey',this)" id="nav-journey">🗺️ My Journey</div>
+    <div class="nav-tab" onclick="showPage('visas',this)" id="nav-visas">🛂 Visas</div>
   </nav>
   <div class="topbar-right">
     <!-- Language Toggle -->
@@ -765,17 +763,16 @@ function resetQuiz(){
   <aside class="sidebar">
     <div class="sidebar-section" id="sb-relocations">My Relocations</div>
     <div class="sidebar-item active"><span class="icon">🇪🇸</span> <span id="sb-spain">Spain — Madrid</span></div>
-    <div class="sidebar-item" onclick="currentJourneyCountry='portugal';showJourneyCountry('portugal',null);showPage('journey',document.querySelectorAll('.nav-tab')[7])"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal — Lisbon</span></div>
+    <div class="sidebar-item" onclick="currentJourneyCountry='portugal';showJourneyCountry('portugal',null);showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal — Lisbon</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">🇨🇴</span> <span id="sb-colombia">Colombia — Medellín</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
-    <div class="sidebar-item" onclick="currentJourneyCountry='costarica';showJourneyCountry('costarica',null);showPage('journey',document.querySelectorAll('.nav-tab')[7])"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span></div>
+    <div class="sidebar-item" onclick="currentJourneyCountry='costarica';showJourneyCountry('costarica',null);showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">➕</span> <span id="sb-add-dest">Add destination</span><span class="lock">🔒</span></div>
     <div class="sidebar-section" id="sb-tools">Tools</div>
-    <div class="sidebar-item" onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1])"><span class="icon">📋</span> <span id="sb-planner">Planner</span></div>
-    <div class="sidebar-item" onclick="showPage('documents',document.querySelectorAll('.nav-tab')[2])"><span class="icon">📁</span> <span id="sb-documents">Documents</span></div>
-    <div class="sidebar-item" onclick="showPage('budget',document.querySelectorAll('.nav-tab')[3])"><span class="icon">💰</span> <span id="sb-budget">Budget</span></div>
-    <div class="sidebar-item" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[4])"><span class="icon">🤖</span> <span id="sb-ai">AI Advisor</span></div>
-    <div class="sidebar-item" onclick="showPage('resources',document.querySelectorAll('.nav-tab')[5])"><span class="icon">🗂</span> <span id="sb-resources">Resources</span></div>
-    <div class="sidebar-item" onclick="showPage('visas',document.querySelectorAll('.nav-tab')[6])"><span class="icon">🛂</span> <span id="sb-visas">Visas & Consulates</span></div>
+    <div class="sidebar-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🗺️</span> <span id="sb-planner">My Journey</span></div>
+    <div class="sidebar-item" onclick="showPage('budget',document.querySelectorAll('.nav-tab')[2])"><span class="icon">💰</span> <span id="sb-budget">Budget</span></div>
+    <div class="sidebar-item" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[2])"><span class="icon">🤖</span> <span id="sb-ai">AI Advisor</span></div>
+    <div class="sidebar-item" onclick="showPage('resources',document.querySelectorAll('.nav-tab')[2])"><span class="icon">🗂</span> <span id="sb-resources">Resources</span></div>
+    <div class="sidebar-item" onclick="showPage('visas',document.querySelectorAll('.nav-tab')[2])"><span class="icon">🛂</span> <span id="sb-visas">Visas & Consulates</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">🏠</span> <span id="sb-housing">Housing Search</span><span class="lock">🔒</span></div>
     <!-- COACHING CTA -->
     <div onclick="openCoaching()" style="margin:12px 8px 0;background:linear-gradient(135deg,#c4622d,#d4a843);border-radius:12px;padding:14px;cursor:pointer;transition:opacity 0.15s" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
@@ -816,7 +813,7 @@ function resetQuiz(){
   </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-header"><span class="card-title" id="dash-tasks-title">This Week's Tasks</span><a class="card-action" onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1])" id="dash-see-all">See all →</a></div>
+      <div class="card-header"><span class="card-title" id="dash-tasks-title">This Week's Tasks</span><a class="card-action" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1])" id="dash-see-all">See all →</a></div>
       <div class="checklist" id="dashboard-tasks"></div>
     </div>
     <div class="card">
@@ -831,8 +828,8 @@ function resetQuiz(){
     </div>
     <div style="font-size:12px;opacity:0.8;line-height:1.7;padding:12px;background:rgba(255,255,255,0.06);border-radius:10px;margin-bottom:10px;" id="ai-daily-tip">💡 Loading tip...</div>
     <div style="display:flex;gap:8px;">
-      <input style="flex:1;padding:9px 13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;-webkit-text-fill-color:white!important;" id="dash-ai-placeholder" readonly onclick="showPage('ai',document.querySelectorAll('.nav-tab')[4])">
-      <button style="padding:9px 16px;background:#c4622d;border:none;border-radius:10px;color:white;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;font-size:12px;" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[4])" id="dash-ask-btn">Ask →</button>
+      <input style="flex:1;padding:9px 13px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;-webkit-text-fill-color:white!important;" id="dash-ai-placeholder" readonly onclick="showPage('ai',document.querySelectorAll('.nav-tab')[2])">
+      <button style="padding:9px 16px;background:#c4622d;border:none;border-radius:10px;color:white;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;font-size:12px;" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[2])" id="dash-ask-btn">Ask →</button>
     </div>
   </div>
 </div>
@@ -1476,12 +1473,12 @@ function resetQuiz(){
 const T = {
   en: {
     // Nav
-    'nav-overview':'Overview','nav-planner':'Planner','nav-documents':'Documents',
-    'nav-budget':'Budget','nav-ai':'🤖 AI Advisor','nav-resources':'🗂 Resources',
+    'nav-overview':'Overview','nav-planner':'🗺️ My Journey','nav-documents':'Documents',
+    'nav-budget':'Budget','nav-ai':'🤖 AI','nav-resources':'🗂 Resources',
     // Sidebar
     'sb-relocations':'My Relocations','sb-spain':'Spain — Madrid','sb-portugal':'Portugal — Lisbon',
     'sb-colombia':'Colombia — Medellín','sb-add-dest':'Add destination','sb-tools':'Tools',
-    'sb-planner':'Planner','sb-documents':'Documents','sb-budget':'Budget',
+    'sb-planner':'My Journey','sb-documents':'Documents','sb-budget':'Budget',
     'sb-ai':'AI Advisor','sb-resources':'Resources','sb-housing':'Housing Search',
     'sb-progress-label':'Relocation progress',
     // Dashboard
@@ -1573,11 +1570,11 @@ const T = {
     'visas-title':'🛂 Visas & Consulates','visas-sub':'Official guides, consulate directory and citizenship by descent',
   },
   es: {
-    'nav-overview':'Inicio','nav-planner':'Planificador','nav-documents':'Documentos',
-    'nav-budget':'Presupuesto','nav-ai':'🤖 Asesor IA','nav-resources':'🗂 Recursos',
+    'nav-overview':'Inicio','nav-planner':'🗺️ Mi Viaje','nav-documents':'Documentos',
+    'nav-budget':'Presupuesto','nav-ai':'🤖 IA','nav-resources':'🗂 Recursos',
     'sb-relocations':'Mis Reubicaciones','sb-spain':'España — Madrid','sb-portugal':'Portugal — Lisboa',
     'sb-colombia':'Colombia — Medellín','sb-add-dest':'Agregar destino','sb-tools':'Herramientas',
-    'sb-planner':'Planificador','sb-documents':'Documentos','sb-budget':'Presupuesto',
+    'sb-planner':'Mi Viaje','sb-documents':'Documentos','sb-budget':'Presupuesto',
     'sb-ai':'Asesor IA','sb-resources':'Recursos','sb-housing':'Búsqueda de Vivienda',
     'sb-progress-label':'Progreso de reubicación',
     'dash-greeting':'Buenos días ✦','dash-days-label':'días restantes',
@@ -2573,7 +2570,7 @@ function handleSearch(q){
     panel.innerHTML=`<div class="sr-empty">${currentLang==='es'?'Sin resultados':'No results for'} "${q}"</div>`;
   } else {
     panel.innerHTML=[
-      ...taskHits.map(t=>`<div class="sr-item" onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1]);closeSearch()"><div class="sr-icon">📋</div><div class="sr-text"><strong>${currentLang==='es'&&t.text_es?t.text_es:t.text}</strong><span>Phase ${t.phase}</span></div></div>`),
+      ...taskHits.map(t=>`<div class="sr-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1]);closeSearch()"><div class="sr-icon">🗺️</div><div class="sr-text"><strong>${currentLang==='es'&&t.text_es?t.text_es:t.text}</strong><span>Phase ${t.phase}</span></div></div>`),
       ...docHits.map(d=>`<div class="sr-item" onclick="showPage('documents',document.querySelectorAll('.nav-tab')[2]);closeSearch()"><div class="sr-icon">${d.icon}</div><div class="sr-text"><strong>${currentLang==='es'&&d.name_es?d.name_es:d.name}</strong><span>${d.status}</span></div></div>`),
     ].join('');
   }
@@ -2624,12 +2621,11 @@ function showPaywall(){
 function dismissPaywall(){document.getElementById('paywall').classList.remove('active');}
 document.getElementById('paywall').addEventListener('click',function(e){if(e.target===this)dismissPaywall();});
 function showPage(id,btn){
+  if(id==='planner' || id==='documents') id='journey'; // Both merged into Journey
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(btn)btn.classList.add('active');
-  // Re-render page content now that DOM is visible
-  if(id==='planner') renderPlanner(currentFilter);
   if(id==='documents') renderDocuments(currentDocFilter);
   if(id==='budget') renderBudget(currentCountry);
   if(id==='resources') renderResources('all');
@@ -3292,6 +3288,37 @@ const JOURNEYS = {
 
 let currentJourneyCountry = 'spain';
 
+function renderJourneyStep(phaseKey, si, total, text, stateVal, color, isDoc) {
+  // stateVal: 0=todo, 1=in-progress, 2=done
+  const state = stateVal || 0;
+  const configs = {
+    0: { bg:'transparent', border:'rgba(13,13,13,0.2)', fill:'transparent', label:'', textColor:'#7a7060', strike:false },
+    1: { bg:'#fdf6e8',     border:'#d4a843',            fill:'transparent', label:'⏳', textColor:'#d4a843', strike:false },
+    2: { bg:'#eef6f4',     border:color,                fill:color,         label:'✓',  textColor:'#4a7c6f', strike:true  },
+  };
+  const c = configs[state];
+  const docBadge = isDoc && state > 0
+    ? `<span style="font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;background:${state===1?'#fdf6e8':'#eef6f4'};color:${state===1?'#d4a843':'#4a7c6f'};margin-left:4px;flex-shrink:0">${state===1?'IN PROGRESS':'READY ✓'}</span>`
+    : (isDoc ? `<span style="font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;background:#f5f2eb;color:#7a7060;margin-left:4px;flex-shrink:0">📄 DOC</span>` : '');
+  return `<div onclick="toggleJourneyStep('${phaseKey}',${si},${total},${isDoc?1:0})" style="font-size:12px;padding:7px 8px 7px 4px;display:flex;align-items:center;gap:8px;cursor:pointer;border-radius:6px;margin-bottom:3px;background:${c.bg};transition:background 0.15s">
+    <div style="width:18px;height:18px;border-radius:${isDoc?'50%':'4px'};border:2px solid ${c.border};background:${c.fill};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:white;transition:all 0.15s">${c.label}</div>
+    <span style="color:${c.textColor};text-decoration:${c.strike?'line-through':'none'};line-height:1.4;flex:1">${text}</span>
+    ${docBadge}
+  </div>`;
+}
+
+function toggleJourneyStep(phaseKey, stepIdx, total, isDoc) {
+  const key = 'nomadly3_steps_' + phaseKey;
+  const steps = JSON.parse(localStorage.getItem(key) || '[]');
+  while (steps.length < total) steps.push(0);
+  const maxState = isDoc ? 3 : 2; // docs cycle: 0→1→2→0, tasks: 0→1→0
+  const cur = steps[stepIdx] || 0;
+  steps[stepIdx] = (cur + 1) % maxState;
+  localStorage.setItem(key, JSON.stringify(steps));
+  renderJourney(currentJourneyCountry);
+  try { updateProgress(); } catch(e){}
+}
+
 function showJourneyCountry(country, btn) {
   currentJourneyCountry = country;
   document.querySelectorAll('#journey-country-tabs .filter-btn').forEach(b => b.classList.remove('active'));
@@ -3345,8 +3372,12 @@ function renderJourney(country) {
     // Portugal & Costa Rica: overview + Phase 1 title free, steps locked.
     const countryLocked = !isPaid && country !== 'spain';
     const phasesHtml = track.phases.map((p, i) => {
+      const phaseKey = country + '_' + track.id + '_phase' + i;
+      const doneSteps = JSON.parse(localStorage.getItem('nomadly3_steps_' + phaseKey) || '[]');
+      const doneCount = doneSteps.filter(Boolean).length;
+
       if (i === 0) {
-        // Phase 1: free for Spain (all steps), locked steps for PT/CR
+        // Phase 1: free for Spain (with checkboxes), locked for PT/CR
         if (countryLocked) {
           return `
           <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06);opacity:0.5">
@@ -3358,22 +3389,32 @@ function renderJourney(country) {
           </div>`;
         }
         return `
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)">
-          <div style="width:32px;height:32px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${p.icon}</div>
-          <div style="flex:1">
-            <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px">${p.phase}</div>
-            ${p.steps.map(s=>`<div style="font-size:12px;color:#7a7060;padding:3px 0;display:flex;gap:6px"><span style="color:${p.color};flex-shrink:0">→</span>${s}</div>`).join('')}
+        <div style="padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div style="width:32px;height:32px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${p.icon}</div>
+            <div style="font-weight:700;font-size:13px;color:#0d0d0d;flex:1">${p.phase}</div>
+            <div style="font-size:11px;color:${p.color};font-weight:600">${doneCount}/${p.steps.length}</div>
           </div>
+          ${p.steps.map((s,si)=>{
+            const sv = doneSteps[si]||0; // 0=todo, 1=in progress, 2=done
+            const isDoc = /apostill|certificate|insurance|form|translat|passport|birth|police|FBI|medical|bank|contract|empadron|TIE|NIE|DELE/i.test(s);
+            return renderJourneyStep(phaseKey, si, p.steps.length, s, sv, p.color, isDoc);
+          }).join('')}
         </div>`;
       }
       if (!isPaid) return ''; // Phases 2+ locked for free users
       return `
-      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)">
-        <div style="width:32px;height:32px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${p.icon}</div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px">${p.phase}</div>
-          ${p.steps.map(s=>`<div style="font-size:12px;color:#7a7060;padding:3px 0;display:flex;gap:6px"><span style="color:${p.color};flex-shrink:0">→</span>${s}</div>`).join('')}
+      <div style="padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${p.icon}</div>
+          <div style="font-weight:700;font-size:13px;color:#0d0d0d;flex:1">${p.phase}</div>
+          <div style="font-size:11px;color:${p.color};font-weight:600">${doneCount}/${p.steps.length}</div>
         </div>
+        ${p.steps.map((s,si)=>{
+          const sv = doneSteps[si]||0;
+          const isDoc = /apostill|certificate|insurance|form|translat|passport|birth|police|FBI|medical|bank|contract|empadron|TIE|NIE|DELE/i.test(s);
+          return renderJourneyStep(phaseKey, si, p.steps.length, s, sv, p.color, isDoc);
+        }).join('')}
       </div>`;
     }).join('');
 
@@ -3403,7 +3444,6 @@ function renderJourney(country) {
         <div style="margin-top:14px;padding:12px;background:${track.bg};border-left:3px solid ${track.color};border-radius:0 8px 8px 0;font-size:12px;color:#7a7060;line-height:1.6">${track.tip}</div>
         <div style="margin-top:10px;font-size:11px;color:#7a7060;padding:8px 10px;background:#f5f2eb;border-radius:8px">📍 <strong style="color:#0d0d0d">Consulate:</strong> ${track.consulate}</div>
         <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-          <button onclick="showPage('visas',document.querySelectorAll('.nav-tab')[6])" style="padding:8px 16px;background:${track.color};color:white;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">Full Visa Guide →</button>
           <button onclick="openCoaching()" style="padding:8px 16px;background:#f5f2eb;color:#c4622d;border:1.5px solid rgba(196,98,45,0.3);border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">📞 Book Coach $15 →</button>
         </div>
       </div>
