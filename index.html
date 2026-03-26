@@ -1113,7 +1113,7 @@ function resetQuiz(){
           <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Min. €2,259/mo income · No work allowed · Path to citizenship in 2 years for Puerto Ricans</div>
           <div style="display:flex;justify-content:space-between;font-size:12px">
             <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">1 month</strong></span>
-            <span style="color:#c4622d;font-weight:600">View Full Guide →</span>
+            <span style="color:#c4622d;font-weight:600">🔒 View Full Guide →</span>
           </div>
         </div>
       </div>
@@ -1134,7 +1134,7 @@ function resetQuiz(){
           <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Min. €2,646/mo income · Remote workers only · 24% flat tax rate for 6 years (Beckham Law)</div>
           <div style="display:flex;justify-content:space-between;font-size:12px">
             <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">20-45 days</strong></span>
-            <span style="color:#c4622d;font-weight:600">View Full Guide →</span>
+            <span style="color:#c4622d;font-weight:600">🔒 View Full Guide →</span>
           </div>
         </div>
       </div>
@@ -1422,8 +1422,8 @@ function resetQuiz(){
   <!-- COUNTRY TABS -->
   <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap" id="journey-country-tabs">
     <div class="filter-btn active" onclick="showJourneyCountry('spain',this)">🇪🇸 Spain</div>
-    <div class="filter-btn" onclick="showJourneyCountry('portugal',this)">🇵🇹 Portugal</div>
-    <div class="filter-btn" onclick="showJourneyCountry('costarica',this)">🇨🇷 Costa Rica</div>
+    <div class="filter-btn" onclick="showJourneyCountry('portugal',this)" style="opacity:0.65">🇵🇹 Portugal <span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:1px 5px;border-radius:6px;font-weight:600">Soon</span></div>
+    <div class="filter-btn" onclick="showJourneyCountry('costarica',this)" style="opacity:0.65">🇨🇷 Costa Rica <span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:1px 5px;border-radius:6px;font-weight:600">Soon</span></div>
     <div class="filter-btn" onclick="showJourneyCountry('colombia',this)" style="opacity:0.65">🇨🇴 Colombia <span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:1px 5px;border-radius:6px;font-weight:600">Soon</span></div>
   </div>
 
@@ -1431,34 +1431,36 @@ function resetQuiz(){
 </div>
 
 <!-- COACHING MODAL -->
-<div id="coaching-modal" style="position:fixed;inset:0;z-index:1000;background:rgba(13,13,13,0.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center">
-  <div style="background:#fff;border-radius:20px;padding:36px;max-width:460px;width:90%;box-shadow:0 40px 80px rgba(0,0,0,0.3)">
-    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:20px">
+<div id="coaching-modal" style="position:fixed;inset:0;z-index:1000;background:rgba(13,13,13,0.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:20px;padding:28px;max-width:440px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto">
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#0d0d0d" id="coaching-modal-title">📞 Book a Coaching Session</div>
-        <div style="font-size:12px;color:#7a7060;margin-top:4px" id="coaching-modal-sub">Talk to someone who actually made this move</div>
+        <div style="font-weight:800;font-size:19px;color:#0d0d0d" id="coaching-modal-title">📞 Book a Session</div>
+        <div style="font-size:12px;color:#7a7060;margin-top:3px" id="coaching-modal-sub">Talk to someone who actually made this move</div>
       </div>
-      <div onclick="closeCoaching()" style="cursor:pointer;font-size:20px;color:#7a7060;line-height:1;padding:4px">✕</div>
+      <button onclick="closeCoaching()" style="background:none;border:none;font-size:22px;color:#7a7060;cursor:pointer;padding:4px;line-height:1">✕</button>
     </div>
-    <div style="background:#f5f2eb;border-radius:14px;padding:18px;margin-bottom:20px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div style="background:#fff;border-radius:10px;padding:14px;border:2px solid #c4622d">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px" id="coaching-intro-title">Intro Call</div>
-          <div style="font-size:22px;font-weight:800;color:#c4622d;font-family:'Syne',sans-serif">$15</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:4px" id="coaching-intro-desc">15 min · Zoom or phone<br>Perfect for: Is this right for me?</div>
-        </div>
-        <div style="background:#fff;border-radius:10px;padding:14px;border:1.5px solid rgba(13,13,13,0.1)">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px" id="coaching-deep-title">Deep Dive</div>
-          <div style="font-size:22px;font-weight:800;color:#0d0d0d;font-family:'Syne',sans-serif">$49</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:4px" id="coaching-deep-desc">60 min · Full review<br>Perfect for: Document review, visa strategy</div>
-        </div>
+    <!-- Session options -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="background:#fff3ee;border-radius:12px;padding:16px;border:2px solid #c4622d">
+        <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px" id="coaching-intro-title">Intro Call</div>
+        <div style="font-size:26px;font-weight:800;color:#c4622d;line-height:1;margin-bottom:6px">$15</div>
+        <div style="font-size:11px;color:#7a7060;line-height:1.5" id="coaching-intro-desc">15 min · Zoom or phone<br>Is this move right for me?</div>
+      </div>
+      <div style="background:#f5f2eb;border-radius:12px;padding:16px;border:1.5px solid rgba(13,13,13,0.1)">
+        <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px" id="coaching-deep-title">Deep Dive</div>
+        <div style="font-size:26px;font-weight:800;color:#0d0d0d;line-height:1;margin-bottom:6px">$49</div>
+        <div style="font-size:11px;color:#7a7060;line-height:1.5" id="coaching-deep-desc">60 min · Full review<br>Document review &amp; visa strategy</div>
       </div>
     </div>
-    <div style="font-size:12px;color:#7a7060;line-height:1.7;margin-bottom:20px;padding:12px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d" id="coaching-bio">
-      <strong style="color:#0d0d0d">About your coach:</strong> Puerto Rican currently navigating the Spain NLV process firsthand. Consulate appointment completed, documents in progress, flight booked for July. Real experience, real answers — not generic advice.
+    <!-- Bio -->
+    <div style="font-size:12px;color:#7a7060;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d" id="coaching-bio">
+      <strong style="color:#0d0d0d">Your coach:</strong> Puerto Rican navigating the Spain NLV process firsthand. Consulate appointment done, documents in progress, flight booked for July. Real experience — not generic advice.
     </div>
-    <a href="https://calendly.com" target="_blank" style="display:block;width:100%;padding:14px;background:#c4622d;color:white;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-align:center;text-decoration:none;box-sizing:border-box;cursor:pointer" id="coaching-book-btn">Book Your Session →</a>
-    <div style="text-align:center;margin-top:10px;font-size:11px;color:#7a7060" id="coaching-note">Sessions via Calendly · Payment at booking · All times EST</div>
+    <!-- Book button -->
+    <a href="https://calendly.com" target="_blank" style="display:block;width:100%;padding:14px;background:#c4622d;color:white;border-radius:12px;font-weight:700;font-size:15px;text-align:center;text-decoration:none;box-sizing:border-box" id="coaching-book-btn">Book Your Session →</a>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:#7a7060" id="coaching-note">Via Calendly · Payment at booking · All times EST</div>
   </div>
 </div>
 ```
@@ -2901,6 +2903,12 @@ function showVisaSection(id, btn) {
 }
 
 function showVisaDetail(visa) {
+  // Full visa guide requires Wanderer or Pro
+  const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
+  if (!isPaid) {
+    showPaywall();
+    return;
+  }
   document.getElementById('visa-cards').style.display = 'none';
   ['nlv','dnv','d7','col'].forEach(v => {
     const el = document.getElementById('visa-detail-'+v);
@@ -3170,6 +3178,11 @@ const JOURNEYS = {
     ]
   },
   portugal: {
+    flag:'🇵🇹', name:'Portugal', comingSoon: true,
+    desc:'Portugal\'s D7 Passive Income Visa requires just €820/mo — lower than Spain\'s NLV. Path to citizenship in 5 years, NHR tax benefits (10% flat rate on foreign income), and a lower cost of living. Lisbon, Porto, and the Algarve are top destinations.',
+    tracks:[]
+  },
+  _portugal_full: {
     flag:'🇵🇹', name:'Portugal',
     tracks:[
       {
@@ -3214,6 +3227,11 @@ const JOURNEYS = {
     ]
   },
   costarica: {
+    flag:'🇨🇷', name:'Costa Rica', comingSoon: true,
+    desc:'Costa Rica offers the Rentista Visa ($2,500/mo passive income or $60k deposit) and a Digital Nomad Visa for remote workers earning $3,000+/mo. No capital gains tax, tropical climate, and a strong expat community. Full guide coming soon.',
+    tracks:[]
+  },
+  _costarica_full: {
     flag:'🇨🇷', name:'Costa Rica',
     tracks:[
       {
@@ -3289,31 +3307,67 @@ const JOURNEYS = {
 let currentJourneyCountry = 'spain';
 
 function renderJourneyStep(phaseKey, si, total, text, stateVal, color, isDoc) {
-  // stateVal: 0=todo, 1=in-progress, 2=done
+  // stateVal: 0=todo, 1=in-progress (docs only), 2=done
   const state = stateVal || 0;
+  // Tasks: 0=todo, 2=done (green). Docs: 0=todo, 1=in-progress (yellow), 2=ready (green)
   const configs = {
-    0: { bg:'transparent', border:'rgba(13,13,13,0.2)', fill:'transparent', label:'', textColor:'#7a7060', strike:false },
-    1: { bg:'#fdf6e8',     border:'#d4a843',            fill:'transparent', label:'⏳', textColor:'#d4a843', strike:false },
-    2: { bg:'#eef6f4',     border:color,                fill:color,         label:'✓',  textColor:'#4a7c6f', strike:true  },
+    0: { bg:'transparent',  border:'rgba(13,13,13,0.18)', fill:'transparent', label:'',  textColor:'#7a7060', strike:false },
+    1: { bg:'#fdf6e8',      border:'#d4a843',             fill:'transparent', label:'⏳', textColor:'#d4a843', strike:false },
+    2: { bg:'#eaf5f0',      border:'#2d8a5e',             fill:'#2d8a5e',     label:'✓', textColor:'#2d8a5e', strike:true  },
   };
   const c = configs[state];
-  const docBadge = isDoc && state > 0
-    ? `<span style="font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;background:${state===1?'#fdf6e8':'#eef6f4'};color:${state===1?'#d4a843':'#4a7c6f'};margin-left:4px;flex-shrink:0">${state===1?'IN PROGRESS':'READY ✓'}</span>`
-    : (isDoc ? `<span style="font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;background:#f5f2eb;color:#7a7060;margin-left:4px;flex-shrink:0">📄 DOC</span>` : '');
-  return `<div onclick="toggleJourneyStep('${phaseKey}',${si},${total},${isDoc?1:0})" style="font-size:12px;padding:7px 8px 7px 4px;display:flex;align-items:center;gap:8px;cursor:pointer;border-radius:6px;margin-bottom:3px;background:${c.bg};transition:background 0.15s">
-    <div style="width:18px;height:18px;border-radius:${isDoc?'50%':'4px'};border:2px solid ${c.border};background:${c.fill};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:white;transition:all 0.15s">${c.label}</div>
-    <span style="color:${c.textColor};text-decoration:${c.strike?'line-through':'none'};line-height:1.4;flex:1">${text}</span>
-    ${docBadge}
+
+  // Note stored separately
+  const noteKey = 'nomadly3_note_' + phaseKey + '_' + si;
+  const note = localStorage.getItem(noteKey) || '';
+
+  const docBadge = isDoc
+    ? (state === 0 ? `<span style="font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;background:#f5f2eb;color:#7a7060;margin-left:2px;flex-shrink:0">📄</span>`
+      : state === 1 ? `<span style="font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;background:#fdf6e8;color:#d4a843;margin-left:2px;flex-shrink:0">⏳ IN PROGRESS</span>`
+      : `<span style="font-size:9px;padding:1px 6px;border-radius:8px;font-weight:700;background:#eaf5f0;color:#2d8a5e;margin-left:2px;flex-shrink:0">✓ READY</span>`)
+    : '';
+
+  const noteHtml = note
+    ? `<div style="font-size:11px;color:#7a7060;background:#f5f2eb;border-radius:6px;padding:4px 8px;margin-top:3px;margin-left:26px;font-style:italic">${note}</div>`
+    : '';
+
+  return `<div style="margin-bottom:3px">
+    <div style="font-size:12px;padding:7px 4px;display:flex;align-items:center;gap:8px;cursor:pointer;border-radius:6px;background:${c.bg};transition:background 0.15s"
+      onclick="toggleJourneyStep('${phaseKey}',${si},${total},${isDoc?1:0})">
+      <div style="width:18px;height:18px;border-radius:${isDoc?'50%':'4px'};border:2px solid ${c.border};background:${c.fill};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;color:white">${c.label}</div>
+      <span style="color:${c.textColor};text-decoration:${state===2?'line-through':'none'};line-height:1.4;flex:1">${text}</span>
+      ${docBadge}
+      <div onclick="event.stopPropagation();editJourneyNote('${phaseKey}',${si},'${text.replace(/'/g,'\\\'')}')"
+        style="flex-shrink:0;padding:2px 6px;border-radius:6px;font-size:10px;color:#c8b89a;cursor:pointer"
+        title="Add note">✏️</div>
+    </div>
+    ${noteHtml}
   </div>`;
+}
+
+function editJourneyNote(phaseKey, si, stepText) {
+  const noteKey = 'nomadly3_note_' + phaseKey + '_' + si;
+  const current = localStorage.getItem(noteKey) || '';
+  const newNote = prompt('Add a note for:\n"' + stepText + '"', current);
+  if (newNote !== null) {
+    if (newNote.trim()) localStorage.setItem(noteKey, newNote.trim());
+    else localStorage.removeItem(noteKey);
+    renderJourney(currentJourneyCountry);
+  }
 }
 
 function toggleJourneyStep(phaseKey, stepIdx, total, isDoc) {
   const key = 'nomadly3_steps_' + phaseKey;
   const steps = JSON.parse(localStorage.getItem(key) || '[]');
   while (steps.length < total) steps.push(0);
-  const maxState = isDoc ? 3 : 2; // docs cycle: 0→1→2→0, tasks: 0→1→0
   const cur = steps[stepIdx] || 0;
-  steps[stepIdx] = (cur + 1) % maxState;
+  // Docs: 0→1→2→0 (todo→in progress→ready→todo)
+  // Tasks: 0→2→0 (todo→done→todo) — skip yellow, go straight to green
+  if (isDoc) {
+    steps[stepIdx] = (cur + 1) % 3;
+  } else {
+    steps[stepIdx] = cur === 0 ? 2 : 0;
+  }
   localStorage.setItem(key, JSON.stringify(steps));
   renderJourney(currentJourneyCountry);
   try { updateProgress(); } catch(e){}
