@@ -619,12 +619,12 @@ function resetQuiz(){
 </div>
 
 <style>
-.visa-card{display:flex;flex-direction:column;background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;transition:all 0.15s}
+.visa-card{display:flex;flex-direction:column;background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;transition:all 0.15s;height:100%}
 .visa-card .vc-header{padding:20px;color:white;flex-shrink:0}
-.visa-card .vc-body{padding:18px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
-.visa-card .vc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.visa-card .vc-body{padding:18px;flex:1;display:flex;flex-direction:column}
+.visa-card .vc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;flex-shrink:0}
 .visa-card .vc-desc{font-size:12px;color:#7a7060;margin-bottom:12px;flex:1;line-height:1.5}
-.visa-card .vc-footer{display:flex;justify-content:space-between;font-size:12px;align-items:center}background:#fff;border:2px solid rgba(13,13,13,0.12);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block;line-height:1.4}
+.visa-card .vc-footer{display:flex;justify-content:space-between;font-size:12px;align-items:center;flex-shrink:0;margin-top:auto}background:#fff;border:2px solid rgba(13,13,13,0.12);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block;line-height:1.4}
 .qopt:hover,.qopt:active{border-color:#c4622d;background:#fff8f5}
 .qback{width:100%;margin-top:12px;padding:8px;background:none;border:none;color:#7a7060;cursor:pointer;font-size:13px;font-family:inherit;text-align:center;-webkit-appearance:none}
 </style>
@@ -1826,12 +1826,12 @@ const T = {
   }
 };
 
-let currentLang = 'en';
-let currentProfile = 'single';
-let currentFilter = 'all';
-let currentDocFilter = 'all';
-let currentCountry = 'spain';
-let selectedCityIdx = 0;
+var currentLang = 'en';
+var currentProfile = 'single';
+var currentFilter = 'all';
+var currentDocFilter = 'all';
+var currentCountry = 'spain';
+var selectedCityIdx = 0;
 
 function setLang(lang, btn) {
   currentLang = lang;
