@@ -1087,15 +1087,190 @@ function resetQuiz(){
   </div>
 
   <!-- SUB-NAV -->
-  <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;" id="visa-subnav">
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;" id="visa-subnav">
     <div class="filter-btn active" onclick="showVisaSection('visas-section',this)">📋 Visa Guides</div>
     <div class="filter-btn" onclick="showVisaSection('consulates-section',this)">🏢 Consulate Directory</div>
-    <div class="filter-btn" onclick="showVisaSection('citizenship-section',this)">🌍 Citizenship by Descent</div>
   </div>
 
   <!-- VISA GUIDES SECTION -->
   <div id="visas-section">
+
+    <!-- FILTER BAR -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="visa-filter-bar">
+      <div class="filter-btn active" onclick="filterVisaCards('all',this)">All</div>
+      <div class="filter-btn" onclick="filterVisaCards('spain',this)">🇪🇸 Spain</div>
+      <div class="filter-btn" onclick="filterVisaCards('residency',this)">🛂 Residency Visas</div>
+      <div class="filter-btn" onclick="filterVisaCards('descent',this)">🧬 Citizenship by Descent</div>
+    </div>
+
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;" id="visa-cards">
+
+      <!-- SPAIN NLV — spain, residency -->
+      <div class="visa-card" data-tags="spain residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;cursor:pointer;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'" onclick="showVisaDetail('nlv')">
+        <div style="background:linear-gradient(135deg,#c4622d,#e8855a);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">🇪🇸</div>
+          <div style="font-weight:800;font-size:17px">Spain Non-Lucrative Visa</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">Reside in Spain without working</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#fff3ee;color:#c4622d;border-radius:6px;font-weight:600">Passive Income</span>
+            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">1 Year Renewable</span>
+            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">2yr Citizenship for PR</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Min. €2,259/mo · No work allowed · Path to citizenship in 2 years for Puerto Ricans</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">1 month</strong></span>
+            <span style="color:#c4622d;font-weight:600">🔒 Full Guide →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPAIN DNV — spain, residency -->
+      <div class="visa-card" data-tags="spain residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;cursor:pointer;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'" onclick="showVisaDetail('dnv')">
+        <div style="background:linear-gradient(135deg,#3b6fa0,#6aab9c);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">💻</div>
+          <div style="font-weight:800;font-size:17px">Spain Digital Nomad Visa</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">Work remotely for non-Spanish clients</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Remote Work</span>
+            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">Beckham Law 24%</span>
+            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">1-3 Years</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Min. €2,646/mo · Remote workers only · 24% flat tax rate for 6 years</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">20-45 days</strong></span>
+            <span style="color:#c4622d;font-weight:600">🔒 Full Guide →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPAIN CITIZENSHIP BY DESCENT — spain, descent -->
+      <div class="visa-card" data-tags="spain descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;cursor:pointer;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'" onclick="showVisaDetail('spain-descent')">
+        <div style="background:linear-gradient(135deg,#4a7c6f,#2d8a5e);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">🇪🇸</div>
+          <div style="font-weight:800;font-size:17px">Spain — Citizenship by Descent</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">Spanish parent or grandparent</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">Parent/Grandparent</span>
+            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">No Income Required</span>
+            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Full EU Passport</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Spanish parent or grandparent born in Spain qualifies you. Fastest path to EU passport for eligible applicants.</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">4-6 months</strong></span>
+            <span style="color:#4a7c6f;font-weight:600">🔒 Full Guide →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITALY DESCENT — descent, coming soon -->
+      <div class="visa-card" data-tags="descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
+        <div style="background:linear-gradient(135deg,#3b6fa0,#6aab9c);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">🇮🇹</div>
+          <div style="font-weight:800;font-size:17px">Italy — Citizenship by Descent</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">Jure Sanguinis · Major 2025 law change</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Child/Grandchild only</span>
+            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">2025 Law Change</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">As of March 2025, only children and grandchildren of Italian-born citizens may apply. Great-grandchildren no longer eligible for new applications.</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">4-18 months</strong></span>
+            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- IRELAND DESCENT — descent, coming soon -->
+      <div class="visa-card" data-tags="descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
+        <div style="background:linear-gradient(135deg,#2d8a5e,#4a7c6f);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">🇮🇪</div>
+          <div style="font-weight:800;font-size:17px">Ireland — Citizenship by Descent</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">Parent or grandparent born in Ireland</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">Parent/Grandparent</span>
+            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">Full EU Passport</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Grandparent route requires Foreign Births Registration first. One of the most accessible EU citizenships by descent.</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">1-2 years</strong></span>
+            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GERMANY DESCENT — descent, coming soon -->
+      <div class="visa-card" data-tags="descent" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
+        <div style="background:linear-gradient(135deg,#555,#888);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">🇩🇪</div>
+          <div style="font-weight:800;font-size:17px">Germany — Citizenship by Descent</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">German parent or grandparent</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Parent/Grandparent</span>
+            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">2025 Law Expanded</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">2025 law now allows automatic citizenship restoration for descendants of Nazi-era persecution victims. Parent or grandparent route available.</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Timeline: <strong style="color:#0d0d0d">1-3 years</strong></span>
+            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PORTUGAL D7 — residency, coming soon -->
+      <div class="visa-card" data-tags="residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
+        <div style="background:linear-gradient(135deg,#4a7c6f,#6aab9c);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">🇵🇹</div>
+          <div style="font-weight:800;font-size:17px">Portugal D7 Passive Income Visa</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">Live in Portugal on passive income</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">€820/mo minimum</span>
+            <span style="font-size:11px;padding:3px 9px;background:#fff3ee;color:#c4622d;border-radius:6px;font-weight:600">NHR Tax Regime</span>
+            <span style="font-size:11px;padding:3px 9px;background:#eef2f8;color:#3b6fa0;border-radius:6px;font-weight:600">5yr→Citizenship</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">Lower income threshold than Spain · NHR 10% flat tax on foreign income · Citizenship after 5 years</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">2-3 months</strong></span>
+            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COSTA RICA RENTISTA — residency, coming soon -->
+      <div class="visa-card" data-tags="residency" style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;opacity:0.85">
+        <div style="background:linear-gradient(135deg,#d4a843,#e8855a);padding:20px;color:white">
+          <div style="font-size:28px;margin-bottom:8px">🇨🇷</div>
+          <div style="font-weight:800;font-size:17px">Costa Rica Rentista Visa</div>
+          <div style="font-size:12px;opacity:0.8;margin-top:4px">Passive income or bank deposit</div>
+        </div>
+        <div style="padding:18px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <span style="font-size:11px;padding:3px 9px;background:#fdf6e8;color:#d4a843;border-radius:6px;font-weight:600">$2,500/mo or $60k</span>
+            <span style="font-size:11px;padding:3px 9px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">No Capital Gains Tax</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px">$2,500/mo passive income OR $60k bank deposit. Tropical climate, Spanish-speaking, strong US expat community.</div>
+          <div style="display:flex;justify-content:space-between;font-size:12px">
+            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">3-6 months</strong></span>
+            <span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end visa-cards -->
+  </div>
 
       <!-- SPAIN NLV -->
       <div style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;cursor:pointer;transition:all 0.15s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'" onclick="showVisaDetail('nlv')">
@@ -1302,6 +1477,69 @@ function resetQuiz(){
     </div>
   </div>
 
+  <!-- SPAIN DESCENT DETAIL -->
+  <div id="visa-detail-spain-descent" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer" onclick="hideVisaDetail()">
+      <span style="font-size:18px">←</span><span style="font-size:13px;color:#7a7060">Back to all visas</span>
+    </div>
+    <div style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden">
+      <div style="background:linear-gradient(135deg,#4a7c6f,#2d8a5e);padding:28px;color:white">
+        <div style="font-size:36px;margin-bottom:10px">🇪🇸</div>
+        <div style="font-weight:800;font-size:22px">Spain — Citizenship by Descent</div>
+        <div style="font-size:13px;opacity:0.8;margin-top:6px">Spanish parent or grandparent born in Spain</div>
+      </div>
+      <div style="padding:28px">
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+          <div style="text-align:center;padding:14px;background:#f5f2eb;border-radius:12px"><div style="font-size:20px;margin-bottom:4px">⏱️</div><div style="font-size:10px;color:#7a7060;margin-bottom:3px">Timeline</div><div style="font-weight:700;font-size:13px">4–6 months</div></div>
+          <div style="text-align:center;padding:14px;background:#f5f2eb;border-radius:12px"><div style="font-size:20px;margin-bottom:4px">💰</div><div style="font-size:10px;color:#7a7060;margin-bottom:3px">Income Required</div><div style="font-weight:700;font-size:13px">None</div></div>
+          <div style="text-align:center;padding:14px;background:#f5f2eb;border-radius:12px"><div style="font-size:20px;margin-bottom:4px">🛂</div><div style="font-size:10px;color:#7a7060;margin-bottom:3px">Result</div><div style="font-weight:700;font-size:13px">Full EU Passport</div></div>
+        </div>
+        <!-- Who qualifies -->
+        <div style="font-weight:700;font-size:15px;margin-bottom:10px;color:#0d0d0d">Who Qualifies</div>
+        <div style="font-size:12px;color:#7a7060;line-height:1.8;background:#f5f2eb;padding:16px;border-radius:12px;margin-bottom:20px">
+          You qualify if a <strong style="color:#0d0d0d">parent or grandparent was born in Spain</strong> and held Spanish citizenship. The key requirement is that no one in the lineage renounced Spanish citizenship. Post-2025 changes have not affected this route — it remains fully open.
+        </div>
+        <!-- Two paths -->
+        <div style="font-weight:700;font-size:15px;margin-bottom:10px;color:#0d0d0d">Two Pathways</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+          <div style="background:#eef6f4;border-radius:12px;padding:16px">
+            <div style="font-weight:700;font-size:13px;color:#4a7c6f;margin-bottom:8px">🏛️ Apply in Spain</div>
+            <div style="font-size:12px;color:#7a7060;line-height:1.6">Requires 90-day stay. Apply at any Registro Civil. Faster: 4–6 months. Can choose any city — not restricted to ancestor's hometown.</div>
+          </div>
+          <div style="background:#eef2f8;border-radius:12px;padding:16px">
+            <div style="font-weight:700;font-size:13px;color:#3b6fa0;margin-bottom:8px">🏢 Via Consulate</div>
+            <div style="font-size:12px;color:#7a7060;line-height:1.6">Apply at San Juan consulate — no need to travel. Longer wait: 1–3 years. No residency required.</div>
+          </div>
+        </div>
+        <!-- Documents -->
+        <div style="font-weight:700;font-size:15px;margin-bottom:10px;color:#0d0d0d">Required Documents</div>
+        <div style="font-size:12px;color:#7a7060;line-height:1.9;background:#f5f2eb;padding:16px;border-radius:12px;margin-bottom:20px">
+          📄 <strong style="color:#0d0d0d">Your birth certificate</strong> (apostilled + translated)<br>
+          📄 <strong style="color:#0d0d0d">Parent/grandparent's birth certificate</strong> from Spanish Registro Civil<br>
+          📄 <strong style="color:#0d0d0d">Marriage certificates</strong> throughout the lineage<br>
+          📄 <strong style="color:#0d0d0d">Certificate of Non-Naturalization</strong> for Spanish ancestor<br>
+          📄 <strong style="color:#0d0d0d">Death certificates</strong> for deceased in chain (if applicable)<br>
+          📄 <strong style="color:#0d0d0d">Valid US passport</strong> + copies<br>
+          📝 All documents must be apostilled and translated by a <strong style="color:#0d0d0d">traductor jurado</strong>
+        </div>
+        <!-- PR tip -->
+        <div style="background:linear-gradient(135deg,#fff8f5,#f5f2eb);border:1.5px solid rgba(196,98,45,0.2);border-radius:12px;padding:16px;margin-bottom:20px">
+          <div style="font-weight:700;font-size:13px;color:#c4622d;margin-bottom:8px">🇵🇷 Puerto Rico Advantage</div>
+          <div style="font-size:12px;color:#7a7060;line-height:1.75">Puerto Ricans with Spanish ancestry have a <strong style="color:#0d0d0d">direct path to Spanish citizenship without needing a long-term visa first</strong>. Once citizenship is granted, you have full EU freedom of movement — live, work, and travel in all 27 EU countries. Your US citizenship is not affected.</div>
+        </div>
+        <!-- Consulate -->
+        <div style="font-size:11px;color:#7a7060;padding:10px 12px;background:#f5f2eb;border-radius:8px">
+          📍 <strong style="color:#0d0d0d">San Juan Consulate:</strong> Edificio Mercantil Plaza, Piso 11, Av. Ponce de León s/n, Hato Rey PR 00918 · 📞 787-758-6090 · Mon–Fri 8:30am–1:30pm
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+          <button onclick="openCoaching()" style="padding:10px 18px;background:#4a7c6f;color:white;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">📞 Book Coach $15 →</button>
+          <button onclick="hideVisaDetail()" style="padding:10px 18px;background:#f5f2eb;color:#0d0d0d;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">← Back to Visa Guides</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- CONSULATES SECTION -->
   <div id="consulates-section" style="display:none">
     <div style="margin-bottom:18px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
@@ -1333,81 +1571,6 @@ function resetQuiz(){
   </div>
 
   <!-- CITIZENSHIP BY DESCENT SECTION -->
-  <div id="citizenship-section" style="display:none">
-
-    <!-- ITALY -->
-    <div style="background:#fff;border-radius:16px;border:1.5px solid rgba(13,13,13,0.08);overflow:hidden;margin-bottom:16px">
-      <div style="background:linear-gradient(135deg,#0d0d0d,#3b3b3b);padding:22px;color:white;display:flex;align-items:center;gap:16px">
-        <div style="font-size:36px">🇮🇹</div>
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px">Italian Citizenship by Descent (Jure Sanguinis)</div>
-          <div style="font-size:12px;opacity:0.7;margin-top:4px">⚠️ Major law change March 2025 — read before applying</div>
-        </div>
-      </div>
-      <div style="padding:24px">
-        <div style="background:#fff3ee;border-left:4px solid #c4622d;padding:14px 16px;border-radius:0 10px 10px 0;margin-bottom:20px">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#c4622d;margin-bottom:4px">⚠️ Critical 2025 Law Change</div>
-          <div style="font-size:12px;color:#7a7060;line-height:1.75">As of <strong style="color:#0d0d0d">March 28, 2025</strong>, Italy passed a decree limiting eligibility. Only <strong style="color:#0d0d0d">children and grandchildren</strong> of Italian-born citizens may apply. Great-grandchildren and beyond are no longer eligible unless they applied before the 2026 implementation date. Starting 2026, all applications go through a <strong style="color:#0d0d0d">centralized office in Rome</strong>. Applicants must show "genuine ties" to Italy.</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px">
-          <div>
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:8px">Who qualifies (post-2025)?</div>
-            <div style="font-size:12px;color:#7a7060;line-height:1.8">✓ Child of Italian-born citizen<br>✓ Grandchild of Italian-born citizen<br>✓ Applied before March 27, 2025 (any generation)<br>✗ Great-grandchild (new applications)<br>✗ Must show genuine ties to Italy</div>
-          </div>
-          <div>
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:8px">Key Requirements</div>
-            <div style="font-size:12px;color:#7a7060;line-height:1.8">• Italian ancestor born in Italy (AVO)<br>• No renunciation of citizenship in chain<br>• All documents apostilled + translated<br>• Residency in Italy required<br>• Certificate of Non-Naturalization</div>
-          </div>
-        </div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:12px">Two Pathways</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-          <div style="background:#eef6f4;border-radius:12px;padding:16px">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#4a7c6f;margin-bottom:6px">Administrative (DIY)</div>
-            <div style="font-size:12px;color:#7a7060;line-height:1.7">Paternal line or maternal line (child born after 1948). Apply at Italian municipality. Timeline: 4–6 months. Can do yourself without a lawyer.</div>
-          </div>
-          <div style="background:#fff3ee;border-radius:12px;padding:16px">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#c4622d;margin-bottom:6px">Judicial (Court)</div>
-            <div style="font-size:12px;color:#7a7060;line-height:1.7">Maternal line where child was born before 1948. Must be filed in Roman court. Timeline: 8–18 months. Requires an Italian Bar Association lawyer.</div>
-          </div>
-        </div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:10px">Required Documents</div>
-        <div style="font-size:12px;color:#7a7060;line-height:1.8;margin-bottom:16px;background:#f5f2eb;padding:14px;border-radius:10px">
-          For every person in your direct lineage from Italian ancestor (AVO) to you:<br><br>
-          📄 <strong style="color:#0d0d0d">Birth certificate</strong> of Italian AVO (from Italian comune — already in Italian, no apostille needed)<br>
-          📄 <strong style="color:#0d0d0d">Birth certificates</strong> of all descendants in direct line (apostilled + translated)<br>
-          💒 <strong style="color:#0d0d0d">Marriage certificates</strong> of AVO and all descendants (apostilled + translated)<br>
-          🔍 <strong style="color:#0d0d0d">Certificate of Non-Naturalization</strong> — proves AVO didn\'t renounce Italian citizenship<br>
-          ⚰️ <strong style="color:#0d0d0d">Death certificates</strong> of deceased in chain (check if required by your comune)<br>
-          🛂 <strong style="color:#0d0d0d">Identity documents</strong> + passport entry stamp<br>
-          📍 <strong style="color:#0d0d0d">Proof of Italian residency</strong> (rental contract or hospitality declaration)
-        </div>
-        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:10px">Step-by-Step Process (Applying in Italy)</div>
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">1</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Assemble Document Folder</strong><div style="font-size:12px;color:#7a7060">Gather all birth, marriage, death certificates. Get all apostilled. Have translated to Italian.</div></div></div>
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">2</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Choose Your Comune</strong><div style="font-size:12px;color:#7a7060">Pick any Italian municipality — does NOT need to be your ancestor\'s town. Small towns recommended (less backlog). Avoid Rome, Milan, Turin.</div></div></div>
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">3</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Travel to Italy & Get Declaration of Presence</strong><div style="font-size:12px;color:#7a7060">Within 7 days of arrival, register at the Questura (police HQ). Bring passport + rental contract.</div></div></div>
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">4</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Establish Residency (Anagrafe)</strong><div style="font-size:12px;color:#7a7060">Register your address at the local Anagrafe office. Wait for Vigile (inspector) to verify — can take up to 45 days.</div></div></div>
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">5</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Submit Citizenship Documents</strong><div style="font-size:12px;color:#7a7060">Request appointment at Ufficio Cittadinanze. Present entire folder. They will review and may request additional documents.</div></div></div>
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">6</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Apply for Permesso di Soggiorno</strong><div style="font-size:12px;color:#7a7060">After 3 months if citizenship not yet granted, get a residence permit at any Poste Italiane (post office). Cost: ~€116.</div></div></div>
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">7</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Receive Citizenship 🇮🇹</strong><div style="font-size:12px;color:#7a7060">Once all consulates verify documents, your birth certificate is transcribed in Italy. You'll be called to collect originals. You are now Italian!</div></div></div>
-        <div style="display:flex;gap:12px;padding:12px 0"><div style="width:26px;height:26px;border-radius:50%;background:#0d0d0d;color:white;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;flex-shrink:0">8</div><div><strong style="font-size:13px;color:#0d0d0d;display:block;margin-bottom:2px">Get Documents & Register with AIRE</strong><div style="font-size:12px;color:#7a7060">Apply for passport at Italian consulate in your home country. Register with AIRE (registry of Italians abroad) to keep status while living outside Italy.</div></div></div>
-        <div style="background:#f5f2eb;border-radius:12px;padding:16px;margin-top:20px">
-          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px">📋 Important: Codice Fiscale</div>
-          <div style="font-size:12px;color:#7a7060;line-height:1.7">You'll need a Codice Fiscale (16-digit tax ID) to sign rental contracts and access services. Apply at the Agenzia delle Entrate app immediately upon arrival, or request it at the Italian consulate before you travel.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- OTHER CITIZENSHIP PLACEHOLDERS -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:8px">
-      <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(13,13,13,0.08)"><div style="font-size:28px;margin-bottom:8px">🇩🇪</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:4px">Germany — Citizenship by Descent</div><div style="font-size:12px;color:#7a7060;line-height:1.6;margin-bottom:10px">Requires German parent or grandparent. 2025 law now allows automatic citizenship restoration for descendants of Nazi-era persecution victims.</div><span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span></div>
-      <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(13,13,13,0.08)"><div style="font-size:28px;margin-bottom:8px">🇮🇪</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:4px">Ireland — Citizenship by Descent</div><div style="font-size:12px;color:#7a7060;line-height:1.6;margin-bottom:10px">Qualify if parent or grandparent born in Ireland. Grandparent route requires Irish Citizenship Certificate first.</div><span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span></div>
-      <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(13,13,13,0.08)"><div style="font-size:28px;margin-bottom:8px">🇵🇱</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:4px">Poland — Citizenship by Descent</div><div style="font-size:12px;color:#7a7060;line-height:1.6;margin-bottom:10px">No generational limit if continuous line. Must prove ancestors did not renounce citizenship.</div><span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span></div>
-      <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(13,13,13,0.08)"><div style="font-size:28px;margin-bottom:8px">🇬🇧</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:4px">United Kingdom — British Nationality</div><div style="font-size:12px;color:#7a7060;line-height:1.6;margin-bottom:10px">Various routes through ancestry. British National (Overseas) and descent routes available.</div><span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span></div>
-      <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(13,13,13,0.08)"><div style="font-size:28px;margin-bottom:8px">🇬🇷</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:4px">Greece — Citizenship by Descent</div><div style="font-size:12px;color:#7a7060;line-height:1.6;margin-bottom:10px">Through Greek parent. No limit on generations if continuous line and no renunciation.</div><span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span></div>
-      <div style="background:#fff;border-radius:14px;padding:20px;border:1.5px solid rgba(13,13,13,0.08)"><div style="font-size:28px;margin-bottom:8px">🇨🇿</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:4px">Czech Republic — Citizenship by Descent</div><div style="font-size:12px;color:#7a7060;line-height:1.6;margin-bottom:10px">Limited to children of Czech citizens. Special provisions for Holocaust descendants.</div><span style="font-size:11px;padding:3px 9px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span></div>
-    </div>
-  </div>
-
 </div>
 
 <!-- JOURNEY PAGE -->
@@ -2889,42 +3052,58 @@ function filterConsulatesByCountry(country) {
 }
 
 // ── VISA PAGE NAVIGATION ──
+function filterVisaCards(filter, btn) {
+  document.querySelectorAll('#visa-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.visa-card').forEach(card => {
+    const tags = card.getAttribute('data-tags') || '';
+    card.style.display = (filter === 'all' || tags.includes(filter)) ? 'block' : 'none';
+  });
+}
+
 function showVisaSection(id, btn) {
-  ['visas-section','consulates-section','citizenship-section'].forEach(s => {
+  ['visas-section','consulates-section'].forEach(s => {
     const el = document.getElementById(s);
     if (el) el.style.display = 'none';
   });
-  hideVisaDetail();
-  const target = document.getElementById(id);
-  if (target) target.style.display = 'block';
   document.querySelectorAll('#visa-subnav .filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  const el = document.getElementById(id);
+  if (el) el.style.display = 'block';
   if (id === 'consulates-section') renderConsulates(CONSULATES);
 }
 
 function showVisaDetail(visa) {
-  // Full visa guide requires Wanderer or Pro
   const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
-  if (!isPaid) {
-    showPaywall();
-    return;
-  }
-  document.getElementById('visa-cards').style.display = 'none';
-  ['nlv','dnv','d7','col'].forEach(v => {
+  if (!isPaid) { showPaywall(); return; }
+  const cards = document.getElementById('visa-cards');
+  const filterBar = document.getElementById('visa-filter-bar');
+  if (cards) cards.style.display = 'none';
+  if (filterBar) filterBar.style.display = 'none';
+  ['nlv','dnv','d7','col','spain-descent'].forEach(v => {
     const el = document.getElementById('visa-detail-'+v);
     if (el) el.style.display = 'none';
   });
   const el = document.getElementById('visa-detail-'+visa);
   if (el) el.style.display = 'block';
+  else {
+    // No detail page yet — show coming soon
+    const cards2 = document.getElementById('visa-cards');
+    if (cards2) cards2.style.display = 'grid';
+    if (filterBar) filterBar.style.display = 'flex';
+    showToast('Full guide coming soon!', 'info');
+  }
 }
 
 function hideVisaDetail() {
-  ['nlv','dnv','d7','col'].forEach(v => {
+  ['nlv','dnv','d7','col','spain-descent'].forEach(v => {
     const el = document.getElementById('visa-detail-'+v);
     if (el) el.style.display = 'none';
   });
   const cards = document.getElementById('visa-cards');
+  const filterBar = document.getElementById('visa-filter-bar');
   if (cards) cards.style.display = 'grid';
+  if (filterBar) filterBar.style.display = 'flex';
 }
 
 // ── PLAN SYSTEM ──
