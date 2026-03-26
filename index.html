@@ -431,7 +431,11 @@ function quizGo(step){
 }
 function quizPick(step,value){
   qAnswers['q'+step]=value;
-  // Don't call setProfile during quiz — apply after finish when app is fully loaded
+  // Show family income note on Q4 if family was selected
+  if(step===2 && value==='family'){
+    var note = document.getElementById('income-note');
+    if(note) note.style.display='block';
+  }
   setTimeout(function(){if(step<qTotal){quizGo(step+1);}else{quizFinish();}},150);
 }
 function quizLangEN(){
@@ -445,7 +449,10 @@ function quizLangES(){
   var e=document.getElementById('qlang-en');if(e){e.style.background='transparent';e.style.color='#7a7060';e.style.borderColor='rgba(13,13,13,0.2)';}
 }
 function quizFinish(){
-  // q1=origin, q2=profile, q3=timeline, q4=income, q5=ancestry
+  // Save original quiz HTML before replacing, so retake can restore it
+  var card = document.querySelector('#onboarding > div');
+  if(card && !window._quizOriginalHTML) window._quizOriginalHTML = card.innerHTML;
+
   var income=qAnswers.q4||'';var ancestry=qAnswers.q5||'';
   var track=ancestry==='spanish'?'🇪🇸 Citizenship by Descent':income==='remote'?'💻 Digital Nomad Visa':'🛂 Non-Lucrative Visa (NLV)';
   var color=ancestry==='spanish'?'#4a7c6f':income==='remote'?'#3b6fa0':'#c4622d';
@@ -477,9 +484,14 @@ function quizClose(){
     } catch(e){ console.warn(e); }
   }, 400);
 }
-// Auto-hide if already done
+// Auto-hide if already done, and save quiz HTML for retake
 (function(){
-  try{var done=localStorage.getItem('nomadly3_quiz_done');if(done&&JSON.parse(done)===true){var el=document.getElementById('onboarding');if(el)el.style.display='none';}}catch(e){}
+  try{
+    var card=document.querySelector('#onboarding > div');
+    if(card) window._quizOriginalHTML = card.innerHTML;
+    var done=localStorage.getItem('nomadly3_quiz_done');
+    if(done&&JSON.parse(done)===true){var el=document.getElementById('onboarding');if(el)el.style.display='none';}
+  }catch(e){}
 })();
 function initQuiz(){
   try{if(typeof DB!=='undefined'&&DB.get('quiz_done',false)){var el=document.getElementById('onboarding');if(el)el.style.display='none';return;}}catch(e){}
@@ -490,6 +502,14 @@ function resetQuiz(){
   qAnswers={};
   var el=document.getElementById('onboarding');
   if(el){el.style.display='flex';el.style.opacity='1';}
+  // Restore original quiz HTML if quizFinish replaced it
+  var card=document.querySelector('#onboarding > div');
+  if(window._quizOriginalHTML && card){
+    card.innerHTML = window._quizOriginalHTML;
+  }
+  // Reset income note
+  var note=document.getElementById('income-note');
+  if(note)note.style.display='none';
   quizGo(1);
 }
 </script>
@@ -500,26 +520,22 @@ function resetQuiz(){
   <div style="background:#f5f2eb;border-radius:24px;padding:28px;max-width:500px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.4);margin:auto;position:relative">
 
 ```
-<!-- Progress bar — pointer-events:none so it never blocks clicks -->
+<!-- Progress bar -->
 <div style="position:absolute;top:0;left:0;right:0;height:4px;background:rgba(13,13,13,0.1);border-radius:24px 24px 0 0;overflow:hidden;pointer-events:none">
-  <div id="quiz-progress-bar" style="height:100%;background:#c4622d;border-radius:inherit;transition:width 0.4s ease;width:14%;pointer-events:none"></div>
+  <div id="quiz-progress-bar" style="height:100%;background:#c4622d;border-radius:inherit;transition:width 0.4s ease;width:20%;pointer-events:none"></div>
 </div>
 
 <!-- Header -->
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;margin-top:6px">
   <div style="font-weight:800;font-size:17px;color:#0d0d0d">• Nomadly</div>
-  <div style="display:flex;gap:6px;align-items:center">
-    <div id="quiz-step-label" style="font-size:12px;color:#7a7060;margin-right:6px">Step 1 of 5</div>
-    <button id="qlang-en" onclick="quizLangEN()" style="padding:4px 12px;border-radius:14px;border:2px solid #0d0d0d;font-size:11px;font-weight:700;cursor:pointer;background:#0d0d0d;color:white;font-family:inherit">EN</button>
-    <button id="qlang-es" onclick="quizLangES()" style="padding:4px 12px;border-radius:14px;border:2px solid rgba(13,13,13,0.2);font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:#7a7060;font-family:inherit">ES</button>
-  </div>
+  <div id="quiz-step-label" style="font-size:12px;color:#7a7060;font-weight:500">Step 1 of 5</div>
 </div>
 
-<!-- STEP 1 -->
+<!-- Q1: Origin -->
 <div class="qstep" id="qstep-1">
   <div style="text-align:center;margin-bottom:16px">
     <div style="font-size:32px;margin-bottom:6px">🌎</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Where are you relocating from?</div>
+    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Where are you relocating from?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Desde dónde te mudas?</span></div>
   </div>
   <div style="display:flex;flex-direction:column;gap:10px">
     <button class="qopt" onclick="quizPick(1,'Puerto Rico')">🇵🇷 Puerto Rico</button>
@@ -527,98 +543,67 @@ function resetQuiz(){
   </div>
 </div>
 
-<!-- STEP 2 -->
+<!-- Q2: Who -->
 <div class="qstep" id="qstep-2" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
     <div style="font-size:32px;margin-bottom:6px">👥</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Who's making this move?</div>
+    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Who is making this move?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Quién se muda?</span></div>
   </div>
   <div style="display:flex;flex-direction:column;gap:10px">
     <button class="qopt" onclick="quizPick(2,'solo')">👤 Just me / Solo yo</button>
-    <button class="qopt" onclick="quizPick(2,'couple')">👫 Me + partner / Yo + pareja</button>
+    <button class="qopt" onclick="quizPick(2,'couple')">👫 Me and my partner / Yo y mi pareja</button>
     <button class="qopt" onclick="quizPick(2,'family')">👨‍👩‍👧 Family with kids / Familia con hijos</button>
-    <button class="qopt" onclick="quizPick(2,'retirement')">👴 Retirement / Retiro</button>
+    <button class="qopt" onclick="quizPick(2,'retirement')">👴 Retirement move / Retiro</button>
   </div>
-  <button class="qback" onclick="quizGo(1)">← Back</button>
+  <button class="qback" onclick="quizGo(1)">← Back / Atrás</button>
 </div>
 
-<!-- STEP 3 -->
+<!-- Q3: Timeline -->
 <div class="qstep" id="qstep-3" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">🗺️</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Where are you moving to?</div>
+    <div style="font-size:32px;margin-bottom:6px">📅</div>
+    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">When are you planning to move?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Cuándo planeas mudarte?</span></div>
   </div>
   <div style="display:flex;flex-direction:column;gap:10px">
-    <button class="qopt" onclick="quizPick(3,'Spain')">🇪🇸 Spain / España</button>
-    <button class="qopt" onclick="quizPick(3,'Portugal')">🇵🇹 Portugal</button>
-    <button class="qopt" onclick="quizPick(3,'Costa Rica')">🇨🇷 Costa Rica</button>
-    <button class="qopt" onclick="quizPick(3,'deciding')">🤔 Still deciding / Aún no sé</button>
+    <button class="qopt" onclick="quizPick(3,'3months')">🔥 In the next 3 months / Próximos 3 meses</button>
+    <button class="qopt" onclick="quizPick(3,'6months')">📆 3–6 months / 3–6 meses</button>
+    <button class="qopt" onclick="quizPick(3,'1year')">🗓️ 6–12 months / 6–12 meses</button>
+    <button class="qopt" onclick="quizPick(3,'2years')">⏳ 1–2 years / 1–2 años</button>
+    <button class="qopt" onclick="quizPick(3,'exploring')">🌱 Just exploring / Solo explorando</button>
   </div>
-  <button class="qback" onclick="quizGo(2)">← Back</button>
+  <button class="qback" onclick="quizGo(2)">← Back / Atrás</button>
 </div>
 
-<!-- STEP 4 -->
+<!-- Q4: Income -->
 <div class="qstep" id="qstep-4" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">📅</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">When are you planning to move?</div>
+    <div style="font-size:32px;margin-bottom:6px">💳</div>
+    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">What is your main income type?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Tipo de ingresos?</span></div>
+  </div>
+  <div id="income-note" style="display:none;background:#fff3ee;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;color:#7a7060;line-height:1.6">
+    <strong style="color:#c4622d">NLV Income Requirement (Family):</strong> Base €2,259/mo + 100% IPREM (~€600) per additional family member. 2 kids = ~€3,459/mo minimum.
   </div>
   <div style="display:flex;flex-direction:column;gap:10px">
-    <button class="qopt" onclick="quizPick(4,'3months')">🔥 In the next 3 months / Próximos 3 meses</button>
-    <button class="qopt" onclick="quizPick(4,'6months')">📆 3–6 months / 3–6 meses</button>
-    <button class="qopt" onclick="quizPick(4,'1year')">🗓️ 6–12 months / 6–12 meses</button>
-    <button class="qopt" onclick="quizPick(4,'2years')">⏳ 1–2 years / 1–2 años</button>
-    <button class="qopt" onclick="quizPick(4,'exploring')">🌱 Just exploring / Solo explorando</button>
+    <button class="qopt" onclick="quizPick(4,'remote')">💻 Remote job / freelance (active income)</button>
+    <button class="qopt" onclick="quizPick(4,'passive')">📈 Savings / investments / passive income</button>
+    <button class="qopt" onclick="quizPick(4,'both')">💼 Both / Ambos</button>
+    <button class="qopt" onclick="quizPick(4,'neither')">🚫 Neither yet / Ninguno aún</button>
   </div>
-  <button class="qback" onclick="quizGo(3)">← Back</button>
+  <button class="qback" onclick="quizGo(3)">← Back / Atrás</button>
 </div>
 
-<!-- STEP 5 -->
+<!-- Q5: Ancestry -->
 <div class="qstep" id="qstep-5" style="display:none">
   <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">💳</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">What is your main income type?</div>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:10px">
-    <button class="qopt" onclick="quizPick(5,'remote')">💻 Remote / freelance (active)</button>
-    <button class="qopt" onclick="quizPick(5,'passive')">📈 Investments / savings / passive</button>
-    <button class="qopt" onclick="quizPick(5,'both')">💼 Both / Ambos</button>
-    <button class="qopt" onclick="quizPick(5,'neither')">🚫 Neither / Ninguno</button>
-  </div>
-  <button class="qback" onclick="quizGo(4)">← Back</button>
-</div>
-
-<!-- STEP 6 -->
-<div class="qstep" id="qstep-6" style="display:none">
-  <div style="text-align:center;margin-bottom:16px">
     <div style="font-size:32px;margin-bottom:6px">🧬</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Do you have Spanish or EU ancestry?</div>
+    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">Do you have a Spanish parent or grandparent?<br><span style="font-weight:500;font-size:14px;color:#7a7060">¿Tienes padre o abuelo español?</span></div>
   </div>
+  <div style="font-size:12px;color:#7a7060;background:#eef6f4;border-radius:10px;padding:10px 13px;margin-bottom:12px;line-height:1.6">🇵🇷 Puerto Ricans with Spanish ancestry may qualify for citizenship in just <strong style="color:#4a7c6f">2 years</strong> instead of 10.</div>
   <div style="display:flex;flex-direction:column;gap:10px">
-    <button class="qopt" onclick="quizPick(6,'spanish')">🇪🇸 Yes — Spanish parent/grandparent</button>
-    <button class="qopt" onclick="quizPick(6,'italian')">🇮🇹 Yes — Italian ancestry</button>
-    <button class="qopt" onclick="quizPick(6,'irish')">🇮🇪 Yes — Irish ancestry</button>
-    <button class="qopt" onclick="quizPick(6,'other-eu')">🌍 Other EU ancestry</button>
-    <button class="qopt" onclick="quizPick(6,'none')">❌ No EU ancestry</button>
+    <button class="qopt" onclick="quizPick(5,'spanish')">🇪🇸 Yes — parent or grandparent born in Spain / Sí</button>
+    <button class="qopt" onclick="quizPick(5,'none')">❌ No Spanish ancestry / No</button>
   </div>
-  <button class="qback" onclick="quizGo(5)">← Back</button>
-</div>
-
-<!-- STEP 7 -->
-<div class="qstep" id="qstep-7" style="display:none">
-  <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:32px;margin-bottom:6px">💡</div>
-    <div style="font-weight:800;font-size:17px;color:#0d0d0d;line-height:1.3">What\'s your #1 goal?</div>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:10px">
-    <button class="qopt" onclick="quizPick(7,'citizenship')">🛂 Dual citizenship / Doble ciudadanía</button>
-    <button class="qopt" onclick="quizPick(7,'lifestyle')">🏖️ Better lifestyle & climate</button>
-    <button class="qopt" onclick="quizPick(7,'cost')">💰 Lower cost of living</button>
-    <button class="qopt" onclick="quizPick(7,'remote')">💻 Remote work base</button>
-    <button class="qopt" onclick="quizPick(7,'property')">🏠 Buy property abroad</button>
-    <button class="qopt" onclick="quizPick(7,'all')">🌿 All of the above / Todo lo anterior</button>
-  </div>
-  <button class="qback" onclick="quizGo(6)">← Back</button>
+  <button class="qback" onclick="quizGo(4)">← Back / Atrás</button>
 </div>
 ```
 
@@ -626,7 +611,7 @@ function resetQuiz(){
 </div>
 
 <style>
-.qopt{width:100%;padding:12px 16px;background:#fff;border:2px solid rgba(13,13,13,0.12);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block}
+.qopt{width:100%;padding:13px 16px;background:#fff;border:2px solid rgba(13,13,13,0.12);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:#0d0d0d;text-align:left;font-family:inherit;-webkit-appearance:none;appearance:none;display:block;line-height:1.4}
 .qopt:hover,.qopt:active{border-color:#c4622d;background:#fff8f5}
 .qback{width:100%;margin-top:12px;padding:8px;background:none;border:none;color:#7a7060;cursor:pointer;font-size:13px;font-family:inherit;text-align:center;-webkit-appearance:none}
 </style>
@@ -772,9 +757,9 @@ function resetQuiz(){
   <aside class="sidebar">
     <div class="sidebar-section" id="sb-relocations">My Relocations</div>
     <div class="sidebar-item active"><span class="icon">🇪🇸</span> <span id="sb-spain">Spain — Madrid</span></div>
-    <div class="sidebar-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[7])"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal — Lisbon</span></div>
+    <div class="sidebar-item" onclick="currentJourneyCountry='portugal';showJourneyCountry('portugal',null);showPage('journey',document.querySelectorAll('.nav-tab')[7])"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal — Lisbon</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">🇨🇴</span> <span id="sb-colombia">Colombia — Medellín</span><span class="lock">🔒</span></div>
-    <div class="sidebar-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[7])"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span></div>
+    <div class="sidebar-item" onclick="currentJourneyCountry='costarica';showJourneyCountry('costarica',null);showPage('journey',document.querySelectorAll('.nav-tab')[7])"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span></div>
     <div class="sidebar-item" onclick="showPaywall()"><span class="icon">➕</span> <span id="sb-add-dest">Add destination</span><span class="lock">🔒</span></div>
     <div class="sidebar-section" id="sb-tools">Tools</div>
     <div class="sidebar-item" onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1])"><span class="icon">📋</span> <span id="sb-planner">Planner</span></div>
@@ -1424,7 +1409,7 @@ function resetQuiz(){
 <div class="page" id="page-journey">
   <div class="page-header">
     <div>
-      <div class="page-title" id="journey-title">🗺️ My Relocation Journey</div>
+      <div class="page-title" id="journey-title">🗺️ My Journey to Spain</div>
       <div class="page-sub" id="journey-sub">Your personalized step-by-step roadmap</div>
     </div>
   </div>
@@ -1558,6 +1543,26 @@ const T = {
     'bvr-pro-title':'🔒 Pro: Full 10-year projection + mortgage simulator',
     'bvr-pro-sub':'Spanish bank rates, notary fees, ITP tax, rental yield calculator',
     'bvr-pro-cta':'Unlock →',
+    // Nav — missing keys
+    'nav-visas':'🛂 Visas & Consulates','nav-journey':'🗺️ My Journey',
+    // Sidebar — missing keys
+    'sb-cr':'Costa Rica','sb-visas':'Visas & Consulates',
+    // Journey page
+    'journey-title':'🗺️ My Journey to Spain','journey-sub':'Your personalized step-by-step roadmap',
+    // Coaching
+    'coaching-cta-title':'Book a Coaching Session',
+    'coaching-cta-sub':'15 min · $15 · Talk to someone who did this',
+    'coaching-modal-title':'📞 Book a Coaching Session',
+    'coaching-modal-sub':'Talk to someone who actually made this move',
+    'coaching-intro-title':'Intro Call',
+    'coaching-intro-desc':'15 min · Zoom or phone\nPerfect for: Is this right for me?',
+    'coaching-deep-title':'Deep Dive',
+    'coaching-deep-desc':'60 min · Full review\nPerfect for: Document review, visa strategy',
+    'coaching-bio':'<strong style="color:#0d0d0d">About your coach:</strong> Puerto Rican currently navigating the Spain NLV process firsthand. Consulate appointment completed, documents in progress, flight booked for July. Real experience, real answers.',
+    'coaching-book-btn':'Book Your Session →',
+    'coaching-note':'Sessions via Calendly · Payment at booking · All times EST',
+    // Visas page
+    'visas-title':'🛂 Visas & Consulates','visas-sub':'Official guides, consulate directory and citizenship by descent',
   },
   es: {
     'nav-overview':'Inicio','nav-planner':'Planificador','nav-documents':'Documentos',
@@ -1624,6 +1629,26 @@ const T = {
     'bvr-pro-title':'🔒 Pro: Proyección a 10 años + simulador hipotecario',
     'bvr-pro-sub':'Tasas de bancos españoles, notaría, impuesto ITP, calculadora de rentabilidad',
     'bvr-pro-cta':'Desbloquear →',
+    // Nav — missing keys
+    'nav-visas':'🛂 Visas y Consulados','nav-journey':'🗺️ Mi Viaje',
+    // Sidebar — missing keys
+    'sb-cr':'Costa Rica','sb-visas':'Visas y Consulados',
+    // Journey page
+    'journey-title':'🗺️ Mi Viaje a España','journey-sub':'Tu hoja de ruta paso a paso personalizada',
+    // Coaching
+    'coaching-cta-title':'Reservar una Sesión de Coaching',
+    'coaching-cta-sub':'15 min · $15 · Habla con alguien que hizo este proceso',
+    'coaching-modal-title':'📞 Reservar Sesión de Coaching',
+    'coaching-modal-sub':'Habla con alguien que realmente hizo esta mudanza',
+    'coaching-intro-title':'Llamada Intro',
+    'coaching-intro-desc':'15 min · Zoom o teléfono\nIdeal para: ¿Es esto para mí?',
+    'coaching-deep-title':'Sesión Profunda',
+    'coaching-deep-desc':'60 min · Revisión completa\nIdeal para: Revisión de documentos, estrategia de visa',
+    'coaching-bio':'<strong style="color:#0d0d0d">Sobre tu coach:</strong> Puertorriqueña navegando el proceso de NLV de España en este momento. Cita consular completada, documentos en proceso, vuelo reservado para julio. Experiencia real, respuestas reales.',
+    'coaching-book-btn':'Reserva tu Sesión →',
+    'coaching-note':'Sesiones vía Calendly · Pago al reservar · Todos los horarios EST',
+    // Visas page
+    'visas-title':'🛂 Visas y Consulados','visas-sub':'Guías oficiales, directorio de consulados y ciudadanía por descendencia',
   }
 };
 
@@ -2872,8 +2897,8 @@ function hideVisaDetail() {
 let currentPlan = DB.get('current_plan','free'); // 'free' | 'wanderer' | 'pro'
 
 const PLAN_FEATURES = {
-  free:     { docs:6,    cities:3,  aiChat:false, property:false, runway:false, bvr:false, familyMode:false, mortgage:false, coliving:false },
-  wanderer: { docs:25,   cities:10, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:false, mortgage:false, coliving:false },
+  free:     { docs:6,    cities:3,  aiChat:false, property:false, runway:false, bvr:false, familyMode:true,  mortgage:false, coliving:false },
+  wanderer: { docs:25,   cities:10, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:false, coliving:false },
   pro:      { docs:9999, cities:99, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:true,  coliving:true  },
 };
 
@@ -3244,59 +3269,81 @@ function renderJourney(country) {
   const el = document.getElementById('journey-content');
   if (!j || !el) return;
 
-  // Detect user's recommended track from quiz
+  // Use correct quiz answer keys: q1=origin, q2=profile, q3=timeline, q4=income, q5=ancestry
   const answers = DB.get('quiz_answers', {});
-  const income = answers.income || '';
-  const ancestry = answers.ancestry || '';
-  const isRemote = income.includes('Remote') || income.includes('freelance');
-  const hasSpanishAncestry = ancestry.includes('Spain');
+  const income = answers.q4 || '';
+  const ancestry = answers.q5 || '';
+  const isRemote = income === 'remote' || income === 'both';
+  const hasSpanish = ancestry === 'spanish';
+  const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
+
+  // Sync country tab UI
+  document.querySelectorAll('#journey-country-tabs .filter-btn').forEach(b => b.classList.remove('active'));
+  const tabs = document.querySelectorAll('#journey-country-tabs .filter-btn');
+  const tabMap = {spain:0, portugal:1, costarica:2};
+  if (tabs[tabMap[country]]) tabs[tabMap[country]].classList.add('active');
 
   let recommended = j.tracks[0].id;
   if (country === 'spain') {
-    if (hasSpanishAncestry) recommended = 'descent';
+    if (hasSpanish) recommended = 'descent';
     else if (isRemote) recommended = 'dnv';
     else recommended = 'nlv';
   }
 
   el.innerHTML = j.tracks.map(track => {
-    const isRec = track.id === recommended;
+    const isRec = track.id === recommended && country === 'spain';
+
+    // FREE: Phase 1 only (first phase, up to 4 steps shown). Rest locked behind Wanderer.
+    // Portugal & Costa Rica: overview card free, all phases locked behind Wanderer.
+    const countryLocked = !isPaid && country !== 'spain';
+    const phasesHtml = track.phases.map((p, i) => {
+      const isLocked = !isPaid && (i >= 1 || countryLocked);
+      if (isLocked) return '';
+      // For free Spain users, cap Phase 1 steps at 4
+      const steps = (!isPaid && i === 0) ? p.steps.slice(0, 4) : p.steps;
+      return `
+      <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)">
+        <div style="width:32px;height:32px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${p.icon}</div>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px">${p.phase}</div>
+          ${steps.map(s=>`<div style="font-size:12px;color:#7a7060;padding:3px 0;display:flex;gap:6px"><span style="color:${p.color};flex-shrink:0">→</span>${s}</div>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+
+    const remainingPhases = track.phases.length - 1;
+    const lockedTeaser = !isPaid ? `
+      <div onclick="showPaywall()" style="margin-top:8px;padding:16px;background:linear-gradient(135deg,#fff8f5,#f5f2eb);border:1.5px dashed rgba(196,98,45,0.4);border-radius:12px;text-align:center;cursor:pointer">
+        <div style="font-size:20px;margin-bottom:6px">🔒</div>
+        <div style="font-size:13px;font-weight:700;color:#c4622d;margin-bottom:4px">${countryLocked ? 'Full Guide — ' + j.name : remainingPhases + ' more phases — Docs, Consulate, Arrive & Citizenship'}</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:10px">Unlock the complete step-by-step roadmap with Wanderer ($9/mo)</div>
+        <div style="display:inline-block;padding:8px 20px;background:#c4622d;color:white;border-radius:8px;font-weight:700;font-size:13px">Unlock Wanderer →</div>
+      </div>` : '';
+
     return `
     <div style="background:#fff;border-radius:16px;border:${isRec?'2px solid '+track.color:'1.5px solid rgba(13,13,13,0.08)'};margin-bottom:20px;overflow:hidden">
       <div style="background:${track.bg};padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
         <div>
           ${isRec?`<div style="display:inline-block;background:${track.color};color:white;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">⭐ Recommended for you</div><br>`:''}
-          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:#0d0d0d">${track.icon} ${track.title}</div>
+          <div style="font-weight:800;font-size:17px;color:#0d0d0d">${track.icon} ${track.title}</div>
           <div style="font-size:12px;color:#7a7060;margin-top:3px">${track.subtitle}</div>
         </div>
-        <div style="text-align:right">
-          <div style="font-size:11px;color:${track.color};font-weight:600;background:${track.color}18;padding:5px 12px;border-radius:20px">${track.timeline.split('·')[0].trim()}</div>
-        </div>
+        <div style="font-size:11px;color:${track.color};font-weight:600;background:${track.color}18;padding:5px 12px;border-radius:20px">${track.timeline.split('·')[0].trim()}</div>
       </div>
       <div style="padding:20px 24px">
         <div style="font-size:12px;color:#7a7060;line-height:1.7;margin-bottom:16px;padding:12px;background:#f5f2eb;border-radius:10px"><strong style="color:#0d0d0d">Who this is for:</strong> ${track.who}</div>
-
-        ${track.phases.map((p,i) => `
-        <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(13,13,13,0.06)">
-          <div style="width:32px;height:32px;border-radius:50%;background:${p.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">${p.icon}</div>
-          <div style="flex:1">
-            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px">${p.phase}</div>
-            ${p.steps.map(s=>`<div style="font-size:12px;color:#7a7060;padding:3px 0;display:flex;gap:6px"><span style="color:${p.color};flex-shrink:0">→</span>${s}</div>`).join('')}
-          </div>
-        </div>`).join('')}
-
+        ${phasesHtml}
+        ${lockedTeaser}
         <div style="margin-top:14px;padding:12px;background:${track.bg};border-left:3px solid ${track.color};border-radius:0 8px 8px 0;font-size:12px;color:#7a7060;line-height:1.6">${track.tip}</div>
         <div style="margin-top:10px;font-size:11px;color:#7a7060;padding:8px 10px;background:#f5f2eb;border-radius:8px">📍 <strong style="color:#0d0d0d">Consulate:</strong> ${track.consulate}</div>
-
         <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-          <button onclick="showPage('visas',document.querySelectorAll('.nav-tab')[6])" style="padding:8px 16px;background:${track.color};color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:600;font-size:12px;cursor:pointer">Full Visa Guide →</button>
-          <button onclick="showPage('planner',document.querySelectorAll('.nav-tab')[1])" style="padding:8px 16px;background:#f5f2eb;color:#0d0d0d;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:600;font-size:12px;cursor:pointer">My Planner →</button>
-          <button onclick="openCoaching()" style="padding:8px 16px;background:#f5f2eb;color:#c4622d;border:1.5px solid rgba(196,98,45,0.3);border-radius:8px;font-family:'Syne',sans-serif;font-weight:600;font-size:12px;cursor:pointer">📞 Book Coach $15 →</button>
+          <button onclick="showPage('visas',document.querySelectorAll('.nav-tab')[6])" style="padding:8px 16px;background:${track.color};color:white;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">Full Visa Guide →</button>
+          <button onclick="openCoaching()" style="padding:8px 16px;background:#f5f2eb;color:#c4622d;border:1.5px solid rgba(196,98,45,0.3);border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">📞 Book Coach $15 →</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
-
 // ── COACHING ──
 function openCoaching() {
   document.getElementById('coaching-modal').style.display = 'flex';
