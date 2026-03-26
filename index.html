@@ -422,7 +422,7 @@ body{background:#f5f2eb;color:#0d0d0d;font-family:-apple-system,BlinkMacSystemFo
 <!-- QUIZ FUNCTIONS — defined early so buttons work even if main JS fails -->
 
 <script>
-var qAnswers={};var qCurrent=1;var qTotal=7;
+var qAnswers={};var qCurrent=1;var qTotal=5;
 function quizGo(step){
   for(var i=1;i<=qTotal;i++){var e=document.getElementById('qstep-'+i);if(e)e.style.display=(i===step)?'block':'none';}
   qCurrent=step;
@@ -431,7 +431,7 @@ function quizGo(step){
 }
 function quizPick(step,value){
   qAnswers['q'+step]=value;
-  if(step===2){if(value==='couple'){var b=document.getElementById('prof-couple');if(b&&typeof setProfile!=='undefined')setProfile('couple',b);}else if(value==='family'){var b=document.getElementById('prof-family');if(b&&typeof setProfile!=='undefined')setProfile('family',b);}}
+  // Don't call setProfile during quiz — apply after finish when app is fully loaded
   setTimeout(function(){if(step<qTotal){quizGo(step+1);}else{quizFinish();}},150);
 }
 function quizLangEN(){
@@ -445,10 +445,11 @@ function quizLangES(){
   var e=document.getElementById('qlang-en');if(e){e.style.background='transparent';e.style.color='#7a7060';e.style.borderColor='rgba(13,13,13,0.2)';}
 }
 function quizFinish(){
-  var dest=qAnswers.q3||'Spain';var income=qAnswers.q5||'';var ancestry=qAnswers.q6||'';
+  // q1=origin, q2=profile, q3=timeline, q4=income, q5=ancestry
+  var income=qAnswers.q4||'';var ancestry=qAnswers.q5||'';
   var track=ancestry==='spanish'?'🇪🇸 Citizenship by Descent':income==='remote'?'💻 Digital Nomad Visa':'🛂 Non-Lucrative Visa (NLV)';
   var color=ancestry==='spanish'?'#4a7c6f':income==='remote'?'#3b6fa0':'#c4622d';
-  var desc=ancestry==='spanish'?'You may qualify for Spanish citizenship through your Spanish parent or grandparent.':income==='remote'?'Remote workers qualify for the Digital Nomad Visa with 24% flat tax.':'The NLV is your best path — requires €2,259/mo income or €27k+ savings.';
+  var desc=ancestry==='spanish'?'You may qualify for Spanish citizenship through your Spanish parent or grandparent — fastest EU passport route.':income==='remote'?'Remote workers qualify for the Digital Nomad Visa with 24% flat tax (Beckham Law).':'Best path for savings/passive income holders. Requires €2,259/mo or €27k+ in savings.';
   var urgent=qAnswers.q4==='3months';
   try{if(typeof DB!=='undefined'){DB.set('quiz_done',true);DB.set('quiz_answers',qAnswers);}}catch(e){}
   var card=document.querySelector('#onboarding > div');
@@ -466,18 +467,15 @@ function quizFinish(){
 function quizClose(){
   var el=document.getElementById('onboarding');
   if(el){el.style.opacity='0';el.style.transition='opacity 0.3s';setTimeout(function(){el.style.display='none';},300);}
-  // Navigate to Journey with their specific country + visa track
   setTimeout(function(){
     try {
-      var dest = qAnswers.q3 || 'Spain';
-      var countryKey = dest==='Spain'?'spain':dest==='Portugal'?'portugal':dest==='Costa Rica'?'costarica':'spain';
-      if(typeof currentJourneyCountry!=='undefined') currentJourneyCountry = countryKey;
+      // q1=origin, q2=profile, q3=timeline, q4=income, q5=ancestry
+      currentJourneyCountry = 'spain';
+      if(typeof applyPersonalization!=='undefined') applyPersonalization();
       var journeyTab = document.querySelectorAll('.nav-tab')[7];
       if(typeof showPage!=='undefined') showPage('journey', journeyTab);
-      if(typeof renderJourney!=='undefined') renderJourney(countryKey);
-      if(typeof applyPersonalization!=='undefined') applyPersonalization();
     } catch(e){ console.warn(e); }
-  }, 350);
+  }, 400);
 }
 // Auto-hide if already done
 (function(){
@@ -511,7 +509,7 @@ function resetQuiz(){
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;margin-top:6px">
   <div style="font-weight:800;font-size:17px;color:#0d0d0d">• Nomadly</div>
   <div style="display:flex;gap:6px;align-items:center">
-    <div id="quiz-step-label" style="font-size:12px;color:#7a7060;margin-right:6px">Step 1 of 7</div>
+    <div id="quiz-step-label" style="font-size:12px;color:#7a7060;margin-right:6px">Step 1 of 5</div>
     <button id="qlang-en" onclick="quizLangEN()" style="padding:4px 12px;border-radius:14px;border:2px solid #0d0d0d;font-size:11px;font-weight:700;cursor:pointer;background:#0d0d0d;color:white;font-family:inherit">EN</button>
     <button id="qlang-es" onclick="quizLangES()" style="padding:4px 12px;border-radius:14px;border:2px solid rgba(13,13,13,0.2);font-size:11px;font-weight:700;cursor:pointer;background:transparent;color:#7a7060;font-family:inherit">ES</button>
   </div>
@@ -2590,75 +2588,58 @@ function applyPersonalization() {
   const answers = DB.get('quiz_answers', {});
   if (!answers || !Object.keys(answers).length) return;
 
-  const dest = answers.q3 || 'Spain';
-  const income = answers.q5 || '';
-  const ancestry = answers.q6 || '';
-  const timeline = answers.q4 || '';
-  const profile = answers.q2 || 'solo';
-  const urgent = timeline === '3months';
+  // q1=origin, q2=profile, q3=timeline, q4=income, q5=ancestry
+  const profile  = answers.q2 || 'solo';
+  const timeline = answers.q3 || '';
+  const income   = answers.q4 || '';
+  const ancestry = answers.q5 || '';
+  const urgent   = timeline === '3months';
 
-  // Determine visa track
-  const isRemote = income === 'remote';
+  // Set profile mode safely
+  const profileMap = { solo:'single', couple:'couple', family:'family', retirement:'single' };
+  const profileKey = profileMap[profile] || 'single';
+  currentProfile = profileKey;
+  DB.set('user_profile', profileKey);
+  document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.getElementById('prof-' + profileKey);
+  if (activeBtn) activeBtn.classList.add('active');
+  try { updateProfileBanner(); } catch(e) {}
+
+  // Visa track
   const hasSpanish = ancestry === 'spanish';
-  let track = hasSpanish ? 'descent' : isRemote ? 'dnv' : 'nlv';
-  let trackLabel = hasSpanish ? '🇪🇸 Citizenship by Descent' : isRemote ? '💻 Digital Nomad Visa' : '🛂 Non-Lucrative Visa (NLV)';
-  let trackColor = hasSpanish ? '#4a7c6f' : isRemote ? '#3b6fa0' : '#c4622d';
+  const isRemote   = income === 'remote';
+  const track      = hasSpanish ? 'descent' : isRemote ? 'dnv' : 'nlv';
+  const trackLabel = hasSpanish ? '🇪🇸 Citizenship by Descent' : isRemote ? '💻 Digital Nomad Visa' : '🛂 Non-Lucrative Visa (NLV)';
+  const trackColor = hasSpanish ? '#4a7c6f' : isRemote ? '#3b6fa0' : '#c4622d';
 
-  // Set profile mode
-  if (profile === 'couple') { const b = document.getElementById('prof-couple'); if(b) setProfile('couple', b); }
-  else if (profile === 'family') { const b = document.getElementById('prof-family'); if(b) setProfile('family', b); }
+  // Set journey to Spain
+  currentJourneyCountry = 'spain';
 
-  // Set journey country
-  const countryMap = {Spain:'spain', Portugal:'portugal', 'Costa Rica':'costarica'};
-  const countryKey = countryMap[dest] || 'spain';
-  currentJourneyCountry = countryKey;
-
-  // Set budget country
-  if (countryKey !== currentCountry) renderBudget(countryKey);
-
-  // Pre-filter planner for their visa type
-  const plannerFilter = track === 'nlv' ? 'visa' : track === 'dnv' ? 'finance' : 'visa';
-  // (keep as 'all' for now — planner has all relevant tasks)
-
-  // Update dashboard greeting with their info
+  // Update dashboard greeting
   const greetingEl = document.getElementById('dash-greeting');
-  if (greetingEl) {
-    const destName = dest === 'deciding' ? 'your destination' : dest;
-    greetingEl.textContent = (urgent ? '⚡ ' : '✦ ') + 'Moving to ' + destName;
-  }
+  if (greetingEl) greetingEl.textContent = (urgent ? '⚡ ' : '✦ ') + 'Moving to Spain';
 
-  // Show personalized visa track banner on dashboard
-  const existingBanner = document.getElementById('visa-track-banner');
-  if (existingBanner) existingBanner.remove();
+  // Visa track banner on dashboard
+  const existing = document.getElementById('visa-track-banner');
+  if (existing) existing.remove();
   const dashPage = document.getElementById('page-dashboard');
   if (dashPage) {
     const banner = document.createElement('div');
     banner.id = 'visa-track-banner';
     banner.style.cssText = 'background:' + trackColor + '12;border:1.5px solid ' + trackColor + '30;border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px';
     banner.innerHTML = '<div>'
-      + '<div style="font-weight:700;font-size:13px;color:' + trackColor + '">' + trackLabel + '</div>'
+      + '<div style="font-weight:700;font-size:13px;color:' + trackColor + '">' + trackLabel + ' — Spain 🇪🇸</div>'
       + '<div style="font-size:12px;color:#7a7060;margin-top:2px">'
-      + (urgent ? '⚡ Urgent timeline — check your next steps below' : '📍 ' + dest + ' · Your personalized roadmap is ready')
+      + (urgent ? '⚡ Urgent timeline — start your checklist today' : '📍 Your personalized roadmap is ready in My Journey')
       + '</div></div>'
-      + '<button onclick="var t=document.querySelectorAll(\'.nav-tab\')[7];showPage(\'journey\',t)" style="padding:7px 14px;background:' + trackColor + ';color:white;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">View Journey →</button>';
-    // Insert after profile banner
+      + '<button onclick="var t=document.querySelectorAll(\'.nav-tab\')[7];showPage(\'journey\',t)" style="padding:7px 14px;background:' + trackColor + ';color:white;border:none;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap">My Journey →</button>';
     const profileBanner = document.getElementById('profile-banner');
-    if (profileBanner && profileBanner.nextSibling) {
-      dashPage.insertBefore(banner, profileBanner.nextSibling);
-    } else {
-      dashPage.insertBefore(banner, dashPage.firstChild);
+    if (profileBanner && profileBanner.parentNode) {
+      profileBanner.parentNode.insertBefore(banner, profileBanner.nextSibling);
     }
   }
 
-  // Highlight Journey in sidebar
-  document.querySelectorAll('.sidebar-item').forEach(function(item) {
-    if (item.textContent.includes('Visas') || item.textContent.includes('Journey')) {
-      item.style.fontWeight = '600';
-    }
-  });
-
-  renderDashboard();
-  updateProgress();
+  try { renderDashboard(); updateProgress(); } catch(e) {}
 }
 
 // ── TOAST ──
