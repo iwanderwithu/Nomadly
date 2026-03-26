@@ -1074,12 +1074,6 @@ function resetQuiz(){
       <div id="land-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px"></div>
     </div>
 
-    <!-- PRO TEASER for property section -->
-    <div style="margin-top:20px;padding:18px;background:linear-gradient(135deg,#fff8f5,#f5f2eb);border:1.5px solid rgba(196,98,45,0.15);border-radius:14px;cursor:pointer" onclick="showPaywall()">
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0d0d0d;margin-bottom:6px">🔒 Pro: Full Investment Analysis</div>
-      <div style="font-size:12px;color:#7a7060;line-height:1.7">Rental yield calculator · Net ROI · Foreign buyer rules in Spain (NIE required) · Best neighborhoods for appreciation · Off-plan vs resale · Mortgage simulator</div>
-      <div style="margin-top:10px;font-size:13px;color:#c4622d;font-weight:600">Unlock Pro →</div>
-    </div>
   </div>
 
   <!-- INVESTMENT ANALYSIS SECTION (Pro) -->
@@ -2249,7 +2243,7 @@ const catClassMap={visa:'tag-visa',finance:'tag-finance',housing:'tag-housing',h
 
 // ── BUDGET SECTION NAV ──
 function showBudgetSection(id, btn) {
-  ['cost-section','personal-section','property-section'].forEach(s => {
+  ['cost-section','personal-section','property-section','investment-section'].forEach(s => {
     const el = document.getElementById(s);
     if(el) el.style.display = 'none';
   });
