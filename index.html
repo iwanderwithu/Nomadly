@@ -224,6 +224,7 @@ body{background:#f5f2eb;color:#0d0d0d;font-family:-apple-system,BlinkMacSystemFo
 .phase-task-text.done{text-decoration:line-through;color:#7a7060!important}
 .phase-task-delete{opacity:0;background:none;border:none;color:#7a7060;cursor:pointer;font-size:13px;padding:2px 5px;border-radius:4px;transition:all 0.15s}
 .phase-task:hover .phase-task-delete{opacity:1}
+.phase-task-info{opacity:1!important;background:#eef2f8;border:1px solid rgba(59,111,160,0.35)!important;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;color:#3b6fa0!important;margin-left:4px;flex-shrink:0;font-family:inherit;line-height:1;display:inline-flex;align-items:center}
 .filter-row{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
 .filter-btn{padding:6px 14px;border-radius:8px;border:1px solid rgba(13,13,13,0.12);background:#ffffff;font-family:‘DM Sans’,sans-serif;font-size:12px;cursor:pointer;transition:all 0.15s;color:#7a7060!important}
 .filter-btn:hover,.filter-btn.active{background:#0d0d0d!important;color:white!important;border-color:#0d0d0d}
@@ -457,13 +458,18 @@ function quizFinish(){
   var dest = 'Spain';
   var income = qAnswers.q4||'';
   var ancestry = qAnswers.q5||'';
+  var profile = qAnswers.q2||'';
   var urgent = qAnswers.q3 === '3months';
-  var track = ancestry==='spanish' ? '🇪🇸 Citizenship by Descent' : income==='remote' ? '💻 Digital Nomad Visa' : '🛂 Non-Lucrative Visa (NLV)';
-  var color = ancestry==='spanish' ? '#4a7c6f' : income==='remote' ? '#3b6fa0' : '#c4622d';
+  var isRemote = income==='remote'||income==='both';
+  var isStudent = income==='student';
+  var track = ancestry==='spanish' ? '🇪🇸 Citizenship by Descent' : isStudent ? '🎓 Student Visa (Type D)' : isRemote ? '💻 Digital Nomad Visa' : '🛂 Non-Lucrative Visa (NLV)';
+  var color = ancestry==='spanish' ? '#4a7c6f' : isStudent ? '#7c5cbf' : isRemote ? '#3b6fa0' : '#c4622d';
   var desc = ancestry==='spanish'
     ? 'You may qualify for Spanish citizenship through your Spanish parent or grandparent — fastest EU passport route.'
-    : income==='remote'
-    ? 'Remote workers qualify for the Digital Nomad Visa with 24% flat tax (Beckham Law).'
+    : isStudent
+    ? 'Enroll in a Spanish university, language school, or professional course. Duration of visa matches your program. Best gateway to long-term residency.'
+    : isRemote
+    ? 'Remote workers qualify for the Digital Nomad Visa with 24% flat tax (Beckham Law). Requires €2,646+/mo income.'
     : 'Best path for savings/passive income holders. Requires €2,259/mo or €27k+ in savings.';
 
   try{if(typeof DB!=='undefined'){DB.set('quiz_done',true);DB.set('quiz_answers',qAnswers);}}catch(e){}
@@ -482,6 +488,16 @@ function quizFinish(){
 function quizClose(){
   var el=document.getElementById('onboarding');
   if(el){el.style.opacity='0';el.style.transition='opacity 0.3s';setTimeout(function(){el.style.display='none';},300);}
+  // Sync profile toggle (couple/family) from quiz answer
+  try {
+    var q2 = qAnswers.q2||DB.get('quiz_answers',{}).q2||'';
+    var profileMap = {couple:'couple',family:'family',retirement:'single',solo:'single'};
+    var syncedProfile = profileMap[q2]||'single';
+    if(typeof setProfile==='function'){
+      var btn = document.getElementById('prof-'+syncedProfile);
+      if(btn) setProfile(syncedProfile,btn);
+    }
+  } catch(e){}
   setTimeout(function(){
     try {
       // q1=origin, q2=profile, q3=timeline, q4=income, q5=ancestry
@@ -595,6 +611,7 @@ function resetQuiz(){
     <button class="qopt" onclick="quizPick(4,'remote')">💻 Remote job / freelance (active income)</button>
     <button class="qopt" onclick="quizPick(4,'passive')">📈 Savings / investments / passive income</button>
     <button class="qopt" onclick="quizPick(4,'both')">💼 Both / Ambos</button>
+    <button class="qopt" onclick="quizPick(4,'student')">🎓 Student — enrolling in school or university in Spain</button>
     <button class="qopt" onclick="quizPick(4,'neither')">🚫 Neither yet / Ninguno aún</button>
   </div>
   <button class="qback" onclick="quizGo(3)">← Back / Atrás</button>
@@ -2531,7 +2548,7 @@ function renderPlanner(filter) {
             <span class="phase-task-check">${t.locked?'🔒':t.done?'✅':'⬜'}</span>
             <span class="phase-task-text ${t.done?'done':''}">${currentLang==='es'&&t.text_es?t.text_es:t.text}</span>
             <span class="check-tag ${catClassMap[t.cat]||''}" style="font-size:11px;padding:2px 7px;">${catEmoji[t.cat]||''}</span>
-            ${TASK_INFO[t.id]?`<button class="phase-task-info" onclick="showTaskInfo(event,${t.id})" title="Info & Links" style="background:none;border:1px solid rgba(13,13,13,0.15);border-radius:6px;padding:2px 6px;font-size:10px;cursor:pointer;color:#3b6fa0;margin-left:4px;flex-shrink:0">ℹ️</button>`:''}
+            ${TASK_INFO[t.id]?`<button class="phase-task-info" onclick="showTaskInfo(event,${t.id})" title="Info &amp; Links">ℹ️</button>`:''}
             ${!t.locked?`<button class="phase-task-delete" onclick="deleteTask(event,${t.id})">🗑</button>`:''}
           </div>`).join('')}
         </div>
@@ -2591,6 +2608,16 @@ function showTaskInfo(e, id) {
   const tasks = DB.get('tasks', []);
   const t = tasks.find(x => x.id === id);
   const taskName = t ? t.text : 'Task Details';
+  // Profile-aware income requirement for task 5
+  let detail = info.detail || '';
+  if (id === 5) {
+    const incomeReqs = {
+      single: '≥€2,259/mo passive income OR ≥€27,000 in savings',
+      couple: '≥€2,824/mo (base + partner) OR ≥€33,000 in savings',
+      family: '≥€3,389–3,954/mo depending on number of dependents (base €2,259 + ~€565 per dependent) OR savings equivalent',
+    };
+    detail = detail.replace('≥€2,259/mo passive income OR ≥€27,000 in savings', incomeReqs[currentProfile] || incomeReqs.single);
+  }
   const existing = document.getElementById('task-info-modal');
   if (existing) existing.remove();
   const modal = document.createElement('div');
@@ -2612,7 +2639,7 @@ function showTaskInfo(e, id) {
           <div style="font-size:13px;font-weight:600;color:#0d0d0d">${info.time||'Varies'}</div>
         </div>
       </div>
-      <div style="font-size:13px;color:#0d0d0d;line-height:1.7;margin-bottom:14px;background:#fff3ee;border-left:3px solid #c4622d;padding:12px 14px;border-radius:0 8px 8px 0">${info.detail||''}</div>
+      <div style="font-size:13px;color:#0d0d0d;line-height:1.7;margin-bottom:14px;background:#fff3ee;border-left:3px solid #c4622d;padding:12px 14px;border-radius:0 8px 8px 0">${detail}</div>
       ${info.link?`<a href="${info.link}" target="_blank" rel="noopener" style="display:block;width:100%;padding:12px;background:#c4622d;color:white;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;text-align:center;text-decoration:none;box-sizing:border-box">${info.linkLabel||'Open Link'} →</a>`:''}
     </div>`;
   modal.addEventListener('click', ev => { if (ev.target === modal) modal.remove(); });
@@ -2825,7 +2852,7 @@ function renderResources(filter){
   if(bannerEl){
     const qDone=DB.get('quiz_done',false);
     const qa=DB.get('quiz_answers',{});
-    const recTrack=qa.q5==='spanish'?'descent':(qa.q4==='remote'||qa.q4==='both')?'dnv':'nlv';
+    const recTrack=qa.q5==='spanish'?'descent':qa.q4==='student'?'student':(qa.q4==='remote'||qa.q4==='both')?'dnv':'nlv';
     const trackColors={nlv:'#c4622d',dnv:'#3b6fa0',descent:'#4a7c6f',student:'#7c5cbf'};
     const trackLabels={nlv:'Non-Lucrative Visa (NLV)',dnv:'Digital Nomad Visa',descent:'Citizenship by Descent',student:'Student Visa'};
     if(qDone){
@@ -3886,7 +3913,8 @@ function renderJourney(country) {
   const answers = DB.get('quiz_answers', {});
   const income = answers.q4 || '';
   const ancestry = answers.q5 || '';
-  const isRemote = income === 'remote' || income === 'both';
+  const isRemote = (income === 'remote' || income === 'both') && income !== 'student';
+  const isStudent = income === 'student';
   const hasSpanish = ancestry === 'spanish';
   const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
 
@@ -3899,6 +3927,7 @@ function renderJourney(country) {
   let recommended = j.tracks[0].id;
   if (country === 'spain') {
     if (hasSpanish) recommended = 'descent';
+    else if (isStudent) recommended = 'student';
     else if (isRemote) recommended = 'dnv';
     else recommended = 'nlv';
   }
