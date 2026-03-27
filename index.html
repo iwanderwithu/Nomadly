@@ -1443,8 +1443,8 @@ function resetQuiz(){
 <div class="page" id="page-housing">
   <div class="page-header">
     <div>
-      <div class="page-title">🏠 Housing in Spain</div>
-      <div class="page-sub">Rental guides, neighborhoods &amp; platforms — PR/USA to Spain</div>
+      <div class="page-title" id="housing-title">🏠 Housing in Spain</div>
+      <div class="page-sub" id="housing-sub">Rental guides, neighborhoods &amp; platforms — PR/USA to Spain</div>
     </div>
   </div>
 
@@ -1463,7 +1463,7 @@ function resetQuiz(){
 
   <!-- Bedroom & budget filter row -->
   <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
-    <span style="font-size:12px;color:#7a7060;font-weight:600">Filter:</span>
+    <span id="housing-filter-label" style="font-size:12px;color:#7a7060;font-weight:600">Filter:</span>
     <select id="housing-bedroom-filter" onchange="renderHousingCity(currentHousingCity)" style="padding:6px 12px;border:1.5px solid rgba(13,13,13,0.12);border-radius:8px;font-family:inherit;font-size:12px;background:#fff;color:#0d0d0d;cursor:pointer;outline:none">
       <option value="all">All sizes</option>
       <option value="1br">1 Bedroom (solo)</option>
@@ -1488,7 +1488,7 @@ function resetQuiz(){
 
   <!-- Rental platforms -->
   <div style="margin-top:20px">
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">🔗 Find Your Home — Recommended Platforms</div>
+    <div id="housing-platforms-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">🔗 Find Your Home — Recommended Platforms</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🏡 Spotahome</div>
@@ -1515,7 +1515,7 @@ function resetQuiz(){
 
   <!-- Spanish rental law — always visible -->
   <div style="margin-top:20px;background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:14px;padding:20px">
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:14px">⚖️ Spanish Rental Law — What You Need to Know</div>
+    <div id="housing-law-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:14px">⚖️ Spanish Rental Law — What You Need to Know</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
         <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Lease Length</div>
@@ -1720,6 +1720,12 @@ const T = {
     'coaching-note':'Sessions via Calendly · Payment at booking · All times EST',
     // Visas page
     'visas-title':'🛂 Visas & Consulates','visas-sub':'Official guides, consulate directory and citizenship by descent',
+    // Housing section
+    'housing-title':'🏠 Housing in Spain',
+    'housing-sub':'Rental guides, neighborhoods & platforms — PR/USA to Spain',
+    'housing-filter-label':'Filter:',
+    'housing-platforms-title':'🔗 Find Your Home — Recommended Platforms',
+    'housing-law-title':'⚖️ Spanish Rental Law — What You Need to Know',
     // Hero section
     'hero-badge':'🇵🇷 Built for Puerto Ricans moving to Spain',
     'hero-h1':'Move to Spain<br>Without the Guesswork',
@@ -1812,6 +1818,12 @@ const T = {
     'coaching-note':'Sesiones vía Calendly · Pago al reservar · Todos los horarios EST',
     // Visas page
     'visas-title':'🛂 Visas y Consulados','visas-sub':'Guías oficiales, directorio de consulados y ciudadanía por descendencia',
+    // Housing section
+    'housing-title':'🏠 Vivienda en España',
+    'housing-sub':'Guías de alquiler, barrios y plataformas — PR/USA a España',
+    'housing-filter-label':'Filtrar:',
+    'housing-platforms-title':'🔗 Encuentra Tu Hogar — Plataformas Recomendadas',
+    'housing-law-title':'⚖️ Ley de Alquiler en España — Lo Que Debes Saber',
     // Hero section
     'hero-badge':'🇵🇷 Hecho para puertorriqueños que se mudan a España',
     'hero-h1':'Múdate a España<br>Sin Complicaciones',
@@ -1834,14 +1846,36 @@ function setLang(lang, btn) {
   btn.classList.add('active');
   document.getElementById('html-root').lang = lang;
   applyTranslations();
+  updateHousingDropdowns();
   renderDashboard();
   renderPlanner(currentFilter);
   renderDocuments(currentDocFilter);
   renderBudget(currentCountry);
   renderAISuggestions();
   renderResources('all');
+  renderHousingPage();
   initChat();
   showToast(lang === 'es' ? '🌐 Cambiado a Español' : '🌐 Switched to English', 'info');
+}
+
+function updateHousingDropdowns() {
+  const isES = currentLang === 'es';
+  const brSel = document.getElementById('housing-bedroom-filter');
+  if (brSel) {
+    const cur = brSel.value;
+    brSel.innerHTML = isES
+      ? '<option value="all">Todos los tamaños</option><option value="1br">1 Habitación (solo)</option><option value="2br">2 Habitaciones (pareja)</option><option value="3br">3 Habitaciones (familia)</option>'
+      : '<option value="all">All sizes</option><option value="1br">1 Bedroom (solo)</option><option value="2br">2 Bedrooms (couple)</option><option value="3br">3 Bedrooms (family)</option>';
+    brSel.value = cur;
+  }
+  const visaSel = document.getElementById('housing-visa-filter');
+  if (visaSel) {
+    const cur = visaSel.value;
+    visaSel.innerHTML = isES
+      ? '<option value="all">Todos los tipos de visa</option><option value="nlv">Visa No Lucrativa (NLV)</option><option value="dnv">Visa Nómada Digital</option><option value="entrepreneur">Visa de Emprendedor</option><option value="student">Visa de Estudiante</option><option value="descent">Ciudadanía por Descendencia</option>'
+      : '<option value="all">All visa types</option><option value="nlv">Non-Lucrative Visa (NLV)</option><option value="dnv">Digital Nomad Visa</option><option value="entrepreneur">Entrepreneur Visa</option><option value="student">Student Visa</option><option value="descent">Citizenship by Descent</option>';
+    visaSel.value = cur;
+  }
 }
 
 function t(key) { return T[currentLang][key] || T['en'][key] || key; }
@@ -4053,79 +4087,97 @@ const HOUSING_CITIES = {
   malaga: {
     name:'Málaga', flag:'🌴', color:'#c4622d',
     avgRent1BR:'€750–1,100', avgRent2BR:'€1,100–1,500', avgRent3BR:'€1,500–2,000',
-    costIndex:'56 · Affordable', appeal:'Best weather in Spain · Growing expat hub · Beach & mountains',
+    costIndex:'56 · Affordable', costIndexES:'56 · Asequible',
+    appeal:'Best weather in Spain · Growing expat hub · Beach & mountains',
+    appealES:'Mejor clima de España · Hub de expats en crecimiento · Playa y montañas',
     prNote:'🇵🇷 PR favorite: direct community, Spanish-speaking culture, ~€800/mo avg. Connect via SJU→MAD→AGP.',
+    prNoteES:'🇵🇷 Favorito de PR: comunidad directa, cultura hispanohablante, ~€800/mes promedio. Conecta vía SJU→MAD→AGP.',
     neighborhoods:[
-      {name:'Soho / Centro',rent:'€900–1,200',vibe:'Trendy, walkable, cafes & art',badge:'Most popular with expats'},
-      {name:'Pedregalejo',rent:'€750–950',vibe:'Beachfront village feel, quieter',badge:'Best for families'},
-      {name:'Lagunillas',rent:'€700–850',vibe:'Authentic local neighborhood, up-and-coming',badge:'Best value'},
-      {name:'Teatinos',rent:'€650–800',vibe:'University area, modern builds, good transit',badge:'Quiet & affordable'},
-      {name:'El Palo',rent:'€650–800',vibe:'Fishing village feel, local restaurants',badge:'Hidden gem'},
+      {name:'Soho / Centro',rent:'€900–1,200',vibe:'Trendy, walkable, cafes & art',badge:'Most popular with expats',vibeES:'Moderno, caminable, cafeterías y arte',badgeES:'Más popular con expats'},
+      {name:'Pedregalejo',rent:'€750–950',vibe:'Beachfront village feel, quieter',badge:'Best for families',vibeES:'Ambiente de pueblo frente al mar, más tranquilo',badgeES:'Mejor para familias'},
+      {name:'Lagunillas',rent:'€700–850',vibe:'Authentic local neighborhood, up-and-coming',badge:'Best value',vibeES:'Barrio auténtico local, en auge',badgeES:'Mejor valor'},
+      {name:'Teatinos',rent:'€650–800',vibe:'University area, modern builds, good transit',badge:'Quiet & affordable',vibeES:'Zona universitaria, edificios modernos, buen transporte',badgeES:'Tranquilo y asequible'},
+      {name:'El Palo',rent:'€650–800',vibe:'Fishing village feel, local restaurants',badge:'Hidden gem',vibeES:'Ambiente de pueblo pesquero, restaurantes locales',badgeES:'Joya escondida'},
     ]
   },
   madrid: {
     name:'Madrid', flag:'🏙️', color:'#3b6fa0',
     avgRent1BR:'€1,000–1,500', avgRent2BR:'€1,400–2,000', avgRent3BR:'€1,900–2,800',
-    costIndex:'68 · Mid-range', appeal:'Capital city · World-class metro · Best job market',
+    costIndex:'68 · Mid-range', costIndexES:'68 · Precio medio',
+    appeal:'Capital city · World-class metro · Best job market',
+    appealES:'Capital · Metro de primera clase · Mejor mercado laboral',
     prNote:'🇵🇷 Fly SJU→JFK→MAD. Large Latin community. Best for DNV holders with clients in Europe.',
+    prNoteES:'🇵🇷 Vuela SJU→JFK→MAD. Gran comunidad latina. Ideal para titulares de DNV con clientes en Europa.',
     neighborhoods:[
-      {name:'Lavapiés',rent:'€900–1,200',vibe:'Multicultural, artistic, central',badge:'Most affordable central'},
-      {name:'Malasaña',rent:'€1,100–1,500',vibe:'Hip, creative, vintage shops',badge:'Young expat favorite'},
-      {name:'Carabanchel',rent:'€700–950',vibe:'Local, affordable, rapidly improving',badge:'Best value in Madrid'},
-      {name:'Chamberí',rent:'€1,200–1,600',vibe:'Elegant, quiet, well-connected',badge:'Best for families'},
-      {name:'Vallecas',rent:'€650–850',vibe:'Very local, authentic, affordable',badge:'Budget pick'},
+      {name:'Lavapiés',rent:'€900–1,200',vibe:'Multicultural, artistic, central',badge:'Most affordable central',vibeES:'Multicultural, artístico, central',badgeES:'Más asequible en el centro'},
+      {name:'Malasaña',rent:'€1,100–1,500',vibe:'Hip, creative, vintage shops',badge:'Young expat favorite',vibeES:'Hip, creativo, tiendas vintage',badgeES:'Favorito de jóvenes expats'},
+      {name:'Carabanchel',rent:'€700–950',vibe:'Local, affordable, rapidly improving',badge:'Best value in Madrid',vibeES:'Local, asequible, en rápida mejora',badgeES:'Mejor valor en Madrid'},
+      {name:'Chamberí',rent:'€1,200–1,600',vibe:'Elegant, quiet, well-connected',badge:'Best for families',vibeES:'Elegante, tranquilo, bien conectado',badgeES:'Mejor para familias'},
+      {name:'Vallecas',rent:'€650–850',vibe:'Very local, authentic, affordable',badge:'Budget pick',vibeES:'Muy local, auténtico, asequible',badgeES:'Opción económica'},
     ]
   },
   sevilla: {
     name:'Sevilla', flag:'🌞', color:'#d4a843',
     avgRent1BR:'€650–900', avgRent2BR:'€900–1,200', avgRent3BR:'€1,200–1,600',
-    costIndex:'52 · Most affordable', appeal:'Most affordable major city · Rich culture · Warm winters',
+    costIndex:'52 · Most affordable', costIndexES:'52 · Más asequible',
+    appeal:'Most affordable major city · Rich culture · Warm winters',
+    appealES:'Ciudad grande más asequible · Rica cultura · Inviernos cálidos',
     prNote:'🇵🇷 Spanish-speaking culture feels closest to home. PR community growing. Very walkable.',
+    prNoteES:'🇵🇷 La cultura hispanohablante se siente más cercana a casa. Comunidad de PR en crecimiento. Muy caminable.',
     neighborhoods:[
-      {name:'Triana',rent:'€750–950',vibe:'Traditional, river views, flamenco culture',badge:'PR expat favorite'},
-      {name:'El Arenal',rent:'€700–900',vibe:'Historic center, bars, restaurants',badge:'Best location'},
-      {name:'Nervión',rent:'€650–850',vibe:'Business district, modern, family-friendly',badge:'Best for families'},
-      {name:'Alameda',rent:'€700–850',vibe:'Young, bohemian, nightlife',badge:'Solo expat pick'},
-      {name:'San Bernardo',rent:'€600–750',vibe:'Quiet, local, near train station',badge:'Budget pick'},
+      {name:'Triana',rent:'€750–950',vibe:'Traditional, river views, flamenco culture',badge:'PR expat favorite',vibeES:'Tradicional, vistas al río, cultura flamenca',badgeES:'Favorito de expats de PR'},
+      {name:'El Arenal',rent:'€700–900',vibe:'Historic center, bars, restaurants',badge:'Best location',vibeES:'Centro histórico, bares, restaurantes',badgeES:'Mejor ubicación'},
+      {name:'Nervión',rent:'€650–850',vibe:'Business district, modern, family-friendly',badge:'Best for families',vibeES:'Zona comercial, moderno, ideal para familias',badgeES:'Mejor para familias'},
+      {name:'Alameda',rent:'€700–850',vibe:'Young, bohemian, nightlife',badge:'Solo expat pick',vibeES:'Joven, bohemio, vida nocturna',badgeES:'Ideal para expats solos'},
+      {name:'San Bernardo',rent:'€600–750',vibe:'Quiet, local, near train station',badge:'Budget pick',vibeES:'Tranquilo, local, cerca de la estación de tren',badgeES:'Opción económica'},
     ]
   },
   valencia: {
     name:'Valencia', flag:'☀️', color:'#4a7c6f',
     avgRent1BR:'€700–950', avgRent2BR:'€1,000–1,300', avgRent3BR:'€1,300–1,700',
-    costIndex:'58 · Affordable', appeal:'Best beaches · Paella · 3rd largest city · Very livable',
+    costIndex:'58 · Affordable', costIndexES:'58 · Asequible',
+    appeal:'Best beaches · Paella · 3rd largest city · Very livable',
+    appealES:'Mejores playas · Paella · 3ra ciudad más grande · Muy habitable',
     prNote:'🇵🇷 Fly VLC via MAD. Slower pace, great food scene. Growing remote worker community.',
+    prNoteES:'🇵🇷 Vuela a VLC vía MAD. Ritmo más tranquilo, excelente gastronomía. Comunidad de trabajadores remotos en crecimiento.',
     neighborhoods:[
-      {name:'Ruzafa',rent:'€850–1,100',vibe:'Coolest neighborhood, expats, food markets',badge:'Best overall'},
-      {name:'El Carmen',rent:'€800–1,000',vibe:'Historic, nightlife, art galleries',badge:'Most vibrant'},
-      {name:'Benimaclet',rent:'€650–800',vibe:'University area, local feel, quiet',badge:'Student/family pick'},
-      {name:'Patacona / Cabanyal',rent:'€700–900',vibe:'Beachfront, improving rapidly',badge:'Up and coming'},
-      {name:'Quatre Carreres',rent:'€600–750',vibe:'Quiet, residential, good metro access',badge:'Budget pick'},
+      {name:'Ruzafa',rent:'€850–1,100',vibe:'Coolest neighborhood, expats, food markets',badge:'Best overall',vibeES:'Barrio más cool, expats, mercados de comida',badgeES:'Mejor en general'},
+      {name:'El Carmen',rent:'€800–1,000',vibe:'Historic, nightlife, art galleries',badge:'Most vibrant',vibeES:'Histórico, vida nocturna, galerías de arte',badgeES:'Más vibrante'},
+      {name:'Benimaclet',rent:'€650–800',vibe:'University area, local feel, quiet',badge:'Student/family pick',vibeES:'Zona universitaria, ambiente local, tranquilo',badgeES:'Para estudiantes y familias'},
+      {name:'Patacona / Cabanyal',rent:'€700–900',vibe:'Beachfront, improving rapidly',badge:'Up and coming',vibeES:'Frente al mar, en rápida mejora',badgeES:'En auge'},
+      {name:'Quatre Carreres',rent:'€600–750',vibe:'Quiet, residential, good metro access',badge:'Budget pick',vibeES:'Tranquilo, residencial, buen acceso al metro',badgeES:'Opción económica'},
     ]
   },
   salamanca: {
     name:'Salamanca', flag:'🏛️', color:'#7c5cbf',
     avgRent1BR:'€400–650', avgRent2BR:'€600–900', avgRent3BR:'€800–1,100',
-    costIndex:'40 · Very affordable', appeal:'Oldest Spanish university · Best language schools · UNESCO city',
+    costIndex:'40 · Very affordable', costIndexES:'40 · Muy asequible',
+    appeal:'Oldest Spanish university · Best language schools · UNESCO city',
+    appealES:'Universidad española más antigua · Mejores escuelas de idiomas · Ciudad UNESCO',
     prNote:'🇵🇷 Top pick for Student Visa holders. 6–12 month Spanish intensive → switch to NLV/DNV → start 2-year citizenship clock. Costs ~60% less than Madrid.',
+    prNoteES:'🇵🇷 Opción top para titulares de Visa de Estudiante. 6–12 meses de español intensivo → cambio a NLV/DNV → inicio del reloj de ciudadanía de 2 años. Cuesta ~60% menos que Madrid.',
     neighborhoods:[
-      {name:'Centro Histórico',rent:'€500–700',vibe:'UNESCO heritage, stunning architecture, walkable',badge:'Most popular with expats'},
-      {name:'San Bernardo',rent:'€400–550',vibe:'Classic student area, lively, affordable cafes',badge:'Student favorite'},
-      {name:'Garrido',rent:'€350–500',vibe:'Quiet residential, modern builds, families',badge:'Best value'},
-      {name:'Pizarrales',rent:'€350–480',vibe:'Local neighborhood, authentic, very affordable',badge:'Budget pick'},
-      {name:'La Vega / Tejares',rent:'€400–550',vibe:'Near university campus, green, peaceful',badge:'University area'},
+      {name:'Centro Histórico',rent:'€500–700',vibe:'UNESCO heritage, stunning architecture, walkable',badge:'Most popular with expats',vibeES:'Patrimonio UNESCO, arquitectura impresionante, caminable',badgeES:'Más popular con expats'},
+      {name:'San Bernardo',rent:'€400–550',vibe:'Classic student area, lively, affordable cafes',badge:'Student favorite',vibeES:'Clásica zona estudiantil, animada, cafeterías asequibles',badgeES:'Favorito de estudiantes'},
+      {name:'Garrido',rent:'€350–500',vibe:'Quiet residential, modern builds, families',badge:'Best value',vibeES:'Residencial tranquilo, edificios modernos, familias',badgeES:'Mejor valor'},
+      {name:'Pizarrales',rent:'€350–480',vibe:'Local neighborhood, authentic, very affordable',badge:'Budget pick',vibeES:'Barrio local, auténtico, muy asequible',badgeES:'Opción económica'},
+      {name:'La Vega / Tejares',rent:'€400–550',vibe:'Near university campus, green, peaceful',badge:'University area',vibeES:'Cerca del campus universitario, verde, tranquilo',badgeES:'Zona universitaria'},
     ]
   },
   barcelona: {
     name:'Barcelona', flag:'🌊', color:'#3b6fa0',
     avgRent1BR:'€1,100–1,600', avgRent2BR:'€1,500–2,200', avgRent3BR:'€2,000–3,000',
-    costIndex:'72 · Premium', appeal:'Tech hub · International · Beach city · Startup scene',
+    costIndex:'72 · Premium', costIndexES:'72 · Premium',
+    appeal:'Tech hub · International · Beach city · Startup scene',
+    appealES:'Hub tecnológico · Internacional · Ciudad costera · Escena startup',
     prNote:'🇵🇷 Best city for Entrepreneur Visa holders. Strong VC ecosystem, international community, direct flights via MAD.',
+    prNoteES:'🇵🇷 Mejor ciudad para titulares de Visa de Emprendedor. Fuerte ecosistema de VC, comunidad internacional, vuelos directos vía MAD.',
     neighborhoods:[
-      {name:'Poblenou / 22@',rent:'€1,100–1,400',vibe:'Tech district, co-working spaces, startups',badge:'Best for entrepreneurs'},
-      {name:'Gràcia',rent:'€1,000–1,300',vibe:'Bohemian, local feel, expat friendly',badge:'Most livable'},
-      {name:'Eixample',rent:'€1,200–1,600',vibe:'Central, elegant, close to everything',badge:'Most popular'},
-      {name:'Poble Sec',rent:'€900–1,200',vibe:'Up and coming, artsy, affordable for BCN',badge:'Best value'},
-      {name:'Sant Andreu',rent:'€800–1,100',vibe:'Local neighborhood, quiet, improving fast',badge:'Hidden gem'},
+      {name:'Poblenou / 22@',rent:'€1,100–1,400',vibe:'Tech district, co-working spaces, startups',badge:'Best for entrepreneurs',vibeES:'Distrito tecnológico, espacios coworking, startups',badgeES:'Mejor para emprendedores'},
+      {name:'Gràcia',rent:'€1,000–1,300',vibe:'Bohemian, local feel, expat friendly',badge:'Most livable',vibeES:'Bohemio, ambiente local, amigable con expats',badgeES:'Más habitable'},
+      {name:'Eixample',rent:'€1,200–1,600',vibe:'Central, elegant, close to everything',badge:'Most popular',vibeES:'Central, elegante, cerca de todo',badgeES:'Más popular'},
+      {name:'Poble Sec',rent:'€900–1,200',vibe:'Up and coming, artsy, affordable for BCN',badge:'Best value',vibeES:'En auge, artístico, asequible para BCN',badgeES:'Mejor valor'},
+      {name:'Sant Andreu',rent:'€800–1,100',vibe:'Local neighborhood, quiet, improving fast',badge:'Hidden gem',vibeES:'Barrio local, tranquilo, en rápida mejora',badgeES:'Joya escondida'},
     ]
   }
 };
@@ -4142,13 +4194,23 @@ function showHousingCity(city, btn) {
 function renderHousingCity(city) {
   const d = HOUSING_CITIES[city];
   if (!d) return;
+  const isES = currentLang === 'es';
   const bedroomFilter = (document.getElementById('housing-bedroom-filter') || {}).value || 'all';
+  const soloLbl = isES ? 'Solo' : 'Solo';
+  const coupleLbl = isES ? 'Pareja' : 'Couple';
+  const familyLbl = isES ? 'Familia' : 'Family';
+  const moLbl = isES ? 'mes' : 'mo';
+  const costIdxLbl = isES ? 'Índice de costo' : 'Cost index';
+  const nbTitle = isES ? `🏘️ Mejores Barrios — ${d.name}` : `🏘️ Best Neighborhoods — ${d.name}`;
+  const appeal = isES ? (d.appealES || d.appeal) : d.appeal;
+  const prNote = isES ? (d.prNoteES || d.prNote) : d.prNote;
+  const costIndex = isES ? (d.costIndexES || d.costIndex) : d.costIndex;
   // City banner
   const bannerEl = document.getElementById('housing-city-banner');
   if (bannerEl) {
-    const rentHighlight = bedroomFilter === '1br' ? `<span style="background:${d.color};color:white;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px">Solo: ${d.avgRent1BR}/mo</span>` :
-      bedroomFilter === '2br' ? `<span style="background:${d.color};color:white;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px">Couple: ${d.avgRent2BR}/mo</span>` :
-      bedroomFilter === '3br' ? `<span style="background:${d.color};color:white;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px">Family: ${d.avgRent3BR}/mo</span>` :
+    const rentHighlight = bedroomFilter === '1br' ? `<span style="background:${d.color};color:white;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px">${soloLbl}: ${d.avgRent1BR}/${moLbl}</span>` :
+      bedroomFilter === '2br' ? `<span style="background:${d.color};color:white;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px">${coupleLbl}: ${d.avgRent2BR}/${moLbl}</span>` :
+      bedroomFilter === '3br' ? `<span style="background:${d.color};color:white;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px">${familyLbl}: ${d.avgRent3BR}/${moLbl}</span>` :
       `<span style="background:${d.color}15;color:${d.color};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">1BR: ${d.avgRent1BR}</span>
        <span style="background:${d.color}15;color:${d.color};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">2BR: ${d.avgRent2BR}</span>
        <span style="background:${d.color}15;color:${d.color};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">3BR: ${d.avgRent3BR}</span>`;
@@ -4156,13 +4218,13 @@ function renderHousingCity(city) {
       <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
         <div style="flex:1;min-width:200px">
           <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#0d0d0d;margin-bottom:4px">${d.flag} ${d.name}</div>
-          <div style="font-size:12px;color:#7a7060;margin-bottom:10px">${d.appeal}</div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:10px">${appeal}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">${rentHighlight}</div>
-          <div style="font-size:12px;color:#4a7c6f;background:#eef6f4;border-radius:8px;padding:8px 10px;line-height:1.6">${d.prNote}</div>
+          <div style="font-size:12px;color:#4a7c6f;background:#eef6f4;border-radius:8px;padding:8px 10px;line-height:1.6">${prNote}</div>
         </div>
         <div style="text-align:right;flex-shrink:0">
-          <div style="font-size:11px;color:#7a7060;margin-bottom:2px">Cost index</div>
-          <div style="font-size:13px;font-weight:700;color:${d.color}">${d.costIndex}</div>
+          <div style="font-size:11px;color:#7a7060;margin-bottom:2px">${costIdxLbl}</div>
+          <div style="font-size:13px;font-weight:700;color:${d.color}">${costIndex}</div>
         </div>
       </div>
     </div>`;
@@ -4170,28 +4232,48 @@ function renderHousingCity(city) {
   // Neighborhood cards
   const nbEl = document.getElementById('housing-neighborhoods');
   if (nbEl) {
-    nbEl.innerHTML = `<div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">🏘️ Best Neighborhoods — ${d.name}</div>
+    nbEl.innerHTML = `<div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">${nbTitle}</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
-      ${d.neighborhoods.map(n => `
+      ${d.neighborhoods.map(n => {
+        const vibe = isES ? (n.vibeES || n.vibe) : n.vibe;
+        const badge = isES ? (n.badgeES || n.badge) : n.badge;
+        return `
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:14px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
           <div style="font-weight:700;font-size:13px;color:#0d0d0d">${n.name}</div>
-          <span style="background:${d.color}15;color:${d.color};font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;flex-shrink:0;margin-left:6px">${n.badge}</span>
+          <span style="background:${d.color}15;color:${d.color};font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;flex-shrink:0;margin-left:6px">${badge}</span>
         </div>
-        <div style="font-size:11px;font-weight:700;color:${d.color};margin-bottom:4px">${n.rent}/mo</div>
-        <div style="font-size:12px;color:#7a7060;line-height:1.5">${n.vibe}</div>
-      </div>`).join('')}
+        <div style="font-size:11px;font-weight:700;color:${d.color};margin-bottom:4px">${n.rent}/${moLbl}</div>
+        <div style="font-size:12px;color:#7a7060;line-height:1.5">${vibe}</div>
+      </div>`;
+      }).join('')}
     </div>`;
   }
 }
 
 function applyHousingVisaFilter(visaType) {
+  const isES = currentLang === 'es';
   const recommendations = {
-    nlv: { city:'malaga', label:'🛂 NLV Recommended: Málaga or Sevilla', reason:'Lower rent (€700–1,100/mo) vs Madrid. Warm climate, large expat community. Your passive income stretches further.', color:'#c4622d' },
-    dnv: { city:'madrid', label:'💻 DNV Recommended: Madrid or Barcelona', reason:'Best European networks for remote workers. Fast internet, co-working culture, easy client meetups in CET timezone.', color:'#3b6fa0' },
-    entrepreneur: { city:'barcelona', label:'🚀 Entrepreneur Recommended: Barcelona or Madrid', reason:'Poblenou (22@ district) in Barcelona is Spain\'s startup hub. Strong VC ecosystem, co-working spaces, and international talent pool.', color:'#e67e22' },
-    student: { city:'salamanca', label:'🎓 Student Visa Recommended: Salamanca or Madrid', reason:'Salamanca has the best Spanish language programs and lowest cost of living. Perfect for the 6–12 month immersion → NLV/DNV switch strategy.', color:'#7c5cbf' },
-    descent: { city:'malaga', label:'🇪🇸 Citizenship Track: Start in Málaga or Sevilla', reason:'Most affordable entry points. Build empadronamiento + TIE card here, then decide where to settle long-term once citizenship is confirmed.', color:'#4a7c6f' },
+    nlv: { city:'malaga',
+      label: isES ? '🛂 NLV Recomendado: Málaga o Sevilla' : '🛂 NLV Recommended: Málaga or Sevilla',
+      reason: isES ? 'Alquiler más bajo (€700–1,100/mes) vs Madrid. Clima cálido, gran comunidad de expats. Tus ingresos pasivos rinden más.' : 'Lower rent (€700–1,100/mo) vs Madrid. Warm climate, large expat community. Your passive income stretches further.',
+      color:'#c4622d' },
+    dnv: { city:'madrid',
+      label: isES ? '💻 DNV Recomendado: Madrid o Barcelona' : '💻 DNV Recommended: Madrid or Barcelona',
+      reason: isES ? 'Mejores redes europeas para trabajadores remotos. Internet rápido, cultura coworking, reuniones con clientes en zona horaria CET.' : 'Best European networks for remote workers. Fast internet, co-working culture, easy client meetups in CET timezone.',
+      color:'#3b6fa0' },
+    entrepreneur: { city:'barcelona',
+      label: isES ? '🚀 Emprendedor Recomendado: Barcelona o Madrid' : '🚀 Entrepreneur Recommended: Barcelona or Madrid',
+      reason: isES ? 'Poblenou (distrito 22@) en Barcelona es el hub de startups de España. Fuerte ecosistema de VC, espacios coworking y talento internacional.' : 'Poblenou (22@ district) in Barcelona is Spain\'s startup hub. Strong VC ecosystem, co-working spaces, and international talent pool.',
+      color:'#e67e22' },
+    student: { city:'salamanca',
+      label: isES ? '🎓 Visa Estudiante Recomendado: Salamanca o Madrid' : '🎓 Student Visa Recommended: Salamanca or Madrid',
+      reason: isES ? 'Salamanca tiene los mejores programas de español y el costo de vida más bajo. Ideal para la estrategia de inmersión de 6–12 meses → cambio a NLV/DNV.' : 'Salamanca has the best Spanish language programs and lowest cost of living. Perfect for the 6–12 month immersion → NLV/DNV switch strategy.',
+      color:'#7c5cbf' },
+    descent: { city:'malaga',
+      label: isES ? '🇪🇸 Vía Ciudadanía: Empieza en Málaga o Sevilla' : '🇪🇸 Citizenship Track: Start in Málaga or Sevilla',
+      reason: isES ? 'Los puntos de entrada más asequibles. Construye aquí tu empadronamiento + tarjeta TIE y decide dónde instalarte a largo plazo una vez confirmada la ciudadanía.' : 'Most affordable entry points. Build empadronamiento + TIE card here, then decide where to settle long-term once citizenship is confirmed.',
+      color:'#4a7c6f' },
   };
   const rec = recommendations[visaType];
   if (rec) {
