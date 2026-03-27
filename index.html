@@ -796,7 +796,7 @@ function resetQuiz(){
     <div class="sidebar-item" onclick="showPage('ai',document.querySelectorAll('.nav-tab')[3])"><span class="icon">🤖</span> <span id="sb-ai">AI Advisor</span></div>
     <div class="sidebar-item" onclick="showPage('resources',document.querySelectorAll('.nav-tab')[4])"><span class="icon">🗂</span> <span id="sb-resources">Resources</span></div>
     <div class="sidebar-item" onclick="showPage('visas',document.querySelectorAll('.nav-tab')[5])"><span class="icon">🛂</span> <span id="sb-visas">Visas & Consulates</span></div>
-    <div class="sidebar-item" onclick="showPaywall()"><span class="icon">🏠</span> <span id="sb-housing">Housing Search</span><span class="lock">🔒</span></div>
+    <div class="sidebar-item" onclick="showPage('housing',this)"><span class="icon">🏠</span> <span id="sb-housing">Housing Search</span></div>
     <!-- COACHING CTA -->
     <div onclick="openCoaching()" style="margin:12px 8px 0;background:linear-gradient(135deg,#c4622d,#d4a843);border-radius:12px;padding:14px;cursor:pointer;transition:opacity 0.15s" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
       <div style="font-size:18px;margin-bottom:4px">📞</div>
@@ -1634,6 +1634,124 @@ function resetQuiz(){
       <button class="filter-btn" onclick="filterJourneyTasks('logistics',this)">📦 Logistics</button>
     </div>
     <div id="journey-timeline"></div>
+  </div>
+</div>
+
+<!-- HOUSING PAGE -->
+<div class="page" id="page-housing">
+  <div class="page-header">
+    <div>
+      <div class="page-title">🏠 Housing in Spain</div>
+      <div class="page-sub">Rental guides, neighborhoods &amp; platforms — PR/USA to Spain</div>
+    </div>
+  </div>
+
+  <!-- City tabs -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="housing-city-tabs">
+    <button class="filter-btn active" onclick="showHousingCity('malaga',this)">🌴 Málaga</button>
+    <button class="filter-btn" onclick="showHousingCity('madrid',this)">🏙️ Madrid</button>
+    <button class="filter-btn" onclick="showHousingCity('sevilla',this)">🌞 Sevilla</button>
+    <button class="filter-btn" onclick="showHousingCity('valencia',this)">☀️ Valencia</button>
+  </div>
+
+  <!-- City summary banner -->
+  <div id="housing-city-banner"></div>
+
+  <!-- Neighborhood guides (all plans) -->
+  <div id="housing-neighborhoods"></div>
+
+  <!-- Rental platforms -->
+  <div style="margin-top:20px">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">🔗 Find Your Home — Recommended Platforms</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
+      <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
+        <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🏡 Spotahome</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Verified furnished rentals — book remotely from PR. Best for first 3 months.</div>
+        <a href="https://spotahome.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">spotahome.com →</a>
+      </div>
+      <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
+        <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🏢 Idealista</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Largest Spanish platform. Best price tracking and long-term rentals from locals.</div>
+        <a href="https://idealista.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">idealista.com →</a>
+      </div>
+      <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
+        <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">📸 Fotocasa</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Local listings with price history. Great for understanding market trends per neighborhood.</div>
+        <a href="https://fotocasa.es" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">fotocasa.es →</a>
+      </div>
+      <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
+        <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🎓 HousingAnywhere</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Best for student visa holders. Mid-term furnished rentals, flexible contracts. No Spanish required.</div>
+        <a href="https://housinganywhere.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">housinganywhere.com →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spanish rental law — always visible -->
+  <div style="margin-top:20px;background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:14px;padding:20px">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:14px">⚖️ Spanish Rental Law — What You Need to Know</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Lease Length</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Min 5 years tenant protection (LAU 2019). Landlord can't kick you out before 5 years without cause.</div>
+      </div>
+      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Deposit</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">1 month unfurnished · 2 months furnished. Landlord must hold in regulated account.</div>
+      </div>
+      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Agency Fees</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Since 2023: landlord pays the agent — not you. If an agent charges you, it's illegal.</div>
+      </div>
+      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Empadronamiento</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Landlord must sign your empadronamiento (city registration). Confirm BEFORE signing lease.</div>
+      </div>
+      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Utilities</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Usually NOT included. Budget €100–150/mo for electricity, water, internet. Verify with landlord.</div>
+      </div>
+      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">PR to Spain Tips</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Most landlords want: passport, bank statements (3 months), and proof of income/savings for NLV. Spotahome lets you book without a NIE.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wanderer/Pro premium section -->
+  <div id="housing-pro-section" style="margin-top:20px;display:none">
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">📊 Rental Market Trends — Spain 2025–2026</div>
+    <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:14px;padding:20px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">
+        <div style="text-align:center;padding:14px;background:#fff3ee;border-radius:10px">
+          <div style="font-size:24px;font-weight:800;color:#c4622d;font-family:'Syne',sans-serif">+14%</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px">Málaga rent increase YoY</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:#eef2f8;border-radius:10px">
+          <div style="font-size:24px;font-weight:800;color:#3b6fa0;font-family:'Syne',sans-serif">+11%</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px">Madrid rent increase YoY</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:#eef6f4;border-radius:10px">
+          <div style="font-size:24px;font-weight:800;color:#4a7c6f;font-family:'Syne',sans-serif">+7%</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px">Sevilla rent increase YoY</div>
+        </div>
+        <div style="text-align:center;padding:14px;background:#fdf6e8;border-radius:10px">
+          <div style="font-size:24px;font-weight:800;color:#d4a843;font-family:'Syne',sans-serif">+9%</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px">Valencia rent increase YoY</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px;background:#f5f2eb;border-radius:10px">
+        💡 <strong style="color:#0d0d0d">PR Expat Strategy:</strong> Arrive in Málaga or Sevilla first — lower rents, large Spanish-speaking expat community. After empadronamiento and TIE card (3–6 months), you can negotiate longer leases with better rates. Many PR expats find apartments for €700–850/mo in Sevilla that rival €1,200/mo Madrid equivalents.
+      </div>
+    </div>
+  </div>
+
+  <!-- Free plan upgrade prompt -->
+  <div id="housing-upgrade-banner" style="margin-top:20px;display:none;background:linear-gradient(135deg,#fff3ee,#f5f2eb);border:1.5px dashed rgba(196,98,45,0.4);border-radius:14px;padding:20px;text-align:center">
+    <div style="font-size:28px;margin-bottom:8px">🔒</div>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:#0d0d0d;margin-bottom:6px">Unlock Full Housing Intelligence</div>
+    <div style="font-size:12px;color:#7a7060;margin-bottom:14px;max-width:360px;margin-left:auto;margin-right:auto">Wanderer plan: market trends, detailed neighborhood breakdowns, rental negotiation scripts, and housing budget calculator.</div>
+    <button onclick="showPaywall()" style="padding:10px 24px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer">Unlock Wanderer →</button>
   </div>
 </div>
 
@@ -3120,6 +3238,7 @@ function showPage(id,btn){
   if(id==='dashboard') renderDashboard();
   if(id==='ai') renderAISuggestions();
   if(id==='journey') { renderJourney(currentJourneyCountry); if(currentJourneyView==='checklist') renderPlannerInJourney(currentJourneyTaskFilter); }
+  if(id==='housing') renderHousingPage();
 }
 
 // ── PERSONALIZATION ──
@@ -3931,14 +4050,61 @@ function filterJourneyTasks(cat, btn) {
 function renderPlannerInJourney(filter) {
   const tasks = DB.get('tasks', []);
   const filtered = filter === 'all' ? tasks : tasks.filter(t => t.cat === filter);
-  const total = tasks.filter(t => !t.locked).length;
-  const done = tasks.filter(t => t.done && !t.locked).length;
-  let html = `<div style="font-size:12px;color:#7a7060;margin-bottom:14px;padding:10px 14px;background:#f5f2eb;border-radius:10px">${done} of ${total} tasks complete — tap ℹ️ on any task for official links, costs &amp; timelines</div>`;
+
+  // Plan-based phase access: free=phase1 only, wanderer=phases1-4, pro=all
+  const maxPhase = currentPlan === 'pro' ? 5 : currentPlan === 'wanderer' ? 4 : 1;
+
+  // Track-aware header
+  const track = getQuizTrack();
+  const trackColors = {nlv:'#c4622d', dnv:'#3b6fa0', descent:'#4a7c6f', student:'#7c5cbf'};
+  const trackLabels = {nlv:'Non-Lucrative Visa (NLV)', dnv:'Digital Nomad Visa', descent:'Citizenship by Descent', student:'Student Visa (Type D)'};
+  const trackColor = trackColors[track] || '#c4622d';
+  const trackLabel = trackLabels[track] || 'NLV';
+  const quizDone = DB.get('quiz_done', false);
+
+  const unlocked = tasks.filter(t => t.phase <= maxPhase);
+  const done = unlocked.filter(t => t.done).length;
+  const total = unlocked.length;
+
+  const planNote = currentPlan === 'free'
+    ? `<span style="color:#c4622d;font-weight:600">Free plan: Phase 1 only.</span> <span onclick="showPaywall()" style="color:#3b6fa0;text-decoration:underline;cursor:pointer">Unlock Wanderer for all phases →</span>`
+    : currentPlan === 'wanderer'
+    ? 'Wanderer: Phases 1–4 unlocked. <span onclick="showPaywall()" style="color:#c4622d;cursor:pointer;text-decoration:underline">Go Pro for Phase 5 citizenship steps →</span>'
+    : '⭐ Pro: all phases unlocked';
+
+  let html = `<div style="background:${trackColor}0d;border:1.5px solid ${trackColor}30;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+    <div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:${trackColor};margin-bottom:2px">${quizDone ? '✨ Your track' : '📋 Default track'}</div>
+      <div style="font-size:13px;font-weight:700;color:#0d0d0d">${trackLabel} · ${done}/${total} tasks complete</div>
+      <div style="font-size:11px;color:#7a7060;margin-top:3px">${planNote}</div>
+    </div>
+    <div style="font-size:11px;color:#7a7060">tap ℹ to see links, costs &amp; process</div>
+  </div>`;
+
   for (let p = 1; p <= 5; p++) {
     const phaseTasks = filtered.filter(t => t.phase === p);
     if (!phaseTasks.length) continue;
+    const phaseUnlocked = p <= maxPhase;
+
+    if (!phaseUnlocked) {
+      // Show locked phase teaser
+      const pi = phaseInfo[currentLang][p];
+      html += `<div class="phase" onclick="showPaywall()" style="cursor:pointer;opacity:0.6">
+        <div class="phase-spine"><div class="phase-dot"></div><div class="phase-line"></div></div>
+        <div class="phase-body">
+          <div class="phase-header">
+            <span class="phase-title">${pi.title}</span>
+            <span class="phase-month">${pi.month}</span>
+            <span style="font-size:11px;color:#c4622d;font-weight:600">🔒 ${currentPlan === 'wanderer' ? 'Pro' : 'Wanderer'}</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;padding:8px 0">${phaseTasks.length} tasks — unlock to access</div>
+        </div>
+      </div>`;
+      continue;
+    }
+
     const allDone = phaseTasks.every(t => t.done);
-    const anyActive = phaseTasks.some(t => !t.done && !t.locked);
+    const anyActive = phaseTasks.some(t => !t.done);
     const dotClass = allDone ? 'done' : (anyActive ? 'active' : '');
     const doneCount = phaseTasks.filter(t => t.done).length;
     const pi = phaseInfo[currentLang][p];
@@ -3952,12 +4118,12 @@ function renderPlannerInJourney(filter) {
         </div>
         <div class="phase-tasks">
           ${phaseTasks.map(t => `
-          <div class="phase-task ${t.done ? 'completed' : ''} ${t.locked ? 'locked' : ''}" onclick="${t.locked ? 'showPaywall()' : 'toggleTask(' + t.id + ',this)'}">
-            <span class="phase-task-check">${t.locked ? '🔒' : t.done ? '✅' : '⬜'}</span>
+          <div class="phase-task ${t.done ? 'completed' : ''}" onclick="toggleTask(${t.id},this)">
+            <span class="phase-task-check">${t.done ? '✅' : '⬜'}</span>
             <span class="phase-task-text ${t.done ? 'done' : ''}">${currentLang === 'es' && t.text_es ? t.text_es : t.text}</span>
             <span class="check-tag ${catClassMap[t.cat] || ''}" style="font-size:11px;padding:2px 7px;">${catEmoji[t.cat] || ''}</span>
             ${TASK_INFO[t.id] ? `<button class="phase-task-info" onclick="showTaskInfo(event,${t.id})">ℹ</button>` : ''}
-            ${!t.locked ? `<button class="phase-task-delete" onclick="deleteTask(event,${t.id})">🗑</button>` : ''}
+            <button class="phase-task-delete" onclick="deleteTask(event,${t.id})">🗑</button>
           </div>`).join('')}
         </div>
       </div>
@@ -3965,6 +4131,124 @@ function renderPlannerInJourney(filter) {
   }
   const el = document.getElementById('journey-timeline');
   if (el) el.innerHTML = html;
+}
+
+// ── HOUSING PAGE ──
+const HOUSING_CITIES = {
+  malaga: {
+    name:'Málaga', flag:'🌴', color:'#c4622d',
+    avgRent1BR:'€750–1,100', avgRent2BR:'€1,100–1,500', avgRent3BR:'€1,500–2,000',
+    costIndex:'56 · Affordable', appeal:'Best weather in Spain · Growing expat hub · Beach & mountains',
+    prNote:'🇵🇷 PR favorite: direct community, Spanish-speaking culture, ~€800/mo avg. Connect via SJU→MAD→AGP.',
+    neighborhoods:[
+      {name:'Soho / Centro',rent:'€900–1,200',vibe:'Trendy, walkable, cafes & art',badge:'Most popular with expats'},
+      {name:'Pedregalejo',rent:'€750–950',vibe:'Beachfront village feel, quieter',badge:'Best for families'},
+      {name:'Lagunillas',rent:'€700–850',vibe:'Authentic local neighborhood, up-and-coming',badge:'Best value'},
+      {name:'Teatinos',rent:'€650–800',vibe:'University area, modern builds, good transit',badge:'Quiet & affordable'},
+      {name:'El Palo',rent:'€650–800',vibe:'Fishing village feel, local restaurants',badge:'Hidden gem'},
+    ]
+  },
+  madrid: {
+    name:'Madrid', flag:'🏙️', color:'#3b6fa0',
+    avgRent1BR:'€1,000–1,500', avgRent2BR:'€1,400–2,000', avgRent3BR:'€1,900–2,800',
+    costIndex:'68 · Mid-range', appeal:'Capital city · World-class metro · Best job market',
+    prNote:'🇵🇷 Fly SJU→JFK→MAD. Large Latin community. Best for DNV holders with clients in Europe.',
+    neighborhoods:[
+      {name:'Lavapiés',rent:'€900–1,200',vibe:'Multicultural, artistic, central',badge:'Most affordable central'},
+      {name:'Malasaña',rent:'€1,100–1,500',vibe:'Hip, creative, vintage shops',badge:'Young expat favorite'},
+      {name:'Carabanchel',rent:'€700–950',vibe:'Local, affordable, rapidly improving',badge:'Best value in Madrid'},
+      {name:'Chamberí',rent:'€1,200–1,600',vibe:'Elegant, quiet, well-connected',badge:'Best for families'},
+      {name:'Vallecas',rent:'€650–850',vibe:'Very local, authentic, affordable',badge:'Budget pick'},
+    ]
+  },
+  sevilla: {
+    name:'Sevilla', flag:'🌞', color:'#d4a843',
+    avgRent1BR:'€650–900', avgRent2BR:'€900–1,200', avgRent3BR:'€1,200–1,600',
+    costIndex:'52 · Most affordable', appeal:'Most affordable major city · Rich culture · Warm winters',
+    prNote:'🇵🇷 Spanish-speaking culture feels closest to home. PR community growing. Very walkable.',
+    neighborhoods:[
+      {name:'Triana',rent:'€750–950',vibe:'Traditional, river views, flamenco culture',badge:'PR expat favorite'},
+      {name:'El Arenal',rent:'€700–900',vibe:'Historic center, bars, restaurants',badge:'Best location'},
+      {name:'Nervión',rent:'€650–850',vibe:'Business district, modern, family-friendly',badge:'Best for families'},
+      {name:'Alameda',rent:'€700–850',vibe:'Young, bohemian, nightlife',badge:'Solo expat pick'},
+      {name:'San Bernardo',rent:'€600–750',vibe:'Quiet, local, near train station',badge:'Budget pick'},
+    ]
+  },
+  valencia: {
+    name:'Valencia', flag:'☀️', color:'#4a7c6f',
+    avgRent1BR:'€700–950', avgRent2BR:'€1,000–1,300', avgRent3BR:'€1,300–1,700',
+    costIndex:'58 · Affordable', appeal:'Best beaches · Paella · 3rd largest city · Very livable',
+    prNote:'🇵🇷 Fly VLC via MAD. Slower pace, great food scene. Growing remote worker community.',
+    neighborhoods:[
+      {name:'Ruzafa',rent:'€850–1,100',vibe:'Coolest neighborhood, expats, food markets',badge:'Best overall'},
+      {name:'El Carmen',rent:'€800–1,000',vibe:'Historic, nightlife, art galleries',badge:'Most vibrant'},
+      {name:'Benimaclet',rent:'€650–800',vibe:'University area, local feel, quiet',badge:'Student/family pick'},
+      {name:'Patacona / Cabanyal',rent:'€700–900',vibe:'Beachfront, improving rapidly',badge:'Up and coming'},
+      {name:'Quatre Carreres',rent:'€600–750',vibe:'Quiet, residential, good metro access',badge:'Budget pick'},
+    ]
+  }
+};
+
+let currentHousingCity = 'malaga';
+
+function showHousingCity(city, btn) {
+  currentHousingCity = city;
+  document.querySelectorAll('#housing-city-tabs .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderHousingCity(city);
+}
+
+function renderHousingCity(city) {
+  const d = HOUSING_CITIES[city];
+  if (!d) return;
+  // City banner
+  const bannerEl = document.getElementById('housing-city-banner');
+  if (bannerEl) {
+    bannerEl.innerHTML = `<div style="background:${d.color}0d;border:1.5px solid ${d.color}30;border-radius:14px;padding:18px 22px;margin-bottom:16px">
+      <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#0d0d0d;margin-bottom:4px">${d.flag} ${d.name}</div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:10px">${d.appeal}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <span style="background:${d.color}15;color:${d.color};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">1BR: ${d.avgRent1BR}</span>
+            <span style="background:${d.color}15;color:${d.color};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">2BR: ${d.avgRent2BR}</span>
+            <span style="background:${d.color}15;color:${d.color};font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px">3BR: ${d.avgRent3BR}</span>
+          </div>
+          <div style="font-size:12px;color:#4a7c6f;background:#eef6f4;border-radius:8px;padding:8px 10px;line-height:1.6">${d.prNote}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:11px;color:#7a7060;margin-bottom:2px">Cost index</div>
+          <div style="font-size:13px;font-weight:700;color:${d.color}">${d.costIndex}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+  // Neighborhood cards
+  const nbEl = document.getElementById('housing-neighborhoods');
+  if (nbEl) {
+    nbEl.innerHTML = `<div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">🏘️ Best Neighborhoods — ${d.name}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
+      ${d.neighborhoods.map(n => `
+      <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
+          <div style="font-weight:700;font-size:13px;color:#0d0d0d">${n.name}</div>
+          <span style="background:${d.color}15;color:${d.color};font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;flex-shrink:0;margin-left:6px">${n.badge}</span>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:${d.color};margin-bottom:4px">${n.rent}/mo</div>
+        <div style="font-size:12px;color:#7a7060;line-height:1.5">${n.vibe}</div>
+      </div>`).join('')}
+    </div>`;
+  }
+}
+
+function renderHousingPage() {
+  renderHousingCity(currentHousingCity);
+  // Show/hide pro section based on plan
+  const proSection = document.getElementById('housing-pro-section');
+  const upgradeBanner = document.getElementById('housing-upgrade-banner');
+  const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
+  if (proSection) proSection.style.display = isPaid ? 'block' : 'none';
+  if (upgradeBanner) upgradeBanner.style.display = isPaid ? 'none' : 'block';
 }
 
 function renderJourneyStep(phaseKey, si, total, text, stateVal, color, isDoc) {
