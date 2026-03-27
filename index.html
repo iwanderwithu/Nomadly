@@ -370,13 +370,13 @@ function resetQuiz(){
 <!-- PAYWALL -->
 
 <div id="paywall">
-  <div style="background:#ffffff;border-radius:24px;padding:0;max-width:640px;width:95%;box-shadow:0 40px 80px rgba(0,0,0,0.3);overflow:hidden;max-height:90vh;overflow-y:auto">
+  <div style="background:#ffffff;border-radius:24px;padding:0;max-width:760px;width:95%;box-shadow:0 40px 80px rgba(0,0,0,0.3);overflow:hidden;max-height:90vh;overflow-y:auto">
 
 <!-- HEADER -->
 <div style="background:linear-gradient(135deg,#0d0d0d,#2a2a2a);padding:28px 32px;text-align:center;color:white">
-  <div style="font-size:36px;margin-bottom:10px">🌍</div>
-  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px" id="pw-title">Unlock Your Relocation OS</div>
-  <div style="font-size:13px;opacity:0.6" id="pw-desc">Everything you need to plan, move, and settle — in one place</div>
+  <div style="font-size:36px;margin-bottom:10px">🇪🇸</div>
+  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px" id="pw-title">Your Move to Spain, Simplified</div>
+  <div style="font-size:13px;opacity:0.6" id="pw-desc">From visa to housing — get the complete roadmap</div>
 </div>
 
 <!-- FREE PLAN BANNER -->
@@ -396,7 +396,7 @@ function resetQuiz(){
     <span style="font-size:13px;color:#7a7060" id="pw-annual-label">Annual <span style="background:#eef6f4;color:#4a7c6f;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600">Save 20%</span></span>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px">
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(190px,1fr));gap:12px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px">
 
     <!-- FREE -->
     <div style="border:1.5px solid rgba(13,13,13,0.1);border-radius:16px;padding:18px;background:#f9f8f6">
@@ -531,8 +531,8 @@ function resetQuiz(){
     </div>
     <span class="free-badge" id="free-badge">Free Plan</span>
     <button class="btn-upgrade" onclick="showPaywall()" id="upgrade-btn">Upgrade →</button>
-    <!-- DEV PLAN SWITCHER — hidden in production -->
-    <div id="dev-plan-switcher" style="display:none;background:rgba(255,255,255,0.1);border-radius:20px;padding:3px;gap:2px;margin-left:4px" title="Test plan simulator">
+    <!-- DEV PLAN SWITCHER — for testing -->
+    <div id="dev-plan-switcher" style="display:flex;background:rgba(255,255,255,0.1);border-radius:20px;padding:3px;gap:2px;margin-left:4px" title="Test plan simulator">
       <div class="plan-switch-btn active" onclick="setPlan('free',this)" id="ps-free" style="padding:4px 10px;border-radius:16px;border:none;background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em">FREE</div>
       <div class="plan-switch-btn" onclick="setPlan('wanderer',this)" id="ps-wanderer" style="padding:4px 10px;border-radius:16px;border:none;background:none;color:rgba(255,255,255,0.5);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em">W</div>
       <div class="plan-switch-btn" onclick="setPlan('pro',this)" id="ps-pro" style="padding:4px 10px;border-radius:16px;border:none;background:none;color:rgba(255,255,255,0.5);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em">PRO</div>
@@ -545,9 +545,6 @@ function resetQuiz(){
     <div class="sidebar-section" id="sb-relocations">My Relocations</div>
     <div class="sidebar-item" onclick="showPage('dashboard',document.querySelectorAll('.nav-tab')[0])"><span class="icon">🇪🇸</span> <span id="sb-spain">Spain</span></div>
     <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
-    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇨🇴</span> <span id="sb-colombia">Colombia</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
-    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇨🇷</span> <span id="sb-cr">Costa Rica</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
-    <div class="sidebar-item" onclick="showPaywall()"><span class="icon">➕</span> <span id="sb-add-dest">Add destination</span><span class="lock">🔒</span></div>
     <div class="sidebar-section" id="sb-tools">Tools</div>
     <div class="sidebar-item" onclick="showPage('dashboard',document.querySelectorAll('.nav-tab')[0])"><span class="icon">🏠</span> <span id="sb-overview">Overview</span></div>
     <div class="sidebar-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🗺️</span> <span id="sb-planner">My Journey</span></div>
@@ -855,22 +852,22 @@ function resetQuiz(){
   <!-- INVESTMENT ANALYSIS SECTION (Pro) -->
   <div id="investment-section" style="display:none">
     <div style="background:linear-gradient(135deg,#fff8f5,#fff);border:1.5px solid rgba(196,98,45,0.2);border-radius:14px;padding:20px;margin-bottom:16px">
-      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#0d0d0d;margin-bottom:4px">📈 Spain Property Investment Analysis <span style="background:#c4622d;color:white;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;vertical-align:middle">PRO</span></div>
-      <div style="font-size:12px;color:#7a7060;margin-bottom:20px">Rental yield · Net ROI · Cash-flow projection · Spain foreign buyer rules</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:#0d0d0d;margin-bottom:4px" id="inv-title">📈 Spain Property Investment Analysis <span style="background:#c4622d;color:white;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;vertical-align:middle">PRO</span></div>
+      <div style="font-size:12px;color:#7a7060;margin-bottom:20px" id="inv-sub">Rental yield · Net ROI · Cash-flow projection · Spain foreign buyer rules</div>
 
       <!-- RENTAL YIELD CALCULATOR -->
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:12px">🏘️ Rental Yield Calculator</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:12px" id="inv-calc-title">🏘️ Rental Yield Calculator</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
         <div>
-          <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Property Price (€)</label>
+          <label id="inv-price-label" style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Property Price (€)</label>
           <input type="number" id="inv-price" value="180000" oninput="calcInvestment()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
         </div>
         <div>
-          <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Monthly Rent (€)</label>
+          <label id="inv-rent-label" style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Monthly Rent (€)</label>
           <input type="number" id="inv-rent" value="900" oninput="calcInvestment()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
         </div>
         <div>
-          <label style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Vacancy (months/yr)</label>
+          <label id="inv-vacancy-label" style="font-size:10px;color:#7a7060;text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:4px">Vacancy (months/yr)</label>
           <input type="number" id="inv-vacancy" value="1" min="0" max="6" oninput="calcInvestment()" style="width:100%;padding:8px 10px;border:1.5px solid rgba(13,13,13,0.1);border-radius:8px;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
         </div>
       </div>
@@ -878,7 +875,7 @@ function resetQuiz(){
       <div id="inv-insight" style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px 14px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d;margin-bottom:20px"></div>
 
       <!-- SPAIN FOREIGN BUYER GUIDE -->
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:12px">🇪🇸 Spain Foreign Buyer Rules (PR / US Citizens)</div>
+      <div id="inv-buyer-title" style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:12px">🇪🇸 Spain Foreign Buyer Rules (PR / US Citizens)</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
         <div style="background:#f5f2eb;border-radius:10px;padding:14px">
           <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">✅ You Can Buy If</div>
@@ -1705,8 +1702,8 @@ const T = {
     'rf-all':'All','rf-health':'🏥 Health','rf-legal':'⚖️ Legal','rf-housing':'🏠 Housing',
     'rf-finance':'💳 Finance','rf-relocation':'🧳 Relocation','rf-community':'🤝 Community',
     // Paywall
-    'pw-title':'Unlock Your Relocation OS',
-    'pw-desc':"You've hit the free limit. Upgrade to track unlimited documents, compare 50+ cities, and get personalized AI relocation advice.",
+    'pw-title':'Your Move to Spain, Simplified',
+    'pw-desc':'From visa to housing — get the complete roadmap. Start free, upgrade when ready.',
     'pw-popular':'Most Popular','pw-plan1-name':'Wanderer','pw-plan2-name':'Nomad Pro',
     'pw-cta':'Start 7-Day Free Trial →','pw-later':'Maybe later',
     // Notif
@@ -1759,6 +1756,14 @@ const T = {
     'coaching-note':'Sessions via Calendly · Payment at booking · All times EST',
     // Visas page
     'visas-title':'🛂 Visas & Consulates','visas-sub':'Official guides, consulate directory and citizenship by descent',
+    // Investment section
+    'inv-title':'📈 Spain Property Investment Analysis',
+    'inv-sub':'Rental yield · Net ROI · Cash-flow projection · Spain foreign buyer rules',
+    'inv-calc-title':'🏘️ Rental Yield Calculator',
+    'inv-price-label':'Property Price (€)',
+    'inv-rent-label':'Monthly Rent (€)',
+    'inv-vacancy-label':'Vacancy (months/yr)',
+    'inv-buyer-title':'🇪🇸 Spain Foreign Buyer Rules (PR / US Citizens)',
     // Housing section
     'housing-title':'🏠 Housing in Spain',
     'housing-sub':'Rental guides, neighborhoods & platforms — PR/USA to Spain',
@@ -1809,8 +1814,8 @@ const T = {
     'res-add-label':'Agregar Recurso',
     'rf-all':'Todo','rf-health':'🏥 Salud','rf-legal':'⚖️ Legal','rf-housing':'🏠 Vivienda',
     'rf-finance':'💳 Finanzas','rf-relocation':'🧳 Reubicación','rf-community':'🤝 Comunidad',
-    'pw-title':'Desbloquea Tu OS de Reubicación',
-    'pw-desc':'Has alcanzado el límite gratuito. Actualiza para rastrear documentos ilimitados, comparar 50+ ciudades y obtener asesoramiento personalizado.',
+    'pw-title':'Tu Mudanza a España, Simplificada',
+    'pw-desc':'De la visa a la vivienda — obtén el plan completo. Empieza gratis, mejora cuando estés listo.',
     'pw-popular':'Más Popular','pw-plan1-name':'Viajero','pw-plan2-name':'Nómada Pro',
     'pw-cta':'Comenzar Prueba Gratuita de 7 Días →','pw-later':'Quizás después',
     'notif-title':'Notificaciones','notif-clear-btn':'Borrar todo','free-badge':'Plan Gratuito',
@@ -1860,6 +1865,14 @@ const T = {
     'coaching-note':'Sesiones vía Calendly · Pago al reservar · Todos los horarios EST',
     // Visas page
     'visas-title':'🛂 Visas y Consulados','visas-sub':'Guías oficiales, directorio de consulados y ciudadanía por descendencia',
+    // Investment section
+    'inv-title':'📈 Análisis de Inversión Inmobiliaria en España',
+    'inv-sub':'Rentabilidad · ROI neto · Proyección de flujo de caja · Reglas para compradores extranjeros',
+    'inv-calc-title':'🏘️ Calculadora de Rentabilidad de Alquiler',
+    'inv-price-label':'Precio del inmueble (€)',
+    'inv-rent-label':'Alquiler mensual (€)',
+    'inv-vacancy-label':'Vacancia (meses/año)',
+    'inv-buyer-title':'🇪🇸 Reglas para Compradores Extranjeros en España (PR / Ciudadanos EE.UU.)',
     // Housing section
     'housing-title':'🏠 Vivienda en España',
     'housing-sub':'Guías de alquiler, barrios y plataformas — PR/USA a España',
@@ -1900,6 +1913,9 @@ function setLang(lang, btn) {
   renderResources('all');
   renderHousingPage();
   initChat();
+  try { calcInvestment(); } catch(e) {}
+  try { calcRunway(); calcBuyVsRent(); } catch(e) {}
+  try { renderFeatureTable(); } catch(e) {}
   showToast(lang === 'es' ? '🌐 Cambiado a Español' : '🌐 Switched to English', 'info');
 }
 
@@ -2545,11 +2561,12 @@ function calcInvestment() {
   const totalInvestment = price + buyingCosts;
   const cashOnCash = (netAnnualRent / (price * 0.30 + buyingCosts)) * 100; // assuming 70% LTV
 
+  const isES = currentLang === 'es';
   const metrics = [
-    {label:'Gross Yield',value:grossYield.toFixed(1)+'%',color:'#4a7c6f'},
-    {label:'Net Yield',value:netYield.toFixed(1)+'%',color:'#3b6fa0'},
-    {label:'Annual Net Income',value:'€'+Math.round(netAnnualRent/100)*100,color:'#c4622d'},
-    {label:'Cash-on-Cash (30% down)',value:cashOnCash.toFixed(1)+'%',color:'#d4a843'},
+    {label: isES ? 'Rentabilidad bruta' : 'Gross Yield', value:grossYield.toFixed(1)+'%', color:'#4a7c6f'},
+    {label: isES ? 'Rentabilidad neta' : 'Net Yield', value:netYield.toFixed(1)+'%', color:'#3b6fa0'},
+    {label: isES ? 'Ingreso neto anual' : 'Annual Net Income', value:'€'+Math.round(netAnnualRent/100)*100, color:'#c4622d'},
+    {label: isES ? 'Rendimiento (30% entrada)' : 'Cash-on-Cash (30% down)', value:cashOnCash.toFixed(1)+'%', color:'#d4a843'},
   ];
   resultsEl.innerHTML = metrics.map(m => `
     <div style="background:#f5f2eb;border-radius:10px;padding:12px 8px;text-align:center">
@@ -2558,8 +2575,10 @@ function calcInvestment() {
     </div>`).join('');
 
   if (insightEl) {
-    const rating = grossYield >= 6 ? '🟢 Excellent' : grossYield >= 4 ? '🟡 Good' : '🔴 Below average';
-    insightEl.innerHTML = `<strong>${rating}</strong> rental yield for Spain. Málaga and Valencia average <strong>5–7%</strong> gross yield; Madrid averages <strong>4–5%</strong>. Net yield after expenses (IBI, insurance, occasional repairs) is ~${netYield.toFixed(1)}%. At a 30% down payment, your cash-on-cash return is <strong>${cashOnCash.toFixed(1)}%</strong>. Spain's rental demand is growing — expat and digital nomad demand is pushing yields up in coastal cities.`;
+    const rating = grossYield >= 6 ? (isES ? '🟢 Excelente' : '🟢 Excellent') : grossYield >= 4 ? (isES ? '🟡 Bueno' : '🟡 Good') : (isES ? '🔴 Por debajo del promedio' : '🔴 Below average');
+    insightEl.innerHTML = isES
+      ? `<strong>${rating}</strong> de rentabilidad de alquiler para España. Málaga y Valencia promedian <strong>5–7%</strong> bruto; Madrid promedia <strong>4–5%</strong>. La rentabilidad neta tras gastos (IBI, seguro, reparaciones) es ~${netYield.toFixed(1)}%. Con un 30% de entrada, tu rendimiento es <strong>${cashOnCash.toFixed(1)}%</strong>. La demanda de alquiler en España está creciendo — expats y nómadas digitales están impulsando los rendimientos en ciudades costeras.`
+      : `<strong>${rating}</strong> rental yield for Spain. Málaga and Valencia average <strong>5–7%</strong> gross yield; Madrid averages <strong>4–5%</strong>. Net yield after expenses (IBI, insurance, occasional repairs) is ~${netYield.toFixed(1)}%. At a 30% down payment, your cash-on-cash return is <strong>${cashOnCash.toFixed(1)}%</strong>. Spain's rental demand is growing — expat and digital nomad demand is pushing yields up in coastal cities.`;
   }
 }
 
@@ -3494,6 +3513,9 @@ function showVisaSection(id, btn) {
 }
 
 function showVisaDetail(visa) {
+  // All visa guides require at least Wanderer
+  const isPaidAny = currentPlan === 'wanderer' || currentPlan === 'pro';
+  if (!isPaidAny) { showPaywall(); return; }
   // Student visa: redirect to Journey page with the student track
   if (visa === 'student') {
     showPage('journey', document.querySelector('.nav-tab[onclick*="journey"]'));
@@ -4696,27 +4718,43 @@ let isAnnual = false;
 
 function toggleBilling() {
   isAnnual = !isAnnual;
+  window._billingAnnual = isAnnual;
   const knob = document.getElementById('billing-knob');
   const toggle = document.getElementById('billing-toggle');
   if (knob) knob.style.left = isAnnual ? '22px' : '2px';
   if (toggle) toggle.style.background = isAnnual ? '#c4622d' : '#e8e2d5';
+  const isES = currentLang === 'es';
   const wPrice = document.getElementById('w-price');
   const pPrice = document.getElementById('p-price');
+  const wPeriod = document.getElementById('w-period');
+  const pPeriod = document.getElementById('p-period');
   const wBilled = document.getElementById('w-billed');
   const pBilled = document.getElementById('p-billed');
   if (wPrice) wPrice.textContent = isAnnual ? '$7' : '$9';
   if (pPrice) pPrice.textContent = isAnnual ? '$15' : '$19';
-  if (wBilled) wBilled.textContent = isAnnual ? 'Billed $84/year (save $24)' : 'Billed monthly';
-  if (pBilled) pBilled.textContent = isAnnual ? 'Billed $180/year (save $48)' : 'Billed monthly';
-}
-
-function selectPlan(plan) {
-  showToast(`🎉 ${plan === 'pro' ? 'Nomad Pro' : 'Wanderer'} — 7-day free trial starting!`, 'success');
-  dismissPaywall();
+  if (wPeriod) wPeriod.textContent = isAnnual ? (isES ? '/mes' : '/mo') : (isES ? '/mes' : '/mo');
+  if (pPeriod) pPeriod.textContent = isAnnual ? (isES ? '/mes' : '/mo') : (isES ? '/mes' : '/mo');
+  if (wBilled) wBilled.textContent = isAnnual ? (isES ? 'Facturado $84/año (ahorra $24)' : 'Billed $84/year (save $24)') : (isES ? 'Facturado mensualmente' : 'Billed monthly');
+  if (pBilled) pBilled.textContent = isAnnual ? (isES ? 'Facturado $180/año (ahorra $48)' : 'Billed $180/year (save $48)') : (isES ? 'Facturado mensualmente' : 'Billed monthly');
 }
 
 function renderFeatureTable() {
-  const rows = [
+  const isES = currentLang === 'es';
+  const rows = isES ? [
+    ['Planificador de Reubicación','✓','✓','✓'],
+    ['Rastreador de Documentos','6 docs','25 docs','Ilimitados'],
+    ['Presupuesto y Comparación de Ciudades','3 ciudades','10 ciudades','50+ ciudades'],
+    ['Chat con Asesor IA','—','✓','✓'],
+    ['Precios de Propiedades','—','✓','✓'],
+    ['Calculadora de Reserva','—','✓','✓'],
+    ['Calculadora Alquilar vs Comprar','—','✓','✓'],
+    ['Perfiles Familia / Pareja','—','—','✓'],
+    ['Simulador de Hipoteca','—','—','✓'],
+    ['Búsqueda de Coliving','—','—','✓'],
+    ['Directorio de Visas y Consulados','✓','✓','✓'],
+    ['Idioma EN / ES','✓','✓','✓'],
+    ['Soporte Prioritario','—','—','✓'],
+  ] : [
     ['Relocation Planner','✓','✓','✓'],
     ['Document Tracker','6 docs','25 docs','Unlimited'],
     ['Budget & City Compare','3 cities','10 cities','50+ cities'],
