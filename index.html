@@ -1911,50 +1911,86 @@ function setProfile(p, btn) {
   DB.set('user_profile', p);
   document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  // Also activate by ID in case btn reference is stale
   const btnById = document.getElementById('prof-' + p);
   if (btnById) btnById.classList.add('active');
+  // Sync quiz answer q2 so profile and quiz stay consistent
+  const qa = DB.get('quiz_answers', {});
+  const profileToQ2 = { single:'solo', couple:'couple', family:'family' };
+  qa.q2 = profileToQ2[p] || 'solo';
+  DB.set('quiz_answers', qa);
   updateProfileBanner();
   updateBudgetForProfile();
-  showToast(p === 'single' ? '👤 Single mode' : p === 'couple' ? '👫 Couple mode' : '👨‍👩‍👧 Family mode', 'info');
+  const track = getQuizTrack();
+  const trackLabels = { nlv:'NLV', dnv:'Digital Nomad Visa', descent:'Citizenship by Descent', student:'Student Visa' };
+  const icons = { single:'👤', couple:'👫', family:'👨‍👩‍👧' };
+  showToast(icons[p] + ' ' + (p==='single'?'Single':p==='couple'?'Couple':'Family') + ' — ' + (trackLabels[track]||'NLV'), 'info');
+}
+
+// Returns the current visa track derived from quiz answers
+function getQuizTrack() {
+  const qa = DB.get('quiz_answers', {});
+  const income = qa.q4 || '';
+  const ancestry = qa.q5 || '';
+  const hasSpanish = ancestry === 'spanish';
+  const isStudent  = income === 'student';
+  const isRemote   = (income === 'remote' || income === 'both') && !isStudent;
+  if (hasSpanish) return 'descent';
+  if (isStudent)  return 'student';
+  if (isRemote)   return 'dnv';
+  return 'nlv';
 }
 
 function updateProfileBanner() {
   const banner = document.getElementById('profile-banner');
-  const icon = document.getElementById('pb-icon');
-  const title = document.getElementById('pb-title');
-  const sub = document.getElementById('pb-sub');
-  if(!banner||!icon||!title||!sub) return;
+  const icon   = document.getElementById('pb-icon');
+  const title  = document.getElementById('pb-title');
+  const sub    = document.getElementById('pb-sub');
+  if (!banner || !icon || !title || !sub) return;
   banner.className = 'profile-banner ' + currentProfile;
 
-  const es = currentLang === 'es';
-  const profiles = {
-    single: {
-      icon:'👤',
-      title: es ? 'Modo Adulto Individual' : 'Single Adult Mode',
-      sub: es
-        ? 'NLV: Mín. €2,259/mes o €27,000+ en ahorros · Seguro médico sin copago'
-        : 'NLV: Min. €2,259/mo income or €27,000+ savings · Health insurance no copay',
+  const track = getQuizTrack();
+  const quizDone = DB.get('quiz_done', false);
+
+  // Requirements per track × profile
+  const reqs = {
+    nlv: {
+      single: 'NLV: Min. €2,259/mo income or €27,000+ savings · Health insurance no copay',
+      couple: 'NLV: €2,824/mo (base + partner) or €33,000+ savings · Both need health insurance',
+      family: 'NLV: €3,954/mo+ (base + ~€565 per dependent) · School enrollment docs required',
     },
-    couple: {
-      icon:'👫',
-      title: es ? 'Modo Pareja' : 'Couple Mode',
-      sub: es
-        ? 'NLV: €2,259 base + €565/mes por pareja · Ambos deben tener seguro médico'
-        : 'NLV: €2,259 base + €565/mo for partner · Both need health insurance',
+    dnv: {
+      single: 'DNV: €2,646/mo remote income · 24% flat tax (Beckham Law) · Health insurance required',
+      couple: 'DNV: €2,646/mo for main applicant · Partner joins as dependent · Both need health insurance',
+      family: 'DNV: €2,646/mo for main applicant · Children as dependents · School enrollment docs required',
     },
-    family: {
-      icon:'👨‍👩‍👧',
-      title: es ? 'Modo Familia' : 'Family Mode',
-      sub: es
-        ? 'NLV: €2,259 base + ~€565/mes por cada dependiente · Inscripción escolar requerida en España'
-        : 'NLV: €2,259 base + ~€565/mo per dependent · School enrollment required in Spain',
+    descent: {
+      single: 'Citizenship: 2-year residency (Iberoamericano) · Gather birth cert + ancestry docs · No income minimum',
+      couple: 'Citizenship: Both can apply after 2 years · Each needs own ancestry documentation',
+      family: 'Citizenship: Children born to Spanish parent are citizens by default · Full family can naturalize',
+    },
+    student: {
+      single: 'Student Visa: Proof of enrollment · €600/mo living funds · Health insurance no copay',
+      couple: 'Student Visa: Individual enrollment required · Partner can join on dependent visa · €600/mo each',
+      family: 'Student Visa: Each adult needs enrollment or dependent status · Children enroll in Spanish schools',
     },
   };
-  const p = profiles[currentProfile] || profiles.single;
-  icon.textContent = p.icon;
-  title.textContent = p.title;
-  sub.textContent = p.sub;
+
+  const profileIcons  = { single:'👤', couple:'👫', family:'👨‍👩‍👧' };
+  const profileTitles = {
+    single: 'Single Adult',
+    couple: 'Couple',
+    family: 'Family',
+  };
+  const trackLabels = { nlv:'NLV', dnv:'Digital Nomad', descent:'Citizenship by Descent', student:'Student Visa' };
+
+  const p = currentProfile || 'single';
+  const trackReqs = (reqs[track] || reqs.nlv)[p] || (reqs[track] || reqs.nlv).single;
+  const modeLabel = profileTitles[p] || 'Single Adult';
+  const trackLabel = quizDone ? trackLabels[track] || 'NLV' : 'NLV';
+
+  icon.textContent  = profileIcons[p] || '👤';
+  title.textContent = modeLabel + ' · ' + trackLabel;
+  sub.textContent   = quizDone ? trackReqs : 'NLV: Min. €2,259/mo income or €27,000+ savings · Health insurance no copay';
 }
 
 function updateBudgetForProfile() {
