@@ -16,8 +16,8 @@
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(196,98,45,0.18) 0%,transparent 65%);pointer-events:none"></div>
   <div style="position:relative;max-width:620px;margin:0 auto">
     <div id="hero-badge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(196,98,45,0.15);border:1px solid rgba(196,98,45,0.35);border-radius:20px;padding:5px 14px;font-size:12px;color:#e8855a;font-weight:600;letter-spacing:0.04em;margin-bottom:22px">🇵🇷 Built for Puerto Ricans moving to Spain</div>
-    <h1 id="hero-h1" style="font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-0.02em;color:white;margin-bottom:16px">Move to Spain<br>Without the Guesswork</h1>
-    <p id="hero-sub" style="font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto">Find the right visa for your situation and get a clear, step-by-step relocation plan — so you don't waste time, money, or get denied.</p>
+    <h1 id="hero-h1" style="font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-0.02em;color:white;margin-bottom:16px">Nomadly: Self-guided<br>relocation to Spain</h1>
+    <p id="hero-sub" style="font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto">Preview Phase 1 for free — unlock the full step-by-step journey with tools, trackers, and city insights with a subscription.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px">
       <button id="hero-cta" onclick="resetQuiz()" style="padding:15px 32px;background:#c4622d;color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:16px;cursor:pointer;letter-spacing:-0.01em" onmouseover="this.style.background='#e8855a'" onmouseout="this.style.background='#c4622d'">Take the Free Quiz →</button>
       <button id="hero-browse" onclick="showPage('visas',document.querySelector('.nav-tab[onclick*=visas]'))" style="padding:15px 24px;background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:12px;font-family:'Syne',sans-serif;font-weight:600;font-size:15px;cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">Browse Visas</button>
@@ -271,7 +271,10 @@ function resetQuiz(){
 <!-- Header -->
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;margin-top:8px">
   <div style="font-weight:800;font-size:18px;color:#0d0d0d;letter-spacing:-0.3px">• Nomadly</div>
-  <div id="quiz-step-label" style="font-size:12px;color:#7a7060;font-weight:600;background:rgba(13,13,13,0.06);padding:4px 10px;border-radius:20px">Step 1 of 5</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="quiz-step-label" style="font-size:12px;color:#7a7060;font-weight:600;background:rgba(13,13,13,0.06);padding:4px 10px;border-radius:20px">Step 1 of 5</div>
+    <button onclick="document.getElementById('onboarding').style.display='none'" style="width:28px;height:28px;background:rgba(13,13,13,0.08);border:none;border-radius:50%;cursor:pointer;font-size:14px;color:#7a7060;display:flex;align-items:center;justify-content:center;line-height:1;padding:0" title="Close">✕</button>
+  </div>
 </div>
 
 <!-- Q1: Origin -->
@@ -376,7 +379,7 @@ function resetQuiz(){
 <div style="background:linear-gradient(135deg,#0d0d0d,#2a2a2a);padding:28px 32px;text-align:center;color:white">
   <div style="font-size:36px;margin-bottom:10px">🇪🇸</div>
   <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px" id="pw-title">Your Move to Spain, Simplified</div>
-  <div style="font-size:13px;opacity:0.6" id="pw-desc">From visa to housing — get the complete roadmap</div>
+  <div style="font-size:13px;opacity:0.6" id="pw-desc">Phase 1 preview free — unlock the full journey with a subscription</div>
 </div>
 
 <!-- FREE PLAN BANNER -->
@@ -404,7 +407,7 @@ function resetQuiz(){
       <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#0d0d0d;margin-bottom:4px">$0</div>
       <div style="font-size:11px;color:#7a7060;margin-bottom:14px">Forever free</div>
       <div style="font-size:12px;color:#7a7060;line-height:2">
-        ✓ 6 documents<br>✓ 3 cities<br>✓ Basic planner<br>✓ AI tips<br>✓ Consulate directory<br>× No AI chat<br>× No property data<br>× No family mode
+        ✓ Phase 1 preview<br>✓ Consulate directory<br>× No full guides<br>× No tools or trackers<br>× No city data<br>× No AI Advisor
       </div>
       <div style="margin-top:14px;padding:9px;background:#e8e2d5;border-radius:8px;text-align:center;font-size:12px;font-weight:600;color:#7a7060">Current Plan</div>
     </div>
@@ -418,7 +421,7 @@ function resetQuiz(){
       </div>
       <div style="font-size:11px;color:#7a7060;margin-bottom:14px" id="w-billed">Billed monthly</div>
       <div style="font-size:12px;color:#0d0d0d;line-height:2">
-        ✓ 25 documents<br>✓ 10 cities<br>✓ AI chat advisor<br>✓ Full planner<br>✓ Property prices<br>✓ Buy vs rent tool<br>✓ Savings runway<br>× No family profiles
+        ✓ Full step-by-step guides<br>✓ Checklists & doc trackers<br>✓ Interactive tools<br>✓ Budget & visa tracker<br>✓ City data (Spain)<br>✓ Monthly updates<br>× No roadmap PDF<br>× No AI Advisor
       </div>
       <button onclick="checkoutPlan('wanderer')" style="margin-top:14px;width:100%;padding:10px;background:#0d0d0d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
     </div>
@@ -433,7 +436,7 @@ function resetQuiz(){
       </div>
       <div style="font-size:11px;color:#7a7060;margin-bottom:14px" id="p-billed">Billed monthly</div>
       <div style="font-size:12px;color:#0d0d0d;line-height:2">
-        ✓ Unlimited docs<br>✓ 50+ cities<br>✓ AI advisor + chat<br>✓ All profiles<br>✓ Full property suite<br>✓ Mortgage simulator<br>✓ Coliving search<br>✓ Priority support
+        ✓ Everything in Wanderer<br>✓ Roadmap generator (PDF)<br>✓ Smart document packs<br>✓ Impact calculator<br>✓ AI Advisor (automated)<br>✓ Optional add-ons<br>✓ Mortgage simulator<br>✓ Coliving search
       </div>
       <button onclick="checkoutPlan('pro')" style="margin-top:14px;width:100%;padding:10px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
     </div>
@@ -501,11 +504,11 @@ function resetQuiz(){
   <div class="logo"><div class="logo-dot"></div> Nomadly</div>
   <nav class="topbar-nav">
     <div class="nav-tab active" onclick="showPage('dashboard',this)" id="nav-overview">Overview</div>
-    <div class="nav-tab" onclick="showPage('journey',this)" id="nav-planner">🗺️ My Journey</div>
+    <div class="nav-tab" onclick="showPage('journey',this)" id="nav-planner">My Journey</div>
     <div class="nav-tab" onclick="showPage('budget',this)" id="nav-budget">Budget</div>
-    <div class="nav-tab" onclick="showPage('ai',this)" id="nav-ai">🤖 AI</div>
-    <div class="nav-tab" onclick="showPage('resources',this)" id="nav-resources">🗂 Resources</div>
-    <div class="nav-tab" onclick="showPage('visas',this)" id="nav-visas">🛂 Visas</div>
+    <div class="nav-tab" onclick="showPage('ai',this)" id="nav-ai">AI</div>
+    <div class="nav-tab" onclick="showPage('resources',this)" id="nav-resources">Resources</div>
+    <div class="nav-tab" onclick="showPage('visas',this)" id="nav-visas">Visas</div>
   </nav>
   <div class="topbar-right">
     <!-- Language Toggle -->
@@ -1661,8 +1664,8 @@ function resetQuiz(){
 const T = {
   en: {
     // Nav
-    'nav-overview':'Overview','nav-planner':'🗺️ My Journey','nav-documents':'Documents',
-    'nav-budget':'Budget','nav-ai':'🤖 AI','nav-resources':'🗂 Resources',
+    'nav-overview':'Overview','nav-planner':'My Journey','nav-documents':'Documents',
+    'nav-budget':'Budget','nav-ai':'AI','nav-resources':'Resources',
     // Sidebar
     'sb-relocations':'My Relocations','sb-spain':'Spain','sb-portugal':'Portugal',
     'sb-colombia':'Colombia','sb-add-dest':'Add destination','sb-tools':'Tools',
@@ -1703,7 +1706,7 @@ const T = {
     'rf-finance':'💳 Finance','rf-relocation':'🧳 Relocation','rf-community':'🤝 Community',
     // Paywall
     'pw-title':'Your Move to Spain, Simplified',
-    'pw-desc':'From visa to housing — get the complete roadmap. Start free, upgrade when ready.',
+    'pw-desc':'Phase 1 preview free — unlock the full journey with a subscription',
     'pw-popular':'Most Popular','pw-plan1-name':'Wanderer','pw-plan2-name':'Nomad Pro',
     'pw-cta':'Start 7-Day Free Trial →','pw-later':'Maybe later',
     // Notif
@@ -1737,7 +1740,7 @@ const T = {
     'bvr-pro-sub':'Spanish bank rates, notary fees, ITP tax, rental yield calculator',
     'bvr-pro-cta':'Unlock →',
     // Nav — missing keys
-    'nav-visas':'🛂 Visas & Consulates','nav-journey':'🗺️ My Journey',
+    'nav-visas':'Visas & Consulates','nav-journey':'My Journey',
     // Sidebar — missing keys
     'sb-cr':'Costa Rica','sb-visas':'Visas & Consulates',
     // Journey page
@@ -1772,8 +1775,8 @@ const T = {
     'housing-law-title':'⚖️ Spanish Rental Law — What You Need to Know',
     // Hero section
     'hero-badge':'🇵🇷 Built for Puerto Ricans moving to Spain',
-    'hero-h1':'Move to Spain<br>Without the Guesswork',
-    'hero-sub':'Find the right visa for your situation and get a clear, step-by-step relocation plan — so you don\'t waste time, money, or get denied.',
+    'hero-h1':'Nomadly: Self-guided<br>relocation to Spain',
+    'hero-sub':'Preview Phase 1 for free — unlock the full step-by-step journey with tools, trackers, and city insights with a subscription.',
     'hero-cta':'Take the Free Quiz →',
     'hero-browse':'Browse Visas',
     'hero-stat-1':'quiz to your plan',
@@ -1781,8 +1784,8 @@ const T = {
     'hero-stat-3':'PR → citizenship',
   },
   es: {
-    'nav-overview':'Inicio','nav-planner':'🗺️ Mi Viaje','nav-documents':'Documentos',
-    'nav-budget':'Presupuesto','nav-ai':'🤖 IA','nav-resources':'🗂 Recursos',
+    'nav-overview':'Inicio','nav-planner':'Mi Viaje','nav-documents':'Documentos',
+    'nav-budget':'Presupuesto','nav-ai':'IA','nav-resources':'Recursos',
     'sb-relocations':'Mis Reubicaciones','sb-spain':'España','sb-portugal':'Portugal',
     'sb-colombia':'Colombia','sb-add-dest':'Agregar destino','sb-tools':'Herramientas',
     'sb-planner':'Mi Viaje','sb-overview':'Inicio','sb-documents':'Documentos','sb-budget':'Presupuesto',
@@ -1815,7 +1818,7 @@ const T = {
     'rf-all':'Todo','rf-health':'🏥 Salud','rf-legal':'⚖️ Legal','rf-housing':'🏠 Vivienda',
     'rf-finance':'💳 Finanzas','rf-relocation':'🧳 Reubicación','rf-community':'🤝 Comunidad',
     'pw-title':'Tu Mudanza a España, Simplificada',
-    'pw-desc':'De la visa a la vivienda — obtén el plan completo. Empieza gratis, mejora cuando estés listo.',
+    'pw-desc':'Vista previa de la Fase 1 gratis — desbloquea el recorrido completo con una suscripción',
     'pw-popular':'Más Popular','pw-plan1-name':'Viajero','pw-plan2-name':'Nómada Pro',
     'pw-cta':'Comenzar Prueba Gratuita de 7 Días →','pw-later':'Quizás después',
     'notif-title':'Notificaciones','notif-clear-btn':'Borrar todo','free-badge':'Plan Gratuito',
@@ -1846,7 +1849,7 @@ const T = {
     'bvr-pro-sub':'Tasas de bancos españoles, notaría, impuesto ITP, calculadora de rentabilidad',
     'bvr-pro-cta':'Desbloquear →',
     // Nav — missing keys
-    'nav-visas':'🛂 Visas y Consulados','nav-journey':'🗺️ Mi Viaje',
+    'nav-visas':'Visas y Consulados','nav-journey':'Mi Viaje',
     // Sidebar — missing keys
     'sb-cr':'Costa Rica','sb-visas':'Visas y Consulados',
     // Journey page
@@ -1881,8 +1884,8 @@ const T = {
     'housing-law-title':'⚖️ Ley de Alquiler en España — Lo Que Debes Saber',
     // Hero section
     'hero-badge':'🇵🇷 Hecho para puertorriqueños que se mudan a España',
-    'hero-h1':'Múdate a España<br>Sin Complicaciones',
-    'hero-sub':'Encuentra la visa correcta para tu situación y obtén un plan de reubicación claro, paso a paso — sin perder tiempo, dinero ni arriesgarte a una negativa.',
+    'hero-h1':'Nomadly: Reubicación guiada<br>por ti a España',
+    'hero-sub':'Previsualiza la Fase 1 gratis — desbloquea el recorrido completo con herramientas, rastreadores e información de ciudades con una suscripción.',
     'hero-cta':'Tomar el Quiz Gratis →',
     'hero-browse':'Ver Visas',
     'hero-stat-1':'quiz a tu plan',
@@ -3575,9 +3578,9 @@ function hideVisaDetail() {
 let currentPlan = DB.get('current_plan','free'); // 'free' | 'wanderer' | 'pro'
 
 const PLAN_FEATURES = {
-  free:     { docs:6,    cities:3,  aiChat:false, property:false, runway:false, bvr:false, familyMode:true,  mortgage:false, coliving:false },
-  wanderer: { docs:25,   cities:10, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:false, coliving:false },
-  pro:      { docs:9999, cities:99, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:true,  coliving:true  },
+  free:     { docs:0,    cities:0,  aiChat:false, property:false, runway:false, bvr:false, familyMode:false, mortgage:false, coliving:false, fullGuides:false, checklists:false, interactiveTools:false, cityData:false, roadmapPDF:false, docPacks:false, impactCalc:false, addOns:false, monthlyUpdates:false },
+  wanderer: { docs:9999, cities:10, aiChat:false, property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:false, coliving:false, fullGuides:true,  checklists:true,  interactiveTools:true,  cityData:true,  roadmapPDF:false, docPacks:false, impactCalc:false, addOns:false, monthlyUpdates:true },
+  pro:      { docs:9999, cities:99, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:true,  coliving:true,  fullGuides:true,  checklists:true,  interactiveTools:true,  cityData:true,  roadmapPDF:true,  docPacks:true,  impactCalc:true,  addOns:true,  monthlyUpdates:true },
 };
 
 function setPlan(plan, btn) {
@@ -3628,7 +3631,7 @@ function applyPlanRestrictions() {
   if (sendBtn) sendBtn.style.opacity = f.aiChat ? '1' : '0.4';
   if (chatInput) chatInput.placeholder = f.aiChat
     ? (currentLang === 'es' ? 'Pregunta sobre visas, vivienda, costos...' : 'Ask about visas, housing, costs...')
-    : '🔒 Unlock AI chat with Wanderer or Pro';
+    : '🔒 AI Advisor available on Nomad Pro';
 
   // Show/hide AI lock banner
   if (!aiLock && !f.aiChat) {
@@ -3637,7 +3640,7 @@ function applyPlanRestrictions() {
       const banner = document.createElement('div');
       banner.id = 'ai-lock-banner';
       banner.style.cssText = 'background:#fff3ee;border:1.5px solid rgba(196,98,45,0.2);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center';
-      banner.innerHTML = '<div><div style="font-weight:600;font-size:13px;color:#0d0d0d">🔒 AI Chat requires Wanderer or Pro</div><div style="font-size:12px;color:#7a7060;margin-top:2px">Ask unlimited questions about visas, housing, taxes, and more</div></div><button onclick="showPaywall()" style="padding:8px 16px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;margin-left:12px">Unlock →</button>';
+      banner.innerHTML = '<div><div style="font-weight:600;font-size:13px;color:#0d0d0d">🔒 AI Advisor requires Nomad Pro</div><div style="font-size:12px;color:#7a7060;margin-top:2px">Automated guidance on visas, housing, taxes, and more</div></div><button onclick="showPaywall()" style="padding:8px 16px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;margin-left:12px">Unlock →</button>';
       const suggestedQ = document.getElementById('suggested-questions');
       if (suggestedQ) suggestedQ.parentNode.insertBefore(banner, suggestedQ);
     }
@@ -4741,33 +4744,33 @@ function toggleBilling() {
 function renderFeatureTable() {
   const isES = currentLang === 'es';
   const rows = isES ? [
-    ['Planificador de Reubicación','✓','✓','✓'],
-    ['Rastreador de Documentos','6 docs','25 docs','Ilimitados'],
-    ['Presupuesto y Comparación de Ciudades','3 ciudades','10 ciudades','50+ ciudades'],
-    ['Chat con Asesor IA','—','✓','✓'],
-    ['Precios de Propiedades','—','✓','✓'],
-    ['Calculadora de Reserva','—','✓','✓'],
-    ['Calculadora Alquilar vs Comprar','—','✓','✓'],
-    ['Perfiles Familia / Pareja','—','—','✓'],
-    ['Simulador de Hipoteca','—','—','✓'],
-    ['Búsqueda de Coliving','—','—','✓'],
+    ['Vista previa Fase 1','✓','✓','✓'],
+    ['Guías completas paso a paso','—','✓','✓'],
+    ['Listas de verificación y rastreadores','—','✓','✓'],
+    ['Herramientas interactivas (presupuesto, rastreador)','—','✓','✓'],
+    ['Datos de ciudades (un país actualmente)','—','✓','✓'],
+    ['Actualizaciones mensuales / nuevo contenido','—','✓','✓'],
+    ['Generador de hoja de ruta (PDF/interactivo)','—','—','✓'],
+    ['Paquetes de documentos inteligentes','—','—','✓'],
+    ['Calculadora de impacto (ahorros, impuestos, visa)','—','—','✓'],
+    ['Asesor IA (orientación automatizada)','—','—','✓'],
+    ['Add-ons opcionales','—','—','✓'],
     ['Directorio de Visas y Consulados','✓','✓','✓'],
     ['Idioma EN / ES','✓','✓','✓'],
-    ['Soporte Prioritario','—','—','✓'],
   ] : [
-    ['Relocation Planner','✓','✓','✓'],
-    ['Document Tracker','6 docs','25 docs','Unlimited'],
-    ['Budget & City Compare','3 cities','10 cities','50+ cities'],
-    ['AI Advisor Chat','—','✓','✓'],
-    ['Property & Land Prices','—','✓','✓'],
-    ['Savings Runway Calc','—','✓','✓'],
-    ['Buy vs Rent Calculator','—','✓','✓'],
-    ['Family / Couple Profiles','—','—','✓'],
-    ['Mortgage Simulator','—','—','✓'],
-    ['Coliving Search','—','—','✓'],
+    ['Phase 1 Preview','✓','✓','✓'],
+    ['Full step-by-step guides','—','✓','✓'],
+    ['Checklists & document trackers','—','✓','✓'],
+    ['Interactive tools (budget, visa tracker)','—','✓','✓'],
+    ['City data (one country currently)','—','✓','✓'],
+    ['Monthly updates / new content','—','✓','✓'],
+    ['Roadmap generator (PDF/interactive)','—','—','✓'],
+    ['Smart document packs','—','—','✓'],
+    ['Impact calculator (savings, taxes, visa costs)','—','—','✓'],
+    ['AI Advisor (automated guidance)','—','—','✓'],
+    ['Optional add-ons','—','—','✓'],
     ['Visa & Consulate Directory','✓','✓','✓'],
     ['EN / ES Language Toggle','✓','✓','✓'],
-    ['Priority Support','—','—','✓'],
   ];
   const el = document.getElementById('feature-table-rows');
   if (!el) return;
