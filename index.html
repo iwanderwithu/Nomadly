@@ -11,6 +11,28 @@
 </head>
 <body>
 
+<!-- HERO LANDING SECTION -->
+<section id="hero" style="padding:60px 24px 48px;text-align:center;background:linear-gradient(135deg,#0d0d0d 0%,#1a1a1a 100%);color:white;position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(196,98,45,0.18) 0%,transparent 65%);pointer-events:none"></div>
+  <div style="position:relative;max-width:620px;margin:0 auto">
+    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(196,98,45,0.15);border:1px solid rgba(196,98,45,0.35);border-radius:20px;padding:5px 14px;font-size:12px;color:#e8855a;font-weight:600;letter-spacing:0.04em;margin-bottom:22px">🇵🇷 Built for Puerto Ricans moving to Spain</div>
+    <h1 style="font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;line-height:1.15;letter-spacing:-0.02em;color:white;margin-bottom:16px">Move to Spain<br>Without the Guesswork</h1>
+    <p style="font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,0.65);line-height:1.7;margin-bottom:32px;max-width:480px;margin-left:auto;margin-right:auto">Find the right visa for your situation and get a clear, step-by-step relocation plan — so you don't waste time, money, or get denied.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px">
+      <button onclick="initQuiz()" style="padding:15px 32px;background:#c4622d;color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:16px;cursor:pointer;letter-spacing:-0.01em" onmouseover="this.style.background='#e8855a'" onmouseout="this.style.background='#c4622d'">Take the Free Quiz →</button>
+      <button onclick="showPage('visas',document.querySelector('.nav-tab[onclick*=visas]'))" style="padding:15px 24px;background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:12px;font-family:'Syne',sans-serif;font-weight:600;font-size:15px;cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">Browse Visas</button>
+    </div>
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap">
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">2 min</div><div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">quiz to your plan</div></div>
+      <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">5 visas</div><div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">tracked + guided</div></div>
+      <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">2 years</div><div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">PR → citizenship</div></div>
+    </div>
+  </div>
+</section>
+<!-- /HERO -->
+
 <!-- MODALS -->
 
 <div class="modal-overlay" id="modal-task">
