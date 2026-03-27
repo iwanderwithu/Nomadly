@@ -1152,6 +1152,7 @@ function resetQuiz(){
     <button class="filter-btn" onclick="filterResources('relocation',this)" id="rf-relocation">🧳 Relocation</button>
     <button class="filter-btn" onclick="filterResources('community',this)" id="rf-community">🤝 Community</button>
   </div>
+  <div id="journey-resources-banner"></div>
   <div id="resource-grid" class="resource-grid"></div>
 </div>
 
@@ -2804,10 +2805,52 @@ const catMeta={
   community:{emoji:'🤝',label:'Community',label_es:'Comunidad',color:'#f0f9f7',text:'#4a7c6f'},
 };
 
+// Static resource journey phase tags (avoids needing freshKey bump)
+const RESOURCE_JOURNEY = {
+  1:{track:'nlv',phaseLabel:'NLV · Phase 2 Documents',verified:'Mar 2026'},
+  2:{track:'all',phaseLabel:'All Visas · Phase 3 Pre-Departure',verified:'Mar 2026'},
+  3:{track:'all',phaseLabel:'All Visas · Phase 3 Housing',verified:'Mar 2026'},
+  4:{track:'all',phaseLabel:'All Visas · Phase 2 Documents',verified:'Mar 2026'},
+  5:{track:'all',phaseLabel:'All Visas · Phase 3 Housing',verified:'Mar 2026'},
+  6:{track:'all',phaseLabel:'All Visas · Phase 4 Community',verified:'Mar 2026'},
+};
+
 function renderResources(filter){
   const rgEl=document.getElementById('resource-grid');
   if(!rgEl)return;
   const all=DB.get('resources',[]);
+
+  // Journey context banner
+  const bannerEl=document.getElementById('journey-resources-banner');
+  if(bannerEl){
+    const qDone=DB.get('quiz_done',false);
+    const qa=DB.get('quiz_answers',{});
+    const recTrack=qa.q5==='spanish'?'descent':(qa.q4==='remote'||qa.q4==='both')?'dnv':'nlv';
+    const trackColors={nlv:'#c4622d',dnv:'#3b6fa0',descent:'#4a7c6f',student:'#7c5cbf'};
+    const trackLabels={nlv:'Non-Lucrative Visa (NLV)',dnv:'Digital Nomad Visa',descent:'Citizenship by Descent',student:'Student Visa'};
+    if(qDone){
+      const color=trackColors[recTrack]||'#c4622d';
+      const label=trackLabels[recTrack]||'Spain Relocation';
+      const related=all.filter(r=>{const rj=RESOURCE_JOURNEY[r.id];return rj&&(rj.track==='all'||rj.track===recTrack);}).slice(0,3);
+      bannerEl.innerHTML=`<div style="background:${color}0d;border:1.5px solid ${color}30;border-radius:14px;padding:16px 20px;margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px">
+          <div style="font-weight:700;font-size:13px;color:#0d0d0d">📍 Resources for your <span style="color:${color}">${label}</span> journey</div>
+          <button onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1])" style="font-size:11px;color:${color};background:none;border:none;cursor:pointer;font-weight:600;font-family:inherit">View full journey →</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">${related.map(r=>{
+          const rj=RESOURCE_JOURNEY[r.id];
+          return `<div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:10px;padding:10px 13px;flex:1;min-width:140px;cursor:pointer" onclick="filterResources('${r.cat}',document.querySelector('#resource-filters .filter-btn[onclick*=${r.cat}]')||document.querySelector('#resource-filters .filter-btn'))">
+            <div style="font-size:10px;color:${color};font-weight:600;margin-bottom:3px">${rj?rj.phaseLabel:''}</div>
+            <div style="font-size:12px;font-weight:700;color:#0d0d0d;margin-bottom:1px">${r.name}</div>
+            <div style="font-size:11px;color:#7a7060">${r.cost}</div>
+          </div>`;
+        }).join('')}</div>
+      </div>`;
+    } else {
+      bannerEl.innerHTML='';
+    }
+  }
+
   const list=filter==='all'?all:all.filter(r=>r.cat===filter);
   rgEl.innerHTML=list.length?list.map(r=>{
     const m=catMeta[r.cat]||catMeta.relocation;
@@ -2815,8 +2858,10 @@ function renderResources(filter){
     const name=currentLang==='es'&&r.name_es?r.name_es:r.name;
     const desc=currentLang==='es'&&r.desc_es?r.desc_es:r.desc;
     const tip=currentLang==='es'&&r.tip_es?r.tip_es:r.tip;
+    const rj=RESOURCE_JOURNEY[r.id];
     return `<div class="resource-card">
       <span class="resource-cat-badge" style="background:${m.color};color:${m.text}">${m.emoji} ${label}</span>
+      ${rj?`<div style="font-size:10px;color:#4a7c6f;font-weight:600;margin-bottom:4px;margin-top:2px">📍 ${rj.phaseLabel}</div>`:''}
       <div class="resource-name">${name}</div>
       <div class="resource-desc">${desc}</div>
       ${tip?`<div class="resource-tip">💡 ${tip}</div>`:''}
@@ -2827,6 +2872,7 @@ function renderResources(filter){
           ${r.url?`<a href="${r.url}" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:500">${currentLang==='es'?'Visitar →':'Visit →'}</a>`:''}
         </div>
       </div>
+      ${rj?`<div style="font-size:10px;color:#9a9080;margin-top:6px;padding-top:6px;border-top:1px solid rgba(13,13,13,0.06)">✓ Verified ${rj.verified}</div>`:''}
       <button class="resource-delete" onclick="deleteResource(${r.id})">🗑</button>
     </div>`;
   }).join(''):`<div style="grid-column:1/-1;text-align:center;padding:50px;color:#7a7060;font-size:14px">${currentLang==='es'?'No hay recursos en esta categoría aún.':'No resources in this category yet.'}<br><br><strong>${currentLang==='es'?'¡Sé el primero en agregar uno!':'Be the first to add one!'}</strong></div>`;
@@ -3857,7 +3903,37 @@ function renderJourney(country) {
     else recommended = 'nlv';
   }
 
-  el.innerHTML = j.tracks.map(track => {
+  // Sort: recommended track always first
+  const sortedTracks = [...j.tracks].sort((a,b) => a.id===recommended ? -1 : b.id===recommended ? 1 : 0);
+
+  // Personalized banner based on quiz
+  const quizDone = DB.get('quiz_done', false);
+  const isExploring = answers.q3 === 'exploring';
+  let bannerHtml = '';
+  if (quizDone && country === 'spain') {
+    const recTrack = j.tracks.find(t => t.id === recommended);
+    if (recTrack) {
+      const timelineMap = {'3months':'⚡ Moving in 3 months — start immediately','6months':'📆 Planning in 3–6 months','1year':'🗓️ Planning in 6–12 months','2years':'⏳ Exploring a 1–2 year timeline','exploring':'🌱 Exploring your options — no rush'};
+      const timelineLabel = timelineMap[answers.q3] || '';
+      bannerHtml = `<div style="background:linear-gradient(135deg,${recTrack.bg},${recTrack.color}15);border:2px solid ${recTrack.color}50;border-radius:16px;padding:18px 22px;margin-bottom:20px;position:relative">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${recTrack.color};margin-bottom:5px">✨ Your personalized path</div>
+        <div style="font-weight:800;font-size:16px;color:#0d0d0d;margin-bottom:3px">${recTrack.icon} ${recTrack.title}</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:${timelineLabel?'8':'0'}px">${recTrack.subtitle}</div>
+        ${timelineLabel?`<span style="font-size:11px;font-weight:600;color:${recTrack.color};padding:3px 10px;background:${recTrack.color}15;border-radius:20px;display:inline-block">${timelineLabel}</span>`:''}
+        <button onclick="resetQuiz()" style="position:absolute;top:12px;right:12px;padding:4px 11px;background:rgba(255,255,255,0.7);border:1px solid ${recTrack.color}40;border-radius:8px;font-size:11px;color:${recTrack.color};cursor:pointer;font-family:inherit;font-weight:600">↺ Retake quiz</button>
+      </div>`;
+    }
+  } else if (!quizDone && country === 'spain') {
+    bannerHtml = `<div style="background:#fff8f5;border:1.5px dashed rgba(196,98,45,0.35);border-radius:14px;padding:15px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>
+        <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:2px">🎯 Get your personalized roadmap</div>
+        <div style="font-size:12px;color:#7a7060">2-min quiz → your visa path sorts to the top</div>
+      </div>
+      <button onclick="var el=document.getElementById('onboarding');if(el){el.style.display='flex';el.style.opacity='1';}" style="padding:8px 16px;background:#c4622d;color:white;border:none;border-radius:10px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap">Take quiz →</button>
+    </div>`;
+  }
+
+  el.innerHTML = bannerHtml + sortedTracks.map(track => {
     const isRec = track.id === recommended && country === 'spain';
 
     // PAYWALL LOGIC:
