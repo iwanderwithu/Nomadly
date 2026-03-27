@@ -1607,14 +1607,34 @@ function resetQuiz(){
   </div>
 
   <!-- COUNTRY TABS -->
-  <div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap" id="journey-country-tabs">
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="journey-country-tabs">
     <div class="filter-btn active" onclick="showJourneyCountry('spain',this)">🇪🇸 Spain</div>
     <div class="filter-btn" onclick="showJourneyCountry('portugal',this)" style="opacity:0.65">🇵🇹 Portugal <span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:1px 5px;border-radius:6px;font-weight:600">Soon</span></div>
     <div class="filter-btn" onclick="showJourneyCountry('costarica',this)" style="opacity:0.65">🇨🇷 Costa Rica <span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:1px 5px;border-radius:6px;font-weight:600">Soon</span></div>
     <div class="filter-btn" onclick="showJourneyCountry('colombia',this)" style="opacity:0.65">🇨🇴 Colombia <span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:1px 5px;border-radius:6px;font-weight:600">Soon</span></div>
   </div>
 
+  <!-- VIEW SUB-NAV: Roadmap / Checklist -->
+  <div style="display:flex;gap:8px;margin-bottom:20px" id="journey-view-tabs">
+    <button class="filter-btn active" id="jvt-roadmap" onclick="switchJourneyView('roadmap',this)">🗺️ Roadmap</button>
+    <button class="filter-btn" id="jvt-checklist" onclick="switchJourneyView('checklist',this)">✅ My Checklist</button>
+  </div>
+
+  <!-- ROADMAP VIEW -->
   <div id="journey-content"></div>
+
+  <!-- CHECKLIST VIEW (hidden by default) -->
+  <div id="journey-planner-view" style="display:none">
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="journey-planner-filters">
+      <button class="filter-btn active" onclick="filterJourneyTasks('all',this)">All</button>
+      <button class="filter-btn" onclick="filterJourneyTasks('visa',this)">🛂 Visa</button>
+      <button class="filter-btn" onclick="filterJourneyTasks('finance',this)">💳 Finance</button>
+      <button class="filter-btn" onclick="filterJourneyTasks('housing',this)">🏠 Housing</button>
+      <button class="filter-btn" onclick="filterJourneyTasks('health',this)">🏥 Health</button>
+      <button class="filter-btn" onclick="filterJourneyTasks('logistics',this)">📦 Logistics</button>
+    </div>
+    <div id="journey-timeline"></div>
+  </div>
 </div>
 
 <!-- COACHING MODAL -->
@@ -2566,6 +2586,7 @@ function toggleTask(id,el){
   t.done=!t.done;
   DB.set('tasks',tasks);
   renderPlanner(currentFilter);renderDashboard();updateProgress();
+  if(typeof renderPlannerInJourney==='function'&&currentJourneyView==='checklist') renderPlannerInJourney(currentJourneyTaskFilter);
   logActivity(t.done?'✅':'↩','sage',`<strong>${t.text}</strong> ${t.done?'completed':'reopened'}`,`<strong>${t.text_es||t.text}</strong> ${t.done?'completada':'reabierta'}`);
   showToast(t.done?'✅ Done!':'↩ Reopened','success');
 }
@@ -2576,6 +2597,7 @@ function deleteTask(e,id){
   const tasks=DB.get('tasks',[]).filter(t=>t.id!==id);
   DB.set('tasks',tasks);
   renderPlanner(currentFilter);renderDashboard();updateProgress();
+  if(typeof renderPlannerInJourney==='function'&&currentJourneyView==='checklist') renderPlannerInJourney(currentJourneyTaskFilter);
   showToast(currentLang==='es'?'🗑 Tarea eliminada':'🗑 Task deleted','info');
 }
 
@@ -3061,7 +3083,7 @@ function showPage(id,btn){
   if(id==='resources') renderResources('all');
   if(id==='dashboard') renderDashboard();
   if(id==='ai') renderAISuggestions();
-  if(id==='journey') renderJourney(currentJourneyCountry);
+  if(id==='journey') { renderJourney(currentJourneyCountry); if(currentJourneyView==='checklist') renderPlannerInJourney(currentJourneyTaskFilter); }
 }
 
 // ── PERSONALIZATION ──
@@ -3086,12 +3108,13 @@ function applyPersonalization() {
   if (activeBtn) activeBtn.classList.add('active');
   try { updateProfileBanner(); } catch(e) {}
 
-  // Visa track
+  // Visa track — match quizFinish/renderJourney logic
   const hasSpanish = ancestry === 'spanish';
-  const isRemote   = income === 'remote';
-  const track      = hasSpanish ? 'descent' : isRemote ? 'dnv' : 'nlv';
-  const trackLabel = hasSpanish ? '🇪🇸 Citizenship by Descent' : isRemote ? '💻 Digital Nomad Visa' : '🛂 Non-Lucrative Visa (NLV)';
-  const trackColor = hasSpanish ? '#4a7c6f' : isRemote ? '#3b6fa0' : '#c4622d';
+  const isRemote   = (income === 'remote' || income === 'both') && income !== 'student';
+  const isStudent  = income === 'student';
+  const track      = hasSpanish ? 'descent' : isStudent ? 'student' : isRemote ? 'dnv' : 'nlv';
+  const trackLabel = hasSpanish ? '🇪🇸 Citizenship by Descent' : isStudent ? '🎓 Student Visa (Type D)' : isRemote ? '💻 Digital Nomad Visa' : '🛂 Non-Lucrative Visa (NLV)';
+  const trackColor = hasSpanish ? '#4a7c6f' : isStudent ? '#7c5cbf' : isRemote ? '#3b6fa0' : '#c4622d';
 
   // Set journey to Spain
   currentJourneyCountry = 'spain';
@@ -3119,6 +3142,32 @@ function applyPersonalization() {
       profileBanner.parentNode.insertBefore(banner, profileBanner.nextSibling);
     }
   }
+
+  // Update "days to go" based on quiz Q3 timeline
+  const timelineDays = {'3months':90,'6months':180,'1year':365,'2years':730,'exploring':null};
+  const daysFromNow = timelineDays[timeline];
+  const daysEl = document.getElementById('days-to-go');
+  const daysLabelEl = document.getElementById('dash-days-label');
+  const dashSub = document.querySelector('#page-dashboard .page-sub');
+  if (daysEl) {
+    if (daysFromNow) {
+      daysEl.textContent = daysFromNow;
+      if (daysLabelEl) daysLabelEl.textContent = 'days away';
+      if (dashSub) dashSub.textContent = 'Spain 🇪🇸 · ' + daysFromNow + ' days away';
+    } else {
+      daysEl.textContent = '∞';
+      if (daysLabelEl) daysLabelEl.textContent = 'exploring';
+      if (dashSub) dashSub.textContent = 'Spain 🇪🇸 · Just exploring for now';
+    }
+  }
+
+  // Update planner subtitle with visa track
+  const plannerSub = document.getElementById('planner-sub');
+  if (plannerSub) plannerSub.innerHTML = 'Spain — ' + trackLabel + ' · <span id="planner-count"></span>';
+
+  // Update journey page title to show track
+  const journeyTitle = document.getElementById('journey-title');
+  if (journeyTitle) journeyTitle.textContent = '🗺️ My Journey — Spain';
 
   try { renderDashboard(); updateProgress(); } catch(e) {}
 }
@@ -3817,6 +3866,70 @@ const JOURNEYS = {
 };
 
 let currentJourneyCountry = 'spain';
+let currentJourneyView = 'roadmap';
+let currentJourneyTaskFilter = 'all';
+
+function switchJourneyView(view, btn) {
+  currentJourneyView = view;
+  document.querySelectorAll('#journey-view-tabs .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const roadmapEl = document.getElementById('journey-content');
+  const checklistEl = document.getElementById('journey-planner-view');
+  if (view === 'checklist') {
+    if (roadmapEl) roadmapEl.style.display = 'none';
+    if (checklistEl) checklistEl.style.display = 'block';
+    renderPlannerInJourney(currentJourneyTaskFilter);
+  } else {
+    if (roadmapEl) roadmapEl.style.display = 'block';
+    if (checklistEl) checklistEl.style.display = 'none';
+  }
+}
+
+function filterJourneyTasks(cat, btn) {
+  currentJourneyTaskFilter = cat;
+  document.querySelectorAll('#journey-planner-filters .filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderPlannerInJourney(cat);
+}
+
+function renderPlannerInJourney(filter) {
+  const tasks = DB.get('tasks', []);
+  const filtered = filter === 'all' ? tasks : tasks.filter(t => t.cat === filter);
+  const total = tasks.filter(t => !t.locked).length;
+  const done = tasks.filter(t => t.done && !t.locked).length;
+  let html = `<div style="font-size:12px;color:#7a7060;margin-bottom:14px;padding:10px 14px;background:#f5f2eb;border-radius:10px">${done} of ${total} tasks complete — tap ℹ️ on any task for official links, costs &amp; timelines</div>`;
+  for (let p = 1; p <= 5; p++) {
+    const phaseTasks = filtered.filter(t => t.phase === p);
+    if (!phaseTasks.length) continue;
+    const allDone = phaseTasks.every(t => t.done);
+    const anyActive = phaseTasks.some(t => !t.done && !t.locked);
+    const dotClass = allDone ? 'done' : (anyActive ? 'active' : '');
+    const doneCount = phaseTasks.filter(t => t.done).length;
+    const pi = phaseInfo[currentLang][p];
+    html += `<div class="phase">
+      <div class="phase-spine"><div class="phase-dot ${dotClass}"></div><div class="phase-line"></div></div>
+      <div class="phase-body">
+        <div class="phase-header">
+          <span class="phase-title">${pi.title}</span>
+          <span class="phase-month">${pi.month}</span>
+          <span class="phase-progress">${doneCount}/${phaseTasks.length}</span>
+        </div>
+        <div class="phase-tasks">
+          ${phaseTasks.map(t => `
+          <div class="phase-task ${t.done ? 'completed' : ''} ${t.locked ? 'locked' : ''}" onclick="${t.locked ? 'showPaywall()' : 'toggleTask(' + t.id + ',this)'}">
+            <span class="phase-task-check">${t.locked ? '🔒' : t.done ? '✅' : '⬜'}</span>
+            <span class="phase-task-text ${t.done ? 'done' : ''}">${currentLang === 'es' && t.text_es ? t.text_es : t.text}</span>
+            <span class="check-tag ${catClassMap[t.cat] || ''}" style="font-size:11px;padding:2px 7px;">${catEmoji[t.cat] || ''}</span>
+            ${TASK_INFO[t.id] ? `<button class="phase-task-info" onclick="showTaskInfo(event,${t.id})">ℹ</button>` : ''}
+            ${!t.locked ? `<button class="phase-task-delete" onclick="deleteTask(event,${t.id})">🗑</button>` : ''}
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+  const el = document.getElementById('journey-timeline');
+  if (el) el.innerHTML = html;
+}
 
 function renderJourneyStep(phaseKey, si, total, text, stateVal, color, isDoc) {
   // stateVal: 0=todo, 1=in-progress (docs only), 2=done
