@@ -23,11 +23,11 @@
       <button id="hero-browse" onclick="showPage('visas',document.querySelector('.nav-tab[onclick*=visas]'))" style="padding:15px 24px;background:rgba(255,255,255,0.08);color:white;border:1px solid rgba(255,255,255,0.2);border-radius:12px;font-family:'Syne',sans-serif;font-weight:600;font-size:15px;cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,0.14)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">Browse Visas</button>
     </div>
     <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap">
-      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">2 min</div><div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">quiz to your plan</div></div>
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">2 min</div><div id="hero-stat-1" style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">quiz to your plan</div></div>
       <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
-      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">5 visas</div><div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">tracked + guided</div></div>
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">5 visas</div><div id="hero-stat-2" style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">tracked + guided</div></div>
       <div style="width:1px;background:rgba(255,255,255,0.1)"></div>
-      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">2 years</div><div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">PR → citizenship</div></div>
+      <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:white">2 years</div><div id="hero-stat-3" style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">PR → citizenship</div></div>
     </div>
   </div>
 </section>
@@ -420,7 +420,7 @@ function resetQuiz(){
       <div style="font-size:12px;color:#0d0d0d;line-height:2">
         ✓ 25 documents<br>✓ 10 cities<br>✓ AI chat advisor<br>✓ Full planner<br>✓ Property prices<br>✓ Buy vs rent tool<br>✓ Savings runway<br>× No family profiles
       </div>
-      <button onclick="selectPlan('wanderer')" style="margin-top:14px;width:100%;padding:10px;background:#0d0d0d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start Free Trial →</button>
+      <button onclick="checkoutPlan('wanderer')" style="margin-top:14px;width:100%;padding:10px;background:#0d0d0d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
     </div>
 
     <!-- NOMAD PRO -->
@@ -435,7 +435,7 @@ function resetQuiz(){
       <div style="font-size:12px;color:#0d0d0d;line-height:2">
         ✓ Unlimited docs<br>✓ 50+ cities<br>✓ AI advisor + chat<br>✓ All profiles<br>✓ Full property suite<br>✓ Mortgage simulator<br>✓ Coliving search<br>✓ Priority support
       </div>
-      <button onclick="selectPlan('pro')" style="margin-top:14px;width:100%;padding:10px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
+      <button onclick="checkoutPlan('pro')" style="margin-top:14px;width:100%;padding:10px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
     </div>
   </div>
 
@@ -451,8 +451,47 @@ function resetQuiz(){
     <button onclick="dismissPaywall()" style="background:none;border:none;color:#7a7060;font-size:13px;cursor:pointer;text-decoration:underline" id="pw-later">Maybe later — stay on free plan</button>
   </div>
 </div>
-```
 
+  </div>
+</div>
+
+<!-- STRIPE CHECKOUT MODAL -->
+<div id="stripe-checkout" style="position:fixed;inset:0;z-index:2000;background:rgba(13,13,13,0.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px">
+  <div style="background:#ffffff;border-radius:24px;max-width:460px;width:100%;box-shadow:0 48px 96px rgba(0,0,0,0.4);overflow:hidden;max-height:90vh;overflow-y:auto">
+    <!-- Header -->
+    <div id="co-header" style="background:linear-gradient(135deg,#0d0d0d,#1e1e1e);padding:28px 32px;color:white;position:relative">
+      <button onclick="closeCheckout()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.5);margin-bottom:6px">Nomadly · Secure Checkout</div>
+      <div id="co-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:8px">Wanderer Plan</div>
+      <div id="co-price" style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;line-height:1">$9<span style="font-size:15px;font-weight:400;opacity:0.55">/mo</span></div>
+    </div>
+    <!-- Body -->
+    <div style="padding:28px 32px">
+      <!-- Trial badge -->
+      <div id="co-trial" style="background:#eef6f4;border:1px solid #c8e8e1;border-radius:10px;padding:11px 14px;font-size:12px;color:#2d8a5e;font-weight:600;margin-bottom:22px;display:flex;align-items:center;gap:8px"></div>
+      <!-- Features -->
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:#7a7060;margin-bottom:10px" id="co-features-label">What's included</div>
+      <div id="co-features" style="font-size:13px;color:#0d0d0d;line-height:2.3;margin-bottom:22px;border-bottom:1px solid rgba(13,13,13,0.07);padding-bottom:18px"></div>
+      <!-- Order summary -->
+      <div style="background:#f9f8f6;border-radius:12px;padding:14px 16px;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:#0d0d0d;margin-bottom:8px">
+          <span id="co-order-label">Today's charge</span>
+          <span id="co-order-total" style="font-weight:700">$0.00</span>
+        </div>
+        <div style="font-size:11px;color:#7a7060" id="co-order-note">After 7-day free trial, billed monthly. Cancel anytime.</div>
+      </div>
+      <!-- Security note -->
+      <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:#7a7060;margin-bottom:22px">
+        <span style="font-size:16px">🔒</span>
+        <span>Secured by Stripe · 256-bit encryption · Cancel anytime · No hidden fees</span>
+      </div>
+      <!-- CTA button -->
+      <button id="co-pay-btn" onclick="proceedToStripe()" style="width:100%;padding:16px;background:#c4622d;color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:16px;cursor:pointer;letter-spacing:-0.01em;transition:background 0.15s" onmouseover="this.style.background='#e8855a'" onmouseout="this.style.background='#c4622d'">
+        Proceed to Payment →
+      </button>
+      <button onclick="closeCheckout()" style="width:100%;padding:10px;background:none;border:none;color:#7a7060;font-size:13px;cursor:pointer;margin-top:8px">← Go back to plans</button>
+      <div style="text-align:center;font-size:11px;color:#7a7060;margin-top:14px">By continuing you agree to our Terms of Service.<br>Questions? <a href="mailto:hello@nomadly.app" style="color:#3b6fa0">hello@nomadly.app</a></div>
+    </div>
   </div>
 </div>
 
@@ -492,8 +531,8 @@ function resetQuiz(){
     </div>
     <span class="free-badge" id="free-badge">Free Plan</span>
     <button class="btn-upgrade" onclick="showPaywall()" id="upgrade-btn">Upgrade →</button>
-    <!-- DEV PLAN SWITCHER -->
-    <div id="dev-plan-switcher" style="display:flex;background:rgba(255,255,255,0.1);border-radius:20px;padding:3px;gap:2px;margin-left:4px" title="Test plan simulator">
+    <!-- DEV PLAN SWITCHER — hidden in production -->
+    <div id="dev-plan-switcher" style="display:none;background:rgba(255,255,255,0.1);border-radius:20px;padding:3px;gap:2px;margin-left:4px" title="Test plan simulator">
       <div class="plan-switch-btn active" onclick="setPlan('free',this)" id="ps-free" style="padding:4px 10px;border-radius:16px;border:none;background:rgba(255,255,255,0.15);color:white;font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em">FREE</div>
       <div class="plan-switch-btn" onclick="setPlan('wanderer',this)" id="ps-wanderer" style="padding:4px 10px;border-radius:16px;border:none;background:none;color:rgba(255,255,255,0.5);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em">W</div>
       <div class="plan-switch-btn" onclick="setPlan('pro',this)" id="ps-pro" style="padding:4px 10px;border-radius:16px;border:none;background:none;color:rgba(255,255,255,0.5);font-size:10px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:0.04em">PRO</div>
@@ -1732,6 +1771,9 @@ const T = {
     'hero-sub':'Find the right visa for your situation and get a clear, step-by-step relocation plan — so you don\'t waste time, money, or get denied.',
     'hero-cta':'Take the Free Quiz →',
     'hero-browse':'Browse Visas',
+    'hero-stat-1':'quiz to your plan',
+    'hero-stat-2':'tracked + guided',
+    'hero-stat-3':'PR → citizenship',
   },
   es: {
     'nav-overview':'Inicio','nav-planner':'🗺️ Mi Viaje','nav-documents':'Documentos',
@@ -1830,6 +1872,9 @@ const T = {
     'hero-sub':'Encuentra la visa correcta para tu situación y obtén un plan de reubicación claro, paso a paso — sin perder tiempo, dinero ni arriesgarte a una negativa.',
     'hero-cta':'Tomar el Quiz Gratis →',
     'hero-browse':'Ver Visas',
+    'hero-stat-1':'quiz a tu plan',
+    'hero-stat-2':'rastreadas + guiadas',
+    'hero-stat-3':'PR → ciudadanía',
   }
 };
 
@@ -2237,6 +2282,24 @@ function init() {
   const tips = DAILY_TIPS[currentLang];
   document.getElementById('ai-daily-tip').innerHTML = tips[Math.floor(Math.random()*tips.length)];
   renderFeatureTable();
+  // Handle post-Stripe-payment redirect: ?paid=true&plan=wanderer
+  (function() {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('paid') === 'true') {
+        const plan = p.get('plan');
+        if (plan === 'wanderer' || plan === 'pro') {
+          DB.set('current_plan', plan);
+          window.history.replaceState({}, '', window.location.pathname);
+          setTimeout(() => {
+            const btn = document.getElementById('ps-' + plan);
+            setPlan(plan, btn);
+            showToast('🎉 ' + (plan === 'wanderer' ? 'Wanderer' : 'Nomad Pro') + ' activated! Welcome aboard.', 'success');
+          }, 800);
+        }
+      }
+    } catch(e) {}
+  })();
   // Restore saved plan and apply restrictions
   const savedPlan = DB.get('current_plan','free');
   const planBtn = document.getElementById('ps-' + savedPlan);
@@ -3620,6 +3683,82 @@ function selectPlan(plan) {
   const btn = document.getElementById('ps-' + (planMap[plan] || plan));
   setPlan(planMap[plan] || plan, btn);
 }
+
+// ── STRIPE PAYMENT LINKS ──
+// TODO: Paste your Stripe Payment Link URLs below after creating them in the Stripe dashboard.
+// Configure each link's success_url to: https://nomadly-kohl.vercel.app/?paid=true&plan=wanderer (or pro)
+const STRIPE_LINKS = {
+  wanderer_monthly: '', // TODO: https://buy.stripe.com/YOUR_WANDERER_MONTHLY_LINK
+  wanderer_annual:  '', // TODO: https://buy.stripe.com/YOUR_WANDERER_ANNUAL_LINK
+  pro_monthly:      '', // TODO: https://buy.stripe.com/YOUR_PRO_MONTHLY_LINK
+  pro_annual:       '', // TODO: https://buy.stripe.com/YOUR_PRO_ANNUAL_LINK
+};
+
+let _checkoutActivePlan = 'wanderer';
+
+function checkoutPlan(plan) {
+  _checkoutActivePlan = plan;
+  dismissPaywall();
+  const isES = currentLang === 'es';
+  const isAnnual = window._billingAnnual || false;
+  const plans = {
+    wanderer: {
+      title: 'Wanderer',
+      monthly: 9, annual: 86,
+      trial:   '🎉 7-day free trial · Then $9/mo · Cancel anytime',
+      trialES: '🎉 Prueba gratis 7 días · Luego $9/mes · Cancela cuando quieras',
+      features:   ['✓ Full planner — all 5 phases','✓ AI chat advisor (unlimited)','✓ Housing search with visa filter','✓ 25 documents tracked','✓ 10 cities compared','✓ Savings runway calculator','✓ Buy vs rent tool'],
+      featuresES: ['✓ Planificador completo — 5 fases','✓ Asesor IA por chat (ilimitado)','✓ Búsqueda de vivienda con filtro de visa','✓ 25 documentos rastreados','✓ 10 ciudades comparadas','✓ Calculadora de reserva financiera','✓ Calculadora alquilar vs comprar'],
+    },
+    pro: {
+      title: 'Nomad Pro',
+      monthly: 19, annual: 182,
+      trial:   '🎉 7-day free trial · Then $19/mo · Cancel anytime',
+      trialES: '🎉 Prueba gratis 7 días · Luego $19/mes · Cancela cuando quieras',
+      features:   ['✓ Everything in Wanderer','✓ Unlimited documents','✓ 50+ cities worldwide','✓ Family profiles (couple + kids)','✓ Mortgage simulator','✓ Coliving search','✓ Priority email support'],
+      featuresES: ['✓ Todo lo de Wanderer','✓ Documentos ilimitados','✓ 50+ ciudades en todo el mundo','✓ Perfiles familiares (pareja + hijos)','✓ Simulador de hipoteca','✓ Búsqueda de coliving','✓ Soporte prioritario por correo'],
+    },
+  };
+  const p = plans[plan] || plans.wanderer;
+  const price = isAnnual ? p.annual : p.monthly;
+  const periodStr = isAnnual ? (isES ? '/año' : '/yr') : (isES ? '/mes' : '/mo');
+  const el = document.getElementById('stripe-checkout');
+  if (!el) return;
+  document.getElementById('co-title').textContent = p.title;
+  document.getElementById('co-price').innerHTML = `$${price}<span style="font-size:15px;font-weight:400;opacity:0.55">${periodStr}</span>`;
+  document.getElementById('co-trial').innerHTML = `<span style="font-size:16px">✅</span> ${isES ? p.trialES : p.trial}`;
+  document.getElementById('co-features-label').textContent = isES ? 'Qué incluye' : "What's included";
+  document.getElementById('co-features').innerHTML = (isES ? p.featuresES : p.features).join('<br>');
+  document.getElementById('co-order-label').textContent = isES ? 'Cargo de hoy' : "Today's charge";
+  document.getElementById('co-order-total').textContent = '$0.00';
+  document.getElementById('co-order-note').textContent = isES
+    ? 'Después del período de prueba, se factura mensualmente. Cancela en cualquier momento.'
+    : 'After 7-day free trial, billed ' + (isAnnual ? 'annually' : 'monthly') + '. Cancel anytime.';
+  document.getElementById('co-pay-btn').textContent = isES ? 'Proceder al Pago →' : 'Proceed to Payment →';
+  el.style.display = 'flex';
+}
+
+function proceedToStripe() {
+  const isAnnual = window._billingAnnual || false;
+  const key = _checkoutActivePlan + (isAnnual ? '_annual' : '_monthly');
+  const url = STRIPE_LINKS[key];
+  if (!url) {
+    showToast(currentLang === 'es' ? '💳 Pago disponible muy pronto — ¡vuelve en breve!' : '💳 Payment launching soon — check back shortly!', 'info');
+    return;
+  }
+  window.location.href = url;
+}
+
+function closeCheckout() {
+  const el = document.getElementById('stripe-checkout');
+  if (el) el.style.display = 'none';
+}
+
+// Close checkout on backdrop click
+document.addEventListener('click', function(e) {
+  const el = document.getElementById('stripe-checkout');
+  if (e.target === el) closeCheckout();
+});
 // ── JOURNEY PAGE ──
 const JOURNEYS = {
   spain: {
@@ -4000,8 +4139,8 @@ function renderPlannerInJourney(filter) {
   const tasks = DB.get('tasks', []);
   const filtered = filter === 'all' ? tasks : tasks.filter(t => t.cat === filter);
 
-  // Plan-based phase access: free=phase1 only, wanderer=phases1-4, pro=all
-  const maxPhase = currentPlan === 'pro' ? 5 : currentPlan === 'wanderer' ? 4 : 1;
+  // Plan-based phase access: free=phase1 only, wanderer+pro=all phases
+  const maxPhase = currentPlan === 'free' ? 1 : 5;
 
   // Track-aware header
   const track = getQuizTrack();
@@ -4018,8 +4157,8 @@ function renderPlannerInJourney(filter) {
   const planNote = currentPlan === 'free'
     ? `<span style="color:#c4622d;font-weight:600">Free plan: Phase 1 only.</span> <span onclick="showPaywall()" style="color:#3b6fa0;text-decoration:underline;cursor:pointer">Unlock Wanderer for all phases →</span>`
     : currentPlan === 'wanderer'
-    ? 'Wanderer: Phases 1–4 unlocked. <span onclick="showPaywall()" style="color:#c4622d;cursor:pointer;text-decoration:underline">Go Pro for Phase 5 citizenship steps →</span>'
-    : '⭐ Pro: all phases unlocked';
+    ? '✅ Wanderer: all 5 phases unlocked. <span onclick="showPaywall()" style="color:#c4622d;cursor:pointer;text-decoration:underline">Upgrade to Pro for family profiles & mortgage tools →</span>'
+    : '⭐ Pro: all phases + every feature unlocked';
 
   let html = `<div style="background:${trackColor}0d;border:1.5px solid ${trackColor}30;border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
     <div>
