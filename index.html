@@ -917,7 +917,7 @@ function resetQuiz(){
 <div class="page" id="page-resources">
   <div class="page-header">
     <div><div class="page-title" id="res-title">🗂 Resource Database</div><div class="page-sub" id="res-sub">Vetted services & tools — community-built</div></div>
-    <button class="btn-add" onclick="openModal('modal-resource')" id="res-add-btn">+ <span id="res-add-label">Add Resource</span></button>
+    <button class="btn-add" onclick="if(currentPlan==='free'){showPaywall();}else{openModal('modal-resource');}" id="res-add-btn">+ <span id="res-add-label">Add Resource</span></button>
   </div>
   <div class="filter-row" id="resource-filters">
     <button class="filter-btn active" onclick="filterResources('all',this)" id="rf-all">All</button>
@@ -2128,12 +2128,12 @@ function seedData() {
       {icon:'💡',type:'sky',text:'AI suggested <strong>3 housing areas</strong> in Madrid',text_es:'IA sugirió <strong>3 zonas de vivienda</strong> en Madrid',time:'2 days ago',time_es:'Hace 2 días'},
     ]);
     DB.set('resources',[
-      {id:1,name:'Spanish Relocators Health Plan',name_es:'Plan de Salud para Reubicados en España',cat:'health',cost:'~$89/mo',desc:'Affordable NLV-compliant health insurance sourced through a Spanish relocation service.',desc_es:'Seguro médico asequible que cumple con NLV, obtenido a través de un servicio de reubicación español.',url:'',rating:5,tip:'Found via a PR expat relocation group — significantly cheaper than Cigna.',tip_es:'Encontrado en un grupo de expatriados de Puerto Rico — mucho más barato que Cigna.',addedBy:'You',date:'Mar 2026'},
-      {id:2,name:'Wise (Multi-currency Account)',name_es:'Wise (Cuenta Multidivisa)',cat:'finance',cost:'Free + low fees',desc:'Best way to hold and transfer USD→EUR. Gives you a real Spanish IBAN before you arrive.',desc_es:'La mejor forma de transferir USD→EUR. Te da un IBAN español real antes de llegar.',url:'https://wise.com',rating:5,tip:'Open before you leave PR — takes 2 days to verify.',tip_es:'Ábrela antes de salir de PR — tarda 2 días en verificarse.',addedBy:'You',date:'Mar 2026'},
-      {id:3,name:'Spotahome',cat:'housing',cost:'Varies',desc:'Verified furnished apartment rentals across Spain. Great for booking remotely from Puerto Rico.',desc_es:'Alquileres amueblados verificados en toda España. Ideal para reservar desde Puerto Rico.',url:'https://spotahome.com',rating:4,tip:'Filter for flexible cancellation listings for your first 3 months.',tip_es:'Filtra por cancelación flexible para tus primeros 3 meses.',addedBy:'You',date:'Mar 2026'},
-      {id:4,name:'PR State Dept — Apostille Service',name_es:'Depto. de Estado de PR — Servicio de Apostilla',cat:'legal',cost:'~$10/doc',desc:'Official apostille service for Puerto Rico-issued documents.',desc_es:'Servicio oficial de apostilla para documentos emitidos en Puerto Rico.',url:'https://estado.pr.gov',rating:4,tip:'Go in person — walk-in processing is faster than mail.',tip_es:'Ve en persona — el trámite presencial es más rápido que por correo.',addedBy:'You',date:'Mar 2026'},
-      {id:5,name:'Idealista',cat:'housing',cost:'Free to browse',desc:'Largest Spanish real estate platform. Best for comparing rental prices.',desc_es:'Mayor plataforma inmobiliaria española. Ideal para comparar precios de alquiler.',url:'https://idealista.com',rating:5,tip:'Set up price alerts for Pedregalejo neighborhood in Málaga.',tip_es:'Configura alertas de precio para el barrio de Pedregalejo en Málaga.',addedBy:'You',date:'Mar 2026'},
-      {id:6,name:'Internations — Expat Community',name_es:'Internations — Comunidad de Expatriados',cat:'community',cost:'Free / €9.99/mo',desc:'Largest expat networking platform with active groups in Madrid, Málaga, and Sevilla.',desc_es:'Mayor plataforma de networking para expatriados con grupos activos en Madrid, Málaga y Sevilla.',url:'https://internations.org',rating:4,tip:'Join the Puerto Rico / Latin America subgroup.',tip_es:'Únete al subgrupo de Puerto Rico / América Latina.',addedBy:'You',date:'Mar 2026'},
+      {id:1,name:'Spanish Relocators Health Plan',name_es:'Plan de Salud para Reubicados en España',cat:'health',cost:'~$89/mo',desc:'Affordable NLV-compliant health insurance sourced through a Spanish relocation service.',desc_es:'Seguro médico asequible que cumple con NLV, obtenido a través de un servicio de reubicación español.',url:'',rating:5,tip:'Found via a PR expat relocation group — significantly cheaper than Cigna.',tip_es:'Encontrado en un grupo de expatriados de Puerto Rico — mucho más barato que Cigna.',addedBy:'You',date:'Mar 2026',tier:'free'},
+      {id:2,name:'Wise (Multi-currency Account)',name_es:'Wise (Cuenta Multidivisa)',cat:'finance',cost:'Free + low fees',desc:'Best way to hold and transfer USD→EUR. Gives you a real Spanish IBAN before you arrive.',desc_es:'La mejor forma de transferir USD→EUR. Te da un IBAN español real antes de llegar.',url:'https://wise.com',rating:5,tip:'Open before you leave PR — takes 2 days to verify.',tip_es:'Ábrela antes de salir de PR — tarda 2 días en verificarse.',addedBy:'You',date:'Mar 2026',tier:'free'},
+      {id:3,name:'Spotahome',cat:'housing',cost:'Varies',desc:'Verified furnished apartment rentals across Spain. Great for booking remotely from Puerto Rico.',desc_es:'Alquileres amueblados verificados en toda España. Ideal para reservar desde Puerto Rico.',url:'https://spotahome.com',rating:4,tip:'Filter for flexible cancellation listings for your first 3 months.',tip_es:'Filtra por cancelación flexible para tus primeros 3 meses.',addedBy:'You',date:'Mar 2026',tier:'paid'},
+      {id:4,name:'PR State Dept — Apostille Service',name_es:'Depto. de Estado de PR — Servicio de Apostilla',cat:'legal',cost:'~$10/doc',desc:'Official apostille service for Puerto Rico-issued documents.',desc_es:'Servicio oficial de apostilla para documentos emitidos en Puerto Rico.',url:'https://estado.pr.gov',rating:4,tip:'Go in person — walk-in processing is faster than mail.',tip_es:'Ve en persona — el trámite presencial es más rápido que por correo.',addedBy:'You',date:'Mar 2026',tier:'paid'},
+      {id:5,name:'Idealista',cat:'housing',cost:'Free to browse',desc:'Largest Spanish real estate platform. Best for comparing rental prices.',desc_es:'Mayor plataforma inmobiliaria española. Ideal para comparar precios de alquiler.',url:'https://idealista.com',rating:5,tip:'Set up price alerts for Pedregalejo neighborhood in Málaga.',tip_es:'Configura alertas de precio para el barrio de Pedregalejo en Málaga.',addedBy:'You',date:'Mar 2026',tier:'paid'},
+      {id:6,name:'Internations — Expat Community',name_es:'Internations — Comunidad de Expatriados',cat:'community',cost:'Free / €9.99/mo',desc:'Largest expat networking platform with active groups in Madrid, Málaga, and Sevilla.',desc_es:'Mayor plataforma de networking para expatriados con grupos activos en Madrid, Málaga y Sevilla.',url:'https://internations.org',rating:4,tip:'Join the Puerto Rico / Latin America subgroup.',tip_es:'Únete al subgrupo de Puerto Rico / América Latina.',addedBy:'You',date:'Mar 2026',tier:'paid'},
     ]);
     DB.set('notifications',[
       {icon:'🛂',text:'<strong>NLV appointment</strong> scheduled — prepare your documents.',text_es:'<strong>Cita NLV</strong> programada — prepara tus documentos.',time:'2h ago',time_es:'Hace 2h',read:false},
@@ -2404,6 +2404,7 @@ const catClassMap={visa:'tag-visa',finance:'tag-finance',housing:'tag-housing',h
 
 // ── BUDGET SECTION NAV ──
 function showBudgetSection(id, btn) {
+  if (currentPlan === 'free' && id !== 'cost-section') { showPaywall(); return; }
   ['cost-section','personal-section','property-section','investment-section'].forEach(s => {
     const el = document.getElementById(s);
     if(el) el.style.display = 'none';
@@ -3026,14 +3027,31 @@ function renderResources(filter){
     }
   }
 
+  const isFreePlan = currentPlan === 'free';
+  const isES = currentLang === 'es';
   const list=filter==='all'?all:all.filter(r=>r.cat===filter);
   rgEl.innerHTML=list.length?list.map(r=>{
+    const isLocked = isFreePlan && (r.tier === 'paid' || r.tier === 'pro');
     const m=catMeta[r.cat]||catMeta.relocation;
-    const label=currentLang==='es'?m.label_es:m.label;
-    const name=currentLang==='es'&&r.name_es?r.name_es:r.name;
-    const desc=currentLang==='es'&&r.desc_es?r.desc_es:r.desc;
-    const tip=currentLang==='es'&&r.tip_es?r.tip_es:r.tip;
+    const label=isES?m.label_es:m.label;
+    const name=isES&&r.name_es?r.name_es:r.name;
+    const desc=isES&&r.desc_es?r.desc_es:r.desc;
+    const tip=isES&&r.tip_es?r.tip_es:r.tip;
     const rj=RESOURCE_JOURNEY[r.id];
+    if (isLocked) {
+      return `<div class="resource-card" onclick="showPaywall()" style="cursor:pointer;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:rgba(245,242,235,0.82);display:flex;align-items:center;justify-content:center;z-index:2;border-radius:inherit;backdrop-filter:blur(1px)">
+          <div style="text-align:center;padding:12px">
+            <div style="font-size:22px;margin-bottom:6px">🔒</div>
+            <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px">${isES?'Requiere Wanderer o Pro':'Wanderer or Pro required'}</div>
+            <div style="display:inline-block;padding:6px 14px;background:#c4622d;color:white;border-radius:8px;font-size:12px;font-weight:700">${isES?'Desbloquear →':'Unlock →'}</div>
+          </div>
+        </div>
+        <span class="resource-cat-badge" style="background:${m.color};color:${m.text}">${m.emoji} ${label}</span>
+        <div class="resource-name" style="filter:blur(4px);user-select:none">${name}</div>
+        <div class="resource-desc" style="filter:blur(3px);user-select:none">${desc}</div>
+      </div>`;
+    }
     return `<div class="resource-card">
       <span class="resource-cat-badge" style="background:${m.color};color:${m.text}">${m.emoji} ${label}</span>
       ${rj?`<div style="font-size:10px;color:#4a7c6f;font-weight:600;margin-bottom:4px;margin-top:2px">📍 ${rj.phaseLabel}</div>`:''}
@@ -3044,13 +3062,13 @@ function renderResources(filter){
         <span class="resource-cost">${r.cost}</span>
         <div style="display:flex;align-items:center;gap:8px">
           ${'⭐'.repeat(r.rating)}
-          ${r.url?`<a href="${r.url}" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:500">${currentLang==='es'?'Visitar →':'Visit →'}</a>`:''}
+          ${r.url?`<a href="${r.url}" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:500">${isES?'Visitar →':'Visit →'}</a>`:''}
         </div>
       </div>
       ${rj?`<div style="font-size:10px;color:#9a9080;margin-top:6px;padding-top:6px;border-top:1px solid rgba(13,13,13,0.06)">✓ Verified ${rj.verified}</div>`:''}
       <button class="resource-delete" onclick="deleteResource(${r.id})">🗑</button>
     </div>`;
-  }).join(''):`<div style="grid-column:1/-1;text-align:center;padding:50px;color:#7a7060;font-size:14px">${currentLang==='es'?'No hay recursos en esta categoría aún.':'No resources in this category yet.'}<br><br><strong>${currentLang==='es'?'¡Sé el primero en agregar uno!':'Be the first to add one!'}</strong></div>`;
+  }).join(''):`<div style="grid-column:1/-1;text-align:center;padding:50px;color:#7a7060;font-size:14px">${isES?'No hay recursos en esta categoría aún.':'No resources in this category yet.'}<br><br><strong>${isES?'¡Sé el primero en agregar uno!':'Be the first to add one!'}</strong></div>`;
 }
 
 function filterResources(cat,btn){
@@ -4621,6 +4639,42 @@ function renderJourney(country) {
     </div>`;
   }
 
+  const isES = currentLang === 'es';
+  const proToolsList = [
+    {icon:'🗺️',titleEN:'Roadmap Generator',titleES:'Generador de Hoja de Ruta',descEN:'Download your personalized PDF roadmap or walk through it interactively.',descES:'Descarga tu hoja de ruta PDF personalizada o recórrela interactivamente.'},
+    {icon:'📦',titleEN:'Smart Document Packs',titleES:'Paquetes de Documentos Inteligentes',descEN:'Pre-built bundles for each visa — apostille checklist, translation guide, and more.',descES:'Paquetes listos para cada visa — apostilla, guía de traducción y más.'},
+    {icon:'📊',titleEN:'Impact Calculator',titleES:'Calculadora de Impacto',descEN:'See your real savings, tax changes, and total visa costs before you move.',descES:'Visualiza tus ahorros reales, cambios fiscales y costo total de visa antes de mudarte.'},
+    {icon:'🤖',titleEN:'AI Advisor',titleES:'Asesor IA',descEN:'Automated guidance tailored to your visa track, timeline, and profile.',descES:'Orientación automatizada adaptada a tu track de visa, cronograma y perfil.'},
+    {icon:'⚙️',titleEN:'Optional Add-Ons',titleES:'Add-ons Opcionales',descEN:'Coaching sessions, document review, and expert consultations — à la carte.',descES:'Sesiones de coaching, revisión de documentos y consultas con expertos — a la carta.'},
+    {icon:'📅',titleEN:'Monthly Updates',titleES:'Actualizaciones Mensuales',descEN:'New guides, tool updates, and curated relocation resources — refreshed every month.',descES:'Nuevas guías, actualizaciones de herramientas y recursos curados — renovados cada mes.'},
+  ];
+  const proToolsHtml = `
+    <div style="background:#f5f2eb;border-radius:16px;padding:24px;margin-top:4px;border:1.5px solid rgba(13,13,13,0.08)">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:#0d0d0d">⚡ ${isES?'Herramientas Pro':'Pro Tools Hub'}</div>
+          <div style="font-size:12px;color:#7a7060;margin-top:3px">${isES?'Herramientas avanzadas para tu reubicación completa':'Advanced tools for your full relocation journey'}</div>
+        </div>
+        ${!isPaid
+          ? `<button onclick="showPaywall()" style="padding:8px 18px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer">${isES?'Ver planes →':'View plans →'}</button>`
+          : `<span style="font-size:11px;font-weight:600;color:#4a7c6f;background:#eef6f4;padding:4px 12px;border-radius:20px">✓ ${isES?'Activo':'Active'}</span>`
+        }
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:16px">
+        ${proToolsList.map(t => {
+          const title = isES ? t.titleES : t.titleEN;
+          const desc = isES ? t.descES : t.descEN;
+          return `<div onclick="${!isPaid?'showPaywall()':''}" style="background:#fff;border-radius:12px;padding:16px;cursor:${!isPaid?'pointer':'default'};border:1.5px solid ${!isPaid?'rgba(13,13,13,0.08)':'rgba(74,124,111,0.25)'};position:relative">
+            ${!isPaid?`<div style="position:absolute;top:10px;right:10px;font-size:13px;opacity:0.7">🔒</div>`:''}
+            <div style="font-size:22px;margin-bottom:8px">${t.icon}</div>
+            <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px;padding-right:${!isPaid?'20':'0'}px">${title}</div>
+            <div style="font-size:11px;color:#7a7060;line-height:1.5">${desc}</div>
+            <div style="margin-top:10px;font-size:11px;font-weight:600;color:${!isPaid?'#c4622d':'#4a7c6f'}">${!isPaid?(isES?'Desbloquear →':'Unlock →'):(isES?'Disponible ✓':'Available ✓')}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+
   el.innerHTML = bannerHtml + sortedTracks.map(track => {
     const isRec = track.id === recommended && country === 'spain';
 
@@ -4705,7 +4759,7 @@ function renderJourney(country) {
         </div>
       </div>
     </div>`;
-  }).join('');
+  }).join('') + proToolsHtml;
 }
 // ── COACHING ──
 function openCoaching() {
