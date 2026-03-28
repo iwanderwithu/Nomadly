@@ -662,10 +662,10 @@ function resetQuiz(){
 
   <!-- BUDGET SUB-NAV -->
   <div style="display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;" id="budget-subnav">
-    <div class="filter-btn active" onclick="showBudgetSection('cost-section',this)">🌍 Cost of Living</div>
-    <div class="filter-btn" onclick="showBudgetSection('personal-section',this)">💰 My Budget</div>
-    <div class="filter-btn" onclick="showBudgetSection('property-section',this)">🏠 Property & Land</div>
-    <div class="filter-btn" onclick="showBudgetSection('investment-section',this)">📈 Investment Analysis <span style="background:#c4622d;color:white;font-size:9px;padding:1px 5px;border-radius:8px;margin-left:3px">PRO</span></div>
+    <div class="filter-btn active" onclick="showBudgetSection('cost-section',this)" id="budget-filter-cost">🌍 Cost of Living</div>
+    <div class="filter-btn" onclick="showBudgetSection('personal-section',this)" id="budget-filter-personal">💰 My Budget</div>
+    <div class="filter-btn" onclick="showBudgetSection('property-section',this)" id="budget-filter-property">🏠 Property & Land</div>
+    <div class="filter-btn" onclick="showBudgetSection('investment-section',this)" id="budget-filter-investment">📈 Investment Analysis <span style="background:#c4622d;color:white;font-size:9px;padding:1px 5px;border-radius:8px;margin-left:3px">PRO</span></div>
   </div>
 
   <!-- COST OF LIVING SECTION -->
@@ -1642,6 +1642,7 @@ const T = {
     // Nav
     'nav-overview':'Overview','nav-planner':'My Journey','nav-documents':'Documents',
     'nav-budget':'Budget','nav-ai':'AI','nav-resources':'Resources',
+    'budget-filter-cost':'🌍 Cost of Living','budget-filter-personal':'💰 My Budget','budget-filter-property':'🏠 Property & Land','budget-filter-investment':'📈 Investment Analysis',
     // Sidebar
     'sb-relocations':'My Relocations','sb-spain':'Spain','sb-portugal':'Portugal',
     'sb-colombia':'Colombia','sb-add-dest':'Add destination','sb-tools':'Tools',
@@ -1762,6 +1763,7 @@ const T = {
   es: {
     'nav-overview':'Inicio','nav-planner':'Mi Viaje','nav-documents':'Documentos',
     'nav-budget':'Presupuesto','nav-ai':'IA','nav-resources':'Recursos',
+    'budget-filter-cost':'🌍 Costo de Vida','budget-filter-personal':'💰 Mi Presupuesto','budget-filter-property':'🏠 Propiedad y Terreno','budget-filter-investment':'📈 Análisis de Inversión',
     'sb-relocations':'Mis Reubicaciones','sb-spain':'España','sb-portugal':'Portugal',
     'sb-colombia':'Colombia','sb-add-dest':'Agregar destino','sb-tools':'Herramientas',
     'sb-planner':'Mi Viaje','sb-overview':'Inicio','sb-documents':'Documentos','sb-budget':'Presupuesto',
@@ -2135,16 +2137,6 @@ const CITIES = {
     {flag:'🌅',name:'Porto',cost:'€1,600',index:'52 · Affordable',breakdown:{rent:650,food:240,transport:55,health:120,utilities:100,leisure:230,other:205}},
     {flag:'🏖️',name:'Algarve',cost:'€1,450',index:'47 · Budget',breakdown:{rent:580,food:220,transport:80,health:110,utilities:90,leisure:200,other:170}},
   ],
-  colombia:[
-    {flag:'☀️',name:'Medellín',cost:'$900',index:'29 · Very affordable',selected:true,breakdown:{rent:380,food:160,transport:25,health:80,utilities:60,leisure:120,other:75}},
-    {flag:'🏙️',name:'Bogotá',cost:'$1,050',index:'33 · Affordable',breakdown:{rent:420,food:180,transport:30,health:90,utilities:70,leisure:150,other:110}},
-    {flag:'🌊',name:'Cartagena',cost:'$1,100',index:'35 · Affordable',breakdown:{rent:450,food:200,transport:35,health:85,utilities:65,leisure:160,other:105}},
-  ],
-  costarica:[
-    {flag:'🌺',name:'San José',cost:'$1,200',index:'38 · Affordable',selected:true,breakdown:{rent:500,food:200,transport:40,health:100,utilities:80,leisure:170,other:110}},
-    {flag:'🏄',name:'Nosara',cost:'$1,400',index:'44 · Mid-range',breakdown:{rent:650,food:220,transport:60,health:110,utilities:90,leisure:160,other:110}},
-    {flag:'🌴',name:'Tamarindo',cost:'$1,350',index:'42 · Mid-range',breakdown:{rent:600,food:210,transport:55,health:100,utilities:85,leisure:180,other:120}},
-  ],
   mexico:[
     {flag:'🌮',name:'Mexico City',cost:'$1,200',index:'38 · Very affordable',selected:true,breakdown:{rent:450,food:180,transport:30,health:100,utilities:80,leisure:200,other:160}},
     {flag:'🌊',name:'Puerto Vallarta',cost:'$1,100',index:'35 · Affordable',breakdown:{rent:420,food:160,transport:40,health:90,utilities:75,leisure:190,other:125}},
@@ -2154,12 +2146,7 @@ const CITIES = {
 
 const COUNTRY_CHIPS = [
   {key:'spain',flag:'🇪🇸',label:'Spain',label_es:'España'},
-  {key:'portugal',flag:'🇵🇹',label:'Portugal',label_es:'Portugal'},
-  {key:'colombia',flag:'🇨🇴',label:'Colombia',label_es:'Colombia'},
-  {key:'costarica',flag:'🇨🇷',label:'Costa Rica',label_es:'Costa Rica'},
-  {key:'mexico',flag:'🇲🇽',label:'Mexico',label_es:'México'},
-  {key:'locked1',flag:'🇮🇹',label:'Italy 🔒',label_es:'Italia 🔒',locked:true},
-  {key:'locked2',flag:'🇫🇷',label:'France 🔒',label_es:'Francia 🔒',locked:true},
+  {key:'portugal',flag:'🇵🇹',label:'Portugal',label_es:'Portugal',locked:true},
 ];
 
 // ── AI RESPONSES ──
