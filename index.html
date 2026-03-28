@@ -2070,7 +2070,7 @@ const DB = {
 
 function seedData() {
   // Force clean v3 seed — wipes any old nomadly_ or nomadly3_ data
-  const freshKey = 'nomadly3_fresh4';
+  const freshKey = 'nomadly3_fresh5'; // bumped: forces re-seed for users missing tier field on resources
   if (!localStorage.getItem(freshKey)) {
     Object.keys(localStorage).filter(k=>k.startsWith('nomadly')).forEach(k=>localStorage.removeItem(k));
     localStorage.setItem(freshKey,'1');
