@@ -4580,40 +4580,8 @@ function renderJourney(country) {
   }
 
   const isES = currentLang === 'es';
-  const proToolsList = [
-    {icon:'🗺️',titleEN:'Roadmap Generator',titleES:'Generador de Hoja de Ruta',descEN:'Download your personalized PDF roadmap or walk through it interactively.',descES:'Descarga tu hoja de ruta PDF personalizada o recórrela interactivamente.'},
-    {icon:'📦',titleEN:'Smart Document Packs',titleES:'Paquetes de Documentos Inteligentes',descEN:'Pre-built bundles for each visa — apostille checklist, translation guide, and more.',descES:'Paquetes listos para cada visa — apostilla, guía de traducción y más.'},
-    {icon:'📊',titleEN:'Impact Calculator',titleES:'Calculadora de Impacto',descEN:'See your real savings, tax changes, and total visa costs before you move.',descES:'Visualiza tus ahorros reales, cambios fiscales y costo total de visa antes de mudarte.'},
-    {icon:'🤖',titleEN:'AI Advisor',titleES:'Asesor IA',descEN:'Automated guidance tailored to your visa track, timeline, and profile.',descES:'Orientación automatizada adaptada a tu track de visa, cronograma y perfil.'},
-    {icon:'⚙️',titleEN:'Optional Add-Ons',titleES:'Add-ons Opcionales',descEN:'Coaching sessions, document review, and expert consultations — à la carte.',descES:'Sesiones de coaching, revisión de documentos y consultas con expertos — a la carta.'},
-    {icon:'📅',titleEN:'Monthly Updates',titleES:'Actualizaciones Mensuales',descEN:'New guides, tool updates, and curated relocation resources — refreshed every month.',descES:'Nuevas guías, actualizaciones de herramientas y recursos curados — renovados cada mes.'},
-  ];
-  const proToolsHtml = `
-    <div style="background:#f5f2eb;border-radius:16px;padding:24px;margin-top:4px;border:1.5px solid rgba(13,13,13,0.08)">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:6px">
-        <div>
-          <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:#0d0d0d">⚡ ${isES?'Herramientas Pro':'Pro Tools Hub'}</div>
-          <div style="font-size:12px;color:#7a7060;margin-top:3px">${isES?'Herramientas avanzadas para tu reubicación completa':'Advanced tools for your full relocation journey'}</div>
-        </div>
-        ${!isPaid
-          ? `<button onclick="showPaywall()" style="padding:8px 18px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer">${isES?'Ver planes →':'View plans →'}</button>`
-          : `<span style="font-size:11px;font-weight:600;color:#4a7c6f;background:#eef6f4;padding:4px 12px;border-radius:20px">✓ ${isES?'Activo':'Active'}</span>`
-        }
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:16px">
-        ${proToolsList.map(t => {
-          const title = isES ? t.titleES : t.titleEN;
-          const desc = isES ? t.descES : t.descEN;
-          return `<div onclick="${!isPaid?'showPaywall()':''}" style="background:#fff;border-radius:12px;padding:16px;cursor:${!isPaid?'pointer':'default'};border:1.5px solid ${!isPaid?'rgba(13,13,13,0.08)':'rgba(74,124,111,0.25)'};position:relative">
-            ${!isPaid?`<div style="position:absolute;top:10px;right:10px;font-size:13px;opacity:0.7">🔒</div>`:''}
-            <div style="font-size:22px;margin-bottom:8px">${t.icon}</div>
-            <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px;padding-right:${!isPaid?'20':'0'}px">${title}</div>
-            <div style="font-size:11px;color:#7a7060;line-height:1.5">${desc}</div>
-            <div style="margin-top:10px;font-size:11px;font-weight:600;color:${!isPaid?'#c4622d':'#4a7c6f'}">${!isPaid?(isES?'Desbloquear →':'Unlock →'):(isES?'Disponible ✓':'Available ✓')}</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
+  const isPro = currentPlan === 'pro';
+  const proToolsHtml = buildProHub(isPaid, isPro, isES);
 
   el.innerHTML = bannerHtml + sortedTracks.map(track => {
     const isRec = track.id === recommended && country === 'spain';
@@ -4701,6 +4669,297 @@ function renderJourney(country) {
     </div>`;
   }).join('') + proToolsHtml;
 }
+
+// ── PRO HUB ──────────────────────────────────────────────────────────────────
+function proHubTab(hubId, tab) {
+  ['roadmap','documents','calculator','addons','updates'].forEach(t => {
+    const c = document.getElementById(hubId+'-content-'+t);
+    const btn = document.getElementById(hubId+'-tab-'+t);
+    if (c) c.style.display = t===tab ? 'block' : 'none';
+    if (btn) { btn.style.borderBottomColor = t===tab ? '#c4622d' : 'transparent'; btn.style.color = t===tab ? '#c4622d' : '#7a7060'; }
+  });
+}
+
+function proHubCalc(hubId) {
+  const income = parseFloat(document.getElementById(hubId+'-calc-income')?.value) || 0;
+  const size = parseInt(document.getElementById(hubId+'-calc-size')?.value) || 1;
+  const base = size===1 ? 1800 : size===2 ? 2600 : 3400;
+  const visaCost = 210 + (size-1)*105;
+  const taxSaving = income > 0 ? Math.round(income * 0.12) : 0;
+  const el = document.getElementById(hubId+'-calc-out');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+      <div style="background:#f5f2eb;border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:11px;color:#7a7060;margin-bottom:4px">Est. Monthly Spain Budget</div>
+        <div style="font-size:22px;font-weight:800;color:#0d0d0d;font-family:'Syne',sans-serif">€${base.toLocaleString()}</div>
+        <div style="font-size:10px;color:#7a7060;margin-top:2px">for ${size} person${size>1?'s':''}</div>
+      </div>
+      <div style="background:#eef6f4;border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:11px;color:#7a7060;margin-bottom:4px">Est. Tax Savings/Year</div>
+        <div style="font-size:22px;font-weight:800;color:#4a7c6f;font-family:'Syne',sans-serif">$${taxSaving.toLocaleString()}</div>
+        <div style="font-size:10px;color:#7a7060;margin-top:2px">vs US tax rate</div>
+      </div>
+      <div style="background:#fff3ee;border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:11px;color:#7a7060;margin-bottom:4px">NLV Application Fees</div>
+        <div style="font-size:22px;font-weight:800;color:#c4622d;font-family:'Syne',sans-serif">€${visaCost}</div>
+        <div style="font-size:10px;color:#7a7060;margin-top:2px">consulate fees only</div>
+      </div>
+      <div style="background:#f5f2eb;border-radius:10px;padding:14px;text-align:center">
+        <div style="font-size:11px;color:#7a7060;margin-bottom:4px">Health Insurance/mo</div>
+        <div style="font-size:22px;font-weight:800;color:#0d0d0d;font-family:'Syne',sans-serif">~€${size===1?90:size===2?160:220}</div>
+        <div style="font-size:10px;color:#7a7060;margin-top:2px">NLV-compliant plan</div>
+      </div>
+    </div>`;
+}
+
+function buildProHub(isPaid, isPro, isES) {
+  const hid = 'prohub';
+  const locked = !isPro;
+  const tabs = isES
+    ? ['🗺️ Hoja de Ruta','📦 Documentos','📊 Calculadora','⚙️ Add-Ons','📅 Novedades']
+    : ['🗺️ Roadmap','📦 Documents','📊 Calculator','⚙️ Add-Ons','📅 Updates'];
+  const keys = ['roadmap','documents','calculator','addons','updates'];
+
+  const tabBar = keys.map((k,i) => `<div id="${hid}-tab-${k}" onclick="proHubTab('${hid}','${k}')" style="padding:12px 18px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;border-bottom:3px solid ${i===0?'#c4622d':'transparent'};color:${i===0?'#c4622d':'#7a7060'};flex-shrink:0">${tabs[i]}</div>`).join('');
+
+  // ── ROADMAP TAB ──
+  const roadmapSteps = [
+    {n:1, en:'Collect documents in Puerto Rico (birth cert, police record, FBI check)',es:'Reúne documentos en Puerto Rico (acta de nacimiento, récord policial, verificación FBI)'},
+    {n:2, en:'Apostille PR & federal documents at PR State Department',es:'Apostilla documentos de PR y federales en el Departamento de Estado de PR'},
+    {n:3, en:'Get NLV-compliant health insurance (€30k+ coverage, no copays)',es:'Obtén seguro médico cumple-NLV (cobertura €30k+, sin copago)'},
+    {n:4, en:'Prepare financial proof — most recent bank statement showing €27k+',es:'Prepara prueba financiera — extracto bancario más reciente con €27k+'},
+    {n:5, en:'Gather proof of PR residency (notarized letter, bank statement, or utility bill)',es:'Reúne prueba de residencia en PR (carta notariada, extracto o factura de servicios)'},
+    {n:6, en:'Book consulate appointment — San Juan PR: Cog.SanJuandePuertoRico@maec.es',es:'Agenda cita en el consulado — San Juan PR: Cog.SanJuandePuertoRico@maec.es'},
+    {n:7, en:'Submit NLV application at PR Consulate (no apostille, no translation needed)',es:'Presenta solicitud NLV en el Consulado de PR (sin apostilla, sin traducción)'},
+    {n:8, en:'Wait for visa decision — 4–8 weeks at PR Consulate',es:'Espera decisión del visado — 4–8 semanas en el Consulado de PR'},
+    {n:9, en:'Book flights and find housing (Idealista, Spotahome, Fotocasa)',es:'Compra boletos y busca vivienda (Idealista, Spotahome, Fotocasa)'},
+    {n:10,en:'Arrive in Spain — register empadronamiento within 30 days, apply for TIE',es:'Llega a España — regístrate en empadronamiento dentro de 30 días, solicita TIE'},
+    {n:11,en:'Open Spanish bank account (BBVA, CaixaBank, or N26)',es:'Abre cuenta bancaria española (BBVA, CaixaBank o N26)'},
+    {n:12,en:'Start 2-year citizenship clock — renew NLV at year 1',es:'Inicia el reloj de 2 años de ciudadanía — renueva NLV al año 1'},
+  ];
+
+  const roadmapHtml = `
+    <div style="margin-bottom:14px;padding:12px 16px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d;font-size:12px;color:#7a7060;line-height:1.6">
+      🇵🇷 <strong style="color:#0d0d0d">PR Consulate advantage:</strong> No apostille · No translation · Most recent bank statement only · Proof of PR residency required
+    </div>
+    ${locked ? `<div style="position:relative">
+      <div style="filter:blur(3px);pointer-events:none;user-select:none;opacity:0.6">` : ''}
+    <div style="display:flex;flex-direction:column;gap:8px">
+      ${roadmapSteps.map(s => {
+        const key = 'prohub_nlv_step_'+s.n;
+        const done = localStorage.getItem(key) === '1';
+        const txt = isES ? s.es : s.en;
+        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:12px;background:${done?'#eef6f4':'#f9f8f6'};border-radius:10px;border:1.5px solid ${done?'rgba(74,124,111,0.3)':'rgba(13,13,13,0.06)'};transition:all 0.2s" ${!locked?`onclick="var k='prohub_nlv_step_${s.n}';var d=localStorage.getItem(k)==='1';localStorage.setItem(k,d?'0':'1');renderJourney(currentJourneyCountry);" style="cursor:pointer"`:''}>
+          <div style="width:24px;height:24px;border-radius:50%;background:${done?'#4a7c6f':'#c4622d'};color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0">${done?'✓':s.n}</div>
+          <div style="font-size:12px;color:${done?'#4a7c6f':'#0d0d0d'};line-height:1.5;flex:1;${done?'text-decoration:line-through;opacity:0.7':''}">${txt}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    ${locked ? `</div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.5);border-radius:12px">
+        <div style="font-size:28px;margin-bottom:8px">🔒</div>
+        <div style="font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:4px">${isES?'Disponible en Pro':'Available in Pro'}</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:12px;text-align:center;max-width:220px">${isES?'Accede al roadmap completo con seguimiento de progreso':'Full roadmap with progress tracking'}</div>
+        <button onclick="showPaywall()" style="padding:9px 22px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:13px;cursor:pointer">${isES?'Obtener Pro →':'Get Pro →'}</button>
+      </div>
+    </div>` : ''}`;
+
+  // ── DOCUMENTS TAB ──
+  const docGroups = [
+    {
+      title: isES ? '📋 Documentos Requeridos — NLV' : '📋 Required Documents — NLV',
+      color: '#c4622d',
+      items: isES ? [
+        'Pasaporte válido (6+ meses de vigencia)',
+        'Acta de nacimiento apostillada del Departamento de Estado de PR',
+        'Récord policial de PR (Policía de PR + FBI)',
+        'Verificación FBI apostillada (Dept. of State EE.UU.)',
+        'Extracto bancario más reciente (saldo mínimo €27,000)',
+        'Seguro médico NLV-cumple (cobertura €30k+, sin copago)',
+        'Formulario de solicitud consular (EX-00)',
+        'Foto tamaño pasaporte (1)',
+        'Prueba de residencia en PR (carta notariada, extracto o factura)',
+      ] : [
+        'Valid passport (6+ months validity)',
+        'Birth certificate apostilled at PR State Department',
+        'PR police good conduct certificate (PRPD + FBI)',
+        'FBI background check apostilled (US Dept. of State)',
+        'Most recent bank statement (minimum €27,000 balance)',
+        'NLV-compliant health insurance (€30k+ coverage, no copays)',
+        'Consular application form (EX-00)',
+        '1 passport-sized photo',
+        'Proof of PR residency (notarized letter, statement, or utility bill)',
+      ]
+    },
+    {
+      title: isES ? '✉️ Cartas de Ejemplo' : '✉️ Example Letters',
+      color: '#4a7c6f',
+      items: isES ? [
+        'Carta de cobertura NLV — solicitante soltero',
+        'Carta de cobertura NLV — pareja / dependiente',
+        'Carta de residencia en PR (plantilla notariada)',
+        'Carta de empleo remoto (para visa nómada digital)',
+        'Carta de intención de negocio (visa emprendedor)',
+      ] : [
+        'NLV cover letter — single applicant',
+        'NLV cover letter — couple / dependent',
+        'PR residency proof letter (notarized template)',
+        'Remote employment letter (for Digital Nomad Visa)',
+        'Business intent letter (Entrepreneur Visa)',
+      ]
+    },
+    {
+      title: isES ? '📌 Después de Llegar a España' : '📌 After Arriving in Spain',
+      color: '#7a7060',
+      items: isES ? [
+        'Empadronamiento — registro en el ayuntamiento (dentro de 30 días)',
+        'Solicitud TIE (Tarjeta de Identidad de Extranjero)',
+        'Apertura de cuenta bancaria española',
+        'Número de identificación fiscal (NIE)',
+        'Seguro médico local (opcional con NIE activo)',
+      ] : [
+        'Empadronamiento — register at your local ayuntamiento (within 30 days)',
+        'TIE application (Foreigner Identity Card)',
+        'Open Spanish bank account',
+        'Tax ID number (NIE)',
+        'Local health insurance (optional once NIE is active)',
+      ]
+    }
+  ];
+
+  const docsHtml = locked
+    ? `<div style="position:relative">
+        <div style="filter:blur(3px);pointer-events:none;user-select:none">
+          ${docGroups.slice(0,1).map(g => `<div style="margin-bottom:20px"><div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid ${g.color}20">${g.title}</div>${g.items.map(i=>`<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(13,13,13,0.05);font-size:12px;color:#0d0d0d"><span style="color:#c4622d">○</span>${i}</div>`).join('')}</div>`).join('')}
+        </div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.6);border-radius:12px">
+          <div style="font-size:28px;margin-bottom:8px">🔒</div>
+          <div style="font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:4px">${isES?'Paquetes de documentos — Pro':'Document Packs — Pro'}</div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px;text-align:center;max-width:240px">${isES?'Listas completas, cartas de ejemplo y plantillas':'Full checklists, example letters, and templates'}</div>
+          <button onclick="showPaywall()" style="padding:9px 22px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:13px;cursor:pointer">${isES?'Obtener Pro →':'Get Pro →'}</button>
+        </div>
+      </div>`
+    : docGroups.map(g => `
+        <div style="margin-bottom:24px">
+          <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid ${g.color}30">${g.title}</div>
+          ${g.items.map((item,idx) => {
+            const k = 'prohub_doc_'+g.title.slice(0,8).replace(/\s/g,'_')+idx;
+            const done = localStorage.getItem(k)==='1';
+            return `<div onclick="var k='${k}';var d=localStorage.getItem(k)==='1';localStorage.setItem(k,d?'0':'1');renderJourney(currentJourneyCountry);" style="display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(13,13,13,0.05);font-size:12px;cursor:pointer">
+              <div style="width:18px;height:18px;border-radius:4px;border:2px solid ${done?g.color:'rgba(13,13,13,0.2)'};background:${done?g.color:'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;color:white;font-size:10px;font-weight:700">${done?'✓':''}</div>
+              <span style="color:${done?'#7a7060':'#0d0d0d'};${done?'text-decoration:line-through;opacity:0.6':''}">${item}</span>
+            </div>`;
+          }).join('')}
+        </div>`).join('');
+
+  // ── CALCULATOR TAB ──
+  const calcHtml = locked
+    ? `<div style="position:relative">
+        <div style="filter:blur(3px);pointer-events:none;user-select:none;padding:20px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            ${[['Est. Monthly Budget','€1,800'],['Tax Savings/yr','$8,400'],['Visa Fees','€210'],['Insurance/mo','~€90']].map(([l,v])=>`<div style="background:#f5f2eb;border-radius:10px;padding:14px;text-align:center"><div style="font-size:11px;color:#7a7060">${l}</div><div style="font-size:22px;font-weight:800;color:#0d0d0d;font-family:'Syne',sans-serif">${v}</div></div>`).join('')}
+          </div>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.6);border-radius:12px">
+          <div style="font-size:28px;margin-bottom:8px">🔒</div>
+          <div style="font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:4px">${isES?'Calculadora de Impacto — Pro':'Impact Calculator — Pro'}</div>
+          <div style="font-size:12px;color:#7a7060;margin-bottom:12px;text-align:center;max-width:240px">${isES?'Calcula tus ahorros, impuestos y costos reales':'Calculate real savings, taxes, and total costs'}</div>
+          <button onclick="showPaywall()" style="padding:9px 22px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:13px;cursor:pointer">${isES?'Obtener Pro →':'Get Pro →'}</button>
+        </div>
+      </div>`
+    : `<div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#7a7060;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">${isES?'Ingreso mensual (USD)':'Monthly Income (USD)'}</label>
+            <input id="${hid}-calc-income" type="number" placeholder="e.g. 5000" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid rgba(13,13,13,0.12);border-radius:8px;font-size:13px;font-family:inherit;outline:none">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#7a7060;text-transform:uppercase;letter-spacing:0.05em;display:block;margin-bottom:6px">${isES?'Tamaño del grupo':'Party size'}</label>
+            <select id="${hid}-calc-size" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid rgba(13,13,13,0.12);border-radius:8px;font-size:13px;font-family:inherit;background:#fff;outline:none">
+              <option value="1">${isES?'Solo (1 persona)':'Solo (1 person)'}</option>
+              <option value="2">${isES?'Pareja (2 personas)':'Couple (2 people)'}</option>
+              <option value="3">${isES?'Familia (3+ personas)':'Family (3+ people)'}</option>
+            </select>
+          </div>
+        </div>
+        <button onclick="proHubCalc('${hid}')" style="width:100%;padding:12px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer">${isES?'Calcular mi presupuesto →':'Calculate my budget →'}</button>
+        <div id="${hid}-calc-out" style="display:none"></div>
+        <div style="margin-top:14px;padding:10px 14px;background:#f5f2eb;border-radius:8px;font-size:11px;color:#7a7060;line-height:1.6">
+          💡 ${isES?'Estimaciones basadas en promedios España 2026. Las cifras reales varían por ciudad y estilo de vida.':'Estimates based on Spain 2026 averages. Actual figures vary by city and lifestyle.'}
+        </div>
+      </div>`;
+
+  // ── ADD-ONS TAB ──
+  const addons = [
+    {icon:'📞', price:'$15', en:['Book a Coaching Session','15-min free intro call with someone who relocated from PR to Spain.','Book now →'], es:['Reserva una Sesión de Coaching','Llamada introductoria gratuita de 15 min con alguien que se mudó de PR a España.','Reservar →'], action:'openCoaching()'},
+    {icon:'📄', price:'$49', en:['Priority Document Review','Expert review of your full NLV document pack before submission — catch errors before the consulate does.','Coming soon'], es:['Revisión Prioritaria de Documentos','Revisión experta de tu paquete completo de documentos NLV antes de enviarlo.','Próximamente'], action:''},
+    {icon:'🏙️', price:'$79', en:['City & Neighborhood Consultation','1-on-1 call comparing cities, neighborhoods, housing costs, and lifestyle fit for your profile.','Coming soon'], es:['Consulta de Ciudad y Barrio','Llamada 1 a 1 comparando ciudades, barrios, costos de vivienda y estilo de vida.','Próximamente'], action:''},
+    {icon:'🎯', price:'$99', en:['Visa Strategy Session','Private 1-on-1 planning call — visa selection, timeline, PR consulate tips, and your exact next steps.','Coming soon'], es:['Sesión de Estrategia de Visa','Llamada privada 1 a 1 — selección de visa, cronograma, consejos del consulado de PR.','Próximamente'], action:''},
+  ];
+
+  const addonsHtml = `<div style="display:flex;flex-direction:column;gap:12px">
+    ${addons.map(a => {
+      const [title, desc, cta] = isES ? a.es : a.en;
+      const available = !!a.action;
+      return `<div style="display:flex;align-items:center;gap:16px;padding:16px;background:${available?'#fff8f5':'#f9f8f6'};border-radius:12px;border:1.5px solid ${available?'rgba(196,98,45,0.2)':'rgba(13,13,13,0.06)'}">
+        <div style="font-size:28px;flex-shrink:0">${a.icon}</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+            <div style="font-weight:700;font-size:13px;color:#0d0d0d">${title}</div>
+            <span style="font-size:11px;font-weight:700;color:${available?'#c4622d':'#7a7060'};background:${available?'#fff3ee':'#f5f2eb'};padding:2px 8px;border-radius:10px">${a.price}</span>
+          </div>
+          <div style="font-size:12px;color:#7a7060;line-height:1.5">${desc}</div>
+        </div>
+        <button onclick="${a.action||''}" style="flex-shrink:0;padding:9px 16px;background:${available?'#c4622d':'#e8e2d5'};color:${available?'white':'#7a7060'};border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:${available?'pointer':'default'};font-family:inherit;white-space:nowrap">${cta}</button>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  // ── UPDATES TAB ──
+  const updatesHtml = `
+    <div style="text-align:center;padding:10px 0 20px">
+      <div style="font-size:36px;margin-bottom:10px">📅</div>
+      <div style="font-weight:800;font-size:16px;color:#0d0d0d;margin-bottom:6px">${isES?'Próxima actualización: Mayo 2026':'Next update: May 2026'}</div>
+      <div style="font-size:13px;color:#7a7060;margin-bottom:20px">${isES?'Los suscriptores Pro reciben nuevas guías, plantillas y recursos cada mes.':'Pro subscribers get new guides, templates, and resources every month.'}</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${[
+        {date:'Apr 2026', title: isES?'Guía de empadronamiento — actualizada':'Empadronamiento guide — updated', tag: isES?'Disponible':'Live', color:'#4a7c6f'},
+        {date:'Apr 2026', title: isES?'Plantilla carta de cobertura NLV 2026':'NLV cover letter template 2026', tag: isES?'Disponible':'Live', color:'#4a7c6f'},
+        {date:'May 2026', title: isES?'Guía completa de apertura de cuenta bancaria en España':'Full Spain bank account opening guide', tag: isES?'Próximamente':'Coming', color:'#c4622d'},
+        {date:'May 2026', title: isES?'Calculadora de impuestos Ley Beckham':'Beckham Law tax calculator', tag: isES?'Próximamente':'Coming', color:'#c4622d'},
+        {date:'Jun 2026', title: isES?'Guía de renovación NLV (año 1)':'NLV renewal guide (year 1)', tag: isES?'Próximamente':'Coming', color:'#c4622d'},
+      ].map(u => `<div style="display:flex;align-items:center;gap:12px;padding:12px;background:#f9f8f6;border-radius:10px">
+        <div style="font-size:10px;font-weight:700;color:#7a7060;width:52px;flex-shrink:0;text-align:center">${u.date}</div>
+        <div style="flex:1;font-size:12px;color:#0d0d0d">${u.title}</div>
+        <span style="font-size:10px;font-weight:700;color:${u.color};background:${u.color}15;padding:3px 9px;border-radius:10px;flex-shrink:0">${u.tag}</span>
+      </div>`).join('')}
+    </div>`;
+
+  return `<div style="margin-top:8px;border-radius:16px;overflow:hidden;border:1.5px solid rgba(13,13,13,0.1)">
+    <div style="background:linear-gradient(135deg,#0d1a2e 0%,#1a2d4a 100%);padding:22px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:900;font-size:20px;color:white">${isES?'⚡ Pro Hub':'⚡ Pro Hub'}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:3px">${isES?'Tu centro de reubicación completo':'Your complete relocation center'}</div>
+      </div>
+      ${isPro
+        ? `<span style="font-size:11px;font-weight:700;color:#4a7c6f;background:rgba(74,124,111,0.2);border:1px solid rgba(74,124,111,0.4);padding:5px 14px;border-radius:20px">✓ ${isES?'Pro Activo':'Pro Active'}</span>`
+        : `<button onclick="showPaywall()" style="padding:9px 22px;background:#c4622d;color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer">${isES?'Obtener Pro →':'Get Pro →'}</button>`
+      }
+    </div>
+    <div style="background:#f0ede8;display:flex;overflow-x:auto;border-bottom:1px solid rgba(13,13,13,0.08)">${tabBar}</div>
+    <div style="background:#fff;padding:22px">
+      <div id="${hid}-content-roadmap">${roadmapHtml}</div>
+      <div id="${hid}-content-documents" style="display:none">${docsHtml}</div>
+      <div id="${hid}-content-calculator" style="display:none">${calcHtml}</div>
+      <div id="${hid}-content-addons" style="display:none">${addonsHtml}</div>
+      <div id="${hid}-content-updates" style="display:none">${updatesHtml}</div>
+    </div>
+  </div>`;
+}
+
 // ── COACHING ──
 function openCoaching() {
   document.getElementById('coaching-modal').style.display = 'flex';
