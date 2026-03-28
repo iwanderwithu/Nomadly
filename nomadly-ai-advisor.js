@@ -199,12 +199,6 @@ async function sendChat() {
   const msg = input?.value?.trim();
   if (!msg) return;
 
-  // Respect plan lock (Pro-only AI)
-  if (typeof currentPlan !== 'undefined' && currentPlan === 'free') {
-    if (typeof showPaywall === 'function') showPaywall();
-    return;
-  }
-
   input.value = '';
   const sendBtn = document.getElementById('chat-send');
   if (sendBtn) { sendBtn.style.opacity = '0.5'; sendBtn.style.pointerEvents = 'none'; }

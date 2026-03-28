@@ -3607,7 +3607,7 @@ function hideVisaDetail() {
 let currentPlan = DB.get('current_plan','free'); // 'free' | 'wanderer' | 'pro'
 
 const PLAN_FEATURES = {
-  free:     { docs:0,    cities:0,  aiChat:false, property:false, runway:false, bvr:false, familyMode:false, mortgage:false, coliving:false, fullGuides:false, checklists:false, interactiveTools:false, cityData:false, roadmapPDF:false, docPacks:false, impactCalc:false, addOns:false, monthlyUpdates:false },
+  free:     { docs:0,    cities:0,  aiChat:true,  property:false, runway:false, bvr:false, familyMode:false, mortgage:false, coliving:false, fullGuides:false, checklists:false, interactiveTools:false, cityData:false, roadmapPDF:false, docPacks:false, impactCalc:false, addOns:false, monthlyUpdates:false },
   wanderer: { docs:9999, cities:10, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:false, coliving:false, fullGuides:true,  checklists:true,  interactiveTools:true,  cityData:true,  roadmapPDF:false, docPacks:false, impactCalc:false, addOns:false, monthlyUpdates:true },
   pro:      { docs:9999, cities:99, aiChat:true,  property:true,  runway:true,  bvr:true,  familyMode:true,  mortgage:true,  coliving:true,  fullGuides:true,  checklists:true,  interactiveTools:true,  cityData:true,  roadmapPDF:true,  docPacks:true,  impactCalc:true,  addOns:true,  monthlyUpdates:true },
 };
@@ -3660,20 +3660,8 @@ function applyPlanRestrictions() {
   if (sendBtn) sendBtn.style.opacity = '1';
   if (chatInput) chatInput.placeholder = currentLang === 'es' ? 'Pregunta sobre visas, vivienda, costos...' : 'Ask about visas, housing, costs...';
 
-  // Show/hide AI lock banner
-  if (!aiLock && !f.aiChat) {
-    const aiPage = document.getElementById('page-ai');
-    if (aiPage) {
-      const banner = document.createElement('div');
-      banner.id = 'ai-lock-banner';
-      banner.style.cssText = 'background:#fff3ee;border:1.5px solid rgba(196,98,45,0.2);border-radius:12px;padding:16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center';
-      banner.innerHTML = '<div><div style="font-weight:600;font-size:13px;color:#0d0d0d">🔒 AI Advisor is a Pro feature</div><div style="font-size:12px;color:#7a7060;margin-top:2px">Ask anything — upgrade to unlock full answers</div></div><button onclick="showPaywall()" style="padding:8px 16px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:\'Syne\',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;margin-left:12px">Unlock Pro →</button>';
-      const suggestedQ = document.getElementById('suggested-questions');
-      if (suggestedQ) suggestedQ.parentNode.insertBefore(banner, suggestedQ);
-    }
-  } else if (aiLock && f.aiChat) {
-    aiLock.remove();
-  }
+  // Remove any existing AI lock banner (AI is now available to all tiers with tier-gated responses)
+  if (aiLock) aiLock.remove();
 
   // Profile switcher — family mode
   const famBtn = document.getElementById('prof-family');
