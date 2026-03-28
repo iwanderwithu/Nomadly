@@ -4914,5 +4914,19 @@ submitBtn.addEventListener("click", async () => {
   output.textContent = answer;
 });
 </script>
+  <div id="nomadlyAI">
+  <input type="text" id="userQuestion" placeholder="Ask a question..." />
+  <select id="tierSelect">
+    <option value="Free">Free</option>
+    <option value="Wanderer">Wanderer</option>
+    <option value="Pro">Pro</option>
+  </select>
+  <select id="languageSelect">
+    <option value="en">English</option>
+    <option value="es">Spanish</option>
+  </select>
+  <button id="submitBtn">Ask AI</button>
+  <div id="aiAnswer" style="margin-top:10px; white-space:pre-wrap;"></div>
+</div>
 </body>
 </html>
