@@ -191,6 +191,46 @@ async function callClaudeAPI(question, tier, lang) {
   return data.answer;
 }
 
+// ── MARKDOWN → HTML ──────────────────────────────────────────────────────────
+function markdownToHtml(text) {
+  const lines = text.split('\n');
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    // H3
+    if (/^### (.+)/.test(line)) {
+      out.push('<div style="font-weight:700;font-size:13px;color:#0d0d0d;margin:10px 0 4px">' + line.replace(/^### /, '') + '</div>');
+    // H2
+    } else if (/^## (.+)/.test(line)) {
+      out.push('<div style="font-weight:800;font-size:14px;color:#0d0d0d;margin:14px 0 6px;padding-bottom:4px;border-bottom:1px solid rgba(13,13,13,0.08)">' + line.replace(/^## /, '') + '</div>');
+    // HR
+    } else if (/^---+$/.test(line.trim())) {
+      out.push('<hr style="border:none;border-top:1px solid rgba(13,13,13,0.08);margin:10px 0">');
+    // Numbered list
+    } else if (/^\d+\. (.+)/.test(line)) {
+      const m = line.match(/^(\d+)\. (.+)/);
+      out.push('<div style="display:flex;gap:6px;margin-bottom:4px"><span style="font-weight:700;color:#c4622d;flex-shrink:0">' + m[1] + '.</span><span>' + applyInline(m[2]) + '</span></div>');
+    // Bullet
+    } else if (/^[-•] (.+)/.test(line)) {
+      const m = line.match(/^[-•] (.+)/);
+      out.push('<div style="display:flex;gap:6px;margin-bottom:3px"><span style="color:#c4622d;flex-shrink:0">•</span><span>' + applyInline(m[1]) + '</span></div>');
+    // Empty line
+    } else if (line.trim() === '') {
+      out.push('<div style="height:6px"></div>');
+    // Normal paragraph
+    } else {
+      out.push('<div style="margin-bottom:2px">' + applyInline(line) + '</div>');
+    }
+  }
+  return out.join('');
+}
+
+function applyInline(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+}
+
 // ── OVERRIDE sendChat() ─────────────────────────────────────────────────────────
 // Replaces the local-only version in index.html.
 // Tries /api/chat first; falls back to local getAIResponse() on any failure.
@@ -232,8 +272,7 @@ async function sendChat() {
     const resources  = getResourcesForQuestion(msg);
     const roadmap    = getRoadmapForQuestion(msg);
     const extras     = renderAnswerExtras(resources, roadmap, lang, tier);
-    // Convert plain newlines to <br> for display
-    answerHtml = answerText.replace(/\n/g, '<br>') + extras;
+    answerHtml = markdownToHtml(answerText) + extras;
   } catch (err) {
     console.warn('[Nomadly AI] API error:', err.message);
     // Show the exact error so it's obvious when Claude is not connected
