@@ -4873,31 +4873,6 @@ setTimeout(tryInitQuiz, 2000);
 <script src="feature-unlock.js"></script>
 <script src="nomadly-ai-advisor.js"></script>
   <script>
-async function askClaude(question, tier = "Free", language = "en") {
-  try {
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question, tier, language })
-    });
-    const data = await res.json();
-    return data.answer;
-  } catch (err) {
-    console.error("Error calling Claude API:", err);
-    return "Sorry, something went wrong. Please try again.";
-  }
-}
-
-// Example: connect to a submit button
-document.querySelector("#submitQuestion").addEventListener("click", async () => {
-  const question = document.querySelector("#userQuestion").value;
-  const tier = "Pro"; // replace with logic for user's tier
-  const language = "en"; // replace with Spanish toggle if needed
-  const answer = await askClaude(question, tier, language);
-  document.querySelector("#answerOutput").textContent = answer;
-});
-</script>
-  <script>
 async function askNomadlyAI(question, tier = "Free", language = "en") {
   try {
     const response = await fetch("/api/chat", {
@@ -4917,6 +4892,27 @@ async function askNomadlyAI(question, tier = "Free", language = "en") {
     return "Error contacting AI. Check console for details.";
   }
 }
+
+const input = document.getElementById("userQuestion");
+const output = document.getElementById("aiAnswer");
+const submitBtn = document.getElementById("submitBtn");
+const tierSelect = document.getElementById("tierSelect");
+const languageSelect = document.getElementById("languageSelect");
+
+submitBtn.addEventListener("click", async () => {
+  const question = input.value.trim();
+  if (!question) {
+    output.textContent = "Please enter a question.";
+    return;
+  }
+
+  const tier = tierSelect.value;
+  const language = languageSelect.value;
+
+  output.textContent = "Thinking…";
+  const answer = await askNomadlyAI(question, tier, language);
+  output.textContent = answer;
+});
 </script>
 </body>
 </html>
