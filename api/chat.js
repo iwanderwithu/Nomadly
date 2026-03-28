@@ -1,241 +1,84 @@
-// api/chat.js — Vercel Serverless Function
-// Secure proxy to Anthropic Claude API.
-// Set ANTHROPIC_API_KEY in Vercel environment variables.
-// Configure in Vercel dashboard: Settings → Environment Variables
+import fetch from "node-fetch";
 
-const KNOWLEDGE_BASE = {
-  modules: {
-    visa: [
-      {
-        visa_type: "Non-Lucrative",
-        eligibility: [
-          "Non-EU citizens",
-          "Proof of €27,000+ income/year (or PR bank statement showing balance)"
-        ],
-        spouse_requirement: "Only primary applicant needs visa; spouse applies as dependent",
-        required_documents: [
-          "Passport",
-          "Bank statements (most recent)",
-          "Health insurance (NLV-compliant, €30,000+ coverage, no copays)",
-          "Proof of residence in Puerto Rico (notarized letter, utility bill, or bank statement)"
-        ],
-        processing_time: "2–3 months (may vary at PR consulate)",
-        questions_patterns: [
-          "do both spouses need a dnv",
-          "visa for married couple",
-          "dependent visa",
-          "PR consulate requirements",
-          "Puerto Rico appointment",
-          "spouse",
-          "dependent",
-          "married couple"
-        ],
-        resources: ["marriage_certificate_pr", "nlv_pr_checklist", "pr_appointment_info"]
-      }
-    ],
-    documents: [
-      {
-        id: "marriage_certificate_pr",
-        title: {
-          en: "Marriage Certificate Guide for PR Consulate",
-          es: "Guía de Certificado de Matrimonio para Consulado PR"
-        },
-        type: "guide",
-        link: "#resources",
-        tier: "Free"
-      },
-      {
-        id: "nlv_pr_checklist",
-        title: {
-          en: "NLV Checklist — PR Consulate",
-          es: "Lista de Verificación NLV — Consulado PR"
-        },
-        type: "checklist",
-        link: "#resources",
-        tier: "Pro"
-      },
-      {
-        id: "pr_appointment_info",
-        title: {
-          en: "PR Consulate Appointment Info",
-          es: "Información de Citas — Consulado PR"
-        },
-        type: "guide",
-        link: "mailto:Cog.SanJuandePuertoRico@maec.es",
-        tier: "Pro"
-      }
-    ],
-    roadmap: [
-      {
-        id: "nlv_pr_roadmap",
-        title: {
-          en: "NLV Roadmap — PR Consulate",
-          es: "Hoja de Ruta NLV — Consulado PR"
-        },
-        tier: "Pro",
-        steps: [
-          { step: 1, en: "Collect required documents", es: "Reunir documentos requeridos" },
-          { step: 2, en: "Verify PR exemptions — no apostille, no translation needed", es: "Verificar exenciones de PR — no se requiere apostilla ni traducción" },
-          { step: 3, en: "Show most recent bank statement (balance) + proof of PR residence", es: "Mostrar el estado de cuenta bancario más reciente (saldo) + prueba de residencia en PR" },
-          { step: 4, en: "Schedule consulate appointment (in-person or via email/phone)", es: "Agendar cita en el consulado (presencial o por correo electrónico/teléfono)" },
-          { step: 5, en: "Submit visa application and plan your arrival", es: "Enviar solicitud de visa y planificar tu llegada" }
-        ]
-      }
-    ]
-  }
-};
+const SYSTEM_PROMPT = `
+You are the Nomadly AI Advisor, an expert guiding users through relocating to Spain. Follow these rules strictly:
 
-// Static system prompt — tier and language are passed per-request in the user message.
-const SYSTEM_PROMPT = [
-  'You are the Nomadly AI Advisor, a relocation expert helping users move to Spain.',
-  '',
-  'Each user message begins with:',
-  '  User tier: Free | Wanderer | Pro',
-  '  Language: en | es',
-  '  Question: <the user\'s question>',
-  '',
-  'CRITICAL: Read the tier carefully and follow its rules EXACTLY. The tier controls how much detail you give.',
-  'Always respond in the language specified.',
-  '',
-  '---',
-  '',
-  '## 1. Tier Rules (STRICTLY ENFORCED)',
-  '',
-  '### tier = Free',
-  '- Response length: 2–3 sentences MAXIMUM',
-  '- Give only a high-level answer — no steps, no document lists, no details',
-  '- End with: "Upgrade to Pro for the full step-by-step breakdown."',
-  '',
-  '### tier = Wanderer',
-  '- Response length: short paragraph + 3 bullet points MAXIMUM',
-  '- Give key facts and a rough overview — no numbered steps, no document checklists',
-  '- You may name 1–2 key requirements but do NOT list them all',
-  '- End next steps with: "Pro unlocks the full roadmap, document checklist, and exact timelines."',
-  '',
-  '### tier = Pro',
-  '- Response length: as long as needed — be THOROUGH and COMPLETE',
-  '- ALWAYS use numbered steps for processes',
-  '- ALWAYS list ALL required documents with specifics',
-  '- ALWAYS include exact amounts (€), processing times, and insider tips',
-  '- ALWAYS compare relevant options side-by-side (e.g. PR vs NYC consulate)',
-  '- Include contacts, emails, phone numbers where relevant',
-  '- NEVER truncate or summarize — give the complete picture',
-  '',
-  '---',
-  '',
-  '## 2. Puerto Rico Consulate Rules (VERY IMPORTANT)',
-  '',
-  'If the user is applying through Puerto Rico, ALWAYS apply these rules:',
-  '- No apostille required',
-  '- No document translation required',
-  '- Only most recent bank statement needed (must show required balance)',
-  '- Must provide proof of Puerto Rico residency:',
-  '  - notarized letter OR bank statement OR utility bill',
-  '- They can go in person to ask questions',
-  '- Email: Cog.SanJuandePuertoRico@maec.es · Phone: 787-758-6090 · Mon–Fri 8:30am–1:30pm',
-  '',
-  '---',
-  '',
-  '## 3. Answer Style',
-  '',
-  '- Be clear, structured, and practical',
-  '- Use bullet points when helpful',
-  '- Avoid fluff',
-  '- Sound human and helpful, not robotic',
-  '- Medium emoji use allowed',
-  '',
-  '---',
-  '',
-  '## 4. Always Guide the User',
-  '',
-  'After every answer, include a "**Next steps:**" section.',
-  '',
-  'If tier is Free:',
-  '  Give 1 vague next step, then add: "Inside Pro, I can map this out step-by-step for your exact situation."',
-  '',
-  'If tier is Wanderer:',
-  '  Give 2 concrete next steps. Then add: "Upgrade to Pro for the complete step-by-step roadmap with documents and timelines."',
-  '',
-  'If tier is Pro:',
-  '  Give 3–5 specific, actionable next steps with details (what to gather, who to contact, what to submit).',
-  '',
-  '---',
-  '',
-  '## 5. Types of Questions You Handle',
-  '',
-  '- Visa eligibility (NLV, DNV, Work Visa, Entrepreneur, Student, Citizenship by Descent)',
-  '- Married couples / families / dependents',
-  '- Document requirements',
-  '- Apostille questions',
-  '- PR vs mainland US consulate differences',
-  '- Timeline to move',
-  '- General Spain relocation guidance',
-  '',
-  '---',
-  '',
-  '## 6. If You Don\'t Know',
-  '',
-  '- Do NOT guess',
-  '- Say: "I don\'t have that fully mapped yet, but I can guide you based on similar cases."',
-  '',
-  '---',
-  '',
-  'KNOWLEDGE BASE (authoritative source — always apply these facts):',
-  JSON.stringify(KNOWLEDGE_BASE, null, 2),
-].join('\n');
+1. Users are either "Free" or "Pro".
+   - Free: simplified answers, tease Pro naturally
+   - Pro: full step-by-step guidance, documents, timelines, actionable next steps
+
+2. Puerto Rico rules (apply if relevant):
+   - No apostille needed
+   - No translation needed
+   - Only most recent bank statement required (must show balance)
+   - Must prove PR residency (notarized letter, bank statement, utility bill)
+   - Email/phone contact available for questions
+
+3. Answer style:
+   - Clear, structured, practical
+   - Use bullet points when helpful
+   - Medium emoji use allowed
+   - Avoid repetition
+
+4. Next Steps:
+   - Always provide 1-3 actionable next steps
+   - Free users: include soft Pro suggestion
+   - Pro users: give detailed steps referencing resources
+
+5. Spanish/English toggle:
+   - Answer in the language specified by the "language" variable ("en" or "es")
+
+6. If unknown: respond with "I don’t have that fully mapped yet, but I can guide you based on similar cases."
+`;
 
 export default async function handler(req, res) {
-  // CORS headers for browser requests
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return res.status(503).json({ error: 'AI_NOT_CONFIGURED' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { question, tier = 'Free', language = 'en' } = req.body || {};
-  if (!question || typeof question !== 'string') {
-    return res.status(400).json({ error: 'question is required' });
+  const { question, tier = "Free", language = "en" } = req.body;
+
+  if (!question) {
+    return res.status(400).json({ error: "Missing question" });
   }
+
+  const userPrompt = `
+User question: ${question}
+User tier: ${tier}
+Language: ${language}
+
+Please answer following the Nomadly AI Advisor rules:
+- If Free: give simplified guidance, tease Pro naturally
+- If Pro: give full, detailed, actionable guidance with documents, steps, timelines
+- Apply Puerto Rico rules if relevant
+- Provide 1-3 actionable Next Steps
+- Answer clearly and in the requested language
+`;
 
   try {
-    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        "Content-Type": "application/json",
+        "x-api-key": process.env.CLAUDE_API_KEY
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2048,
-        system: SYSTEM_PROMPT,
+        model: "claude-3",
+        max_tokens: 1000,
         messages: [
-          {
-            role: 'user',
-            content: 'User tier: ' + tier + '\nLanguage: ' + language + '\nQuestion: ' + question,
-          },
-        ],
-      }),
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt }
+        ]
+      })
     });
 
-    if (!anthropicRes.ok) {
-      const errText = await anthropicRes.text();
-      console.error('Anthropic API error:', anthropicRes.status, errText);
-      return res.status(502).json({ error: 'upstream_error', status: anthropicRes.status });
-    }
+    const data = await response.json();
+    // Claude responses may be in `completion` or `content` depending on version
+    const answer = data?.completion || data?.content || "Sorry, no answer returned.";
 
-    const data = await anthropicRes.json();
-    const answer = data.content?.[0]?.text ?? '';
-    return res.status(200).json({ answer });
-
+    res.status(200).json({ answer });
   } catch (err) {
-    console.error('Chat handler error:', err);
-    return res.status(500).json({ error: err.message });
+    console.error("Claude API error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
