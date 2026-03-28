@@ -127,7 +127,10 @@ export default async function handler(req, res) {
     if (!apiRes.ok) {
       const errText = await apiRes.text();
       console.error('Claude API error:', apiRes.status, errText);
-      return res.status(502).json({ error: 'upstream_error', status: apiRes.status });
+      // Return the actual Anthropic error so it's visible in the UI
+      let detail = '';
+      try { detail = JSON.parse(errText)?.error?.message || errText; } catch { detail = errText; }
+      return res.status(502).json({ error: 'upstream_error', status: apiRes.status, detail });
     }
 
     const data = await apiRes.json();

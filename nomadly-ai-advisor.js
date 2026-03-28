@@ -183,7 +183,8 @@ async function callClaudeAPI(question, tier, lang) {
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     if (body.error === 'AI_NOT_CONFIGURED') throw new Error('NOT_CONFIGURED');
-    throw new Error('API_ERROR_' + res.status);
+    const detail = body.detail ? ': ' + body.detail : '';
+    throw new Error('API_ERROR_' + res.status + detail);
   }
 
   const data = await res.json();
