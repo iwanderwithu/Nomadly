@@ -234,11 +234,14 @@ async function sendChat() {
     // Convert plain newlines to <br> for display
     answerHtml = answerText.replace(/\n/g, '<br>') + extras;
   } catch (err) {
-    // Graceful fallback to local keyword matching
-    console.warn('[Nomadly AI] API unavailable, using local fallback:', err.message);
-    answerHtml = (typeof getAIResponse === 'function')
-      ? getAIResponse(msg)
-      : (lang === 'es' ? 'Error de conexión. Intenta de nuevo.' : 'Connection error. Please try again.');
+    console.warn('[Nomadly AI] API error:', err.message);
+    // Show the exact error so it's obvious when Claude is not connected
+    const isNotConfigured = err.message === 'NOT_CONFIGURED';
+    const localResponse = (typeof getAIResponse === 'function') ? getAIResponse(msg) : '';
+    answerHtml = (isNotConfigured
+      ? '<div style="font-size:11px;color:#c4622d;background:#fff3ee;border-radius:6px;padding:5px 9px;margin-bottom:8px;display:inline-block">⚠️ Claude API not configured — showing offline response</div><br>'
+      : '<div style="font-size:11px;color:#c4622d;background:#fff3ee;border-radius:6px;padding:5px 9px;margin-bottom:8px;display:inline-block">⚠️ Claude API error (' + err.message + ') — showing offline response</div><br>'
+    ) + localResponse;
   }
 
   document.getElementById(tid)?.remove();
