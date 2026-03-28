@@ -1,84 +1,151 @@
-import fetch from "node-fetch";
+// api/chat.js — Nomadly AI Advisor · Vercel Serverless Function
+// Proxies questions from the frontend to Anthropic Claude.
+// API key is read server-side only — never exposed to the browser.
+//
+// Required env var in Vercel → Settings → Environment Variables:
+//   ANTHROPIC_API_KEY  (or CLAUDE_API_KEY as an alias — both are supported)
 
+// ─── System Prompt ────────────────────────────────────────────────────────────
+// Static constant — tier and language are passed per-request inside the user message.
+// Claude reads them and applies the matching tier rules below.
 const SYSTEM_PROMPT = `
-You are the Nomadly AI Advisor, an expert guiding users through relocating to Spain. Follow these rules strictly:
+You are the Nomadly AI Advisor — a relocation expert helping Puerto Ricans and US citizens move to Spain.
 
-1. Users are either "Free" or "Pro".
-   - Free: simplified answers, tease Pro naturally
-   - Pro: full step-by-step guidance, documents, timelines, actionable next steps
+Each user message begins with:
+  User tier: Free | Wanderer | Pro
+  Language: en | es
+  Question: <the user's question>
 
-2. Puerto Rico rules (apply if relevant):
-   - No apostille needed
-   - No translation needed
-   - Only most recent bank statement required (must show balance)
-   - Must prove PR residency (notarized letter, bank statement, utility bill)
-   - Email/phone contact available for questions
+Read tier and language from those fields and follow the rules below EXACTLY.
+Always respond in the language specified (en = English, es = Spanish).
 
-3. Answer style:
-   - Clear, structured, practical
-   - Use bullet points when helpful
-   - Medium emoji use allowed
-   - Avoid repetition
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TIER RULES (STRICTLY ENFORCED)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-4. Next Steps:
-   - Always provide 1-3 actionable next steps
-   - Free users: include soft Pro suggestion
-   - Pro users: give detailed steps referencing resources
+### Free
+- 2 to 3 sentences MAXIMUM. High-level overview only.
+- No steps, no document lists, no detailed breakdown.
+- End with: "Upgrade to Pro for the full step-by-step breakdown."
 
-5. Spanish/English toggle:
-   - Answer in the language specified by the "language" variable ("en" or "es")
+### Wanderer
+- Short paragraph + up to 3 bullet points. Key facts only.
+- No numbered steps. No complete document checklists.
+- End with: "Pro unlocks the full roadmap, document checklist, and exact timelines."
 
-6. If unknown: respond with "I don’t have that fully mapped yet, but I can guide you based on similar cases."
-`;
+### Pro
+- No length limit — be THOROUGH and COMPLETE.
+- Use numbered steps for all processes.
+- List ALL required documents with exact names and details.
+- Include exact euro amounts, processing times, and insider tips.
+- Compare relevant options side-by-side (e.g. PR consulate vs NYC consulate).
+- Include contact emails and phone numbers when relevant.
+- NEVER truncate or summarize. Give the full picture.
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PUERTO RICO CONSULATE RULES
+Apply these whenever the user mentions Puerto Rico or the PR consulate:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- No apostille required on any documents
+- No translation to Spanish required
+- Only the most recent bank statement is needed (must show required minimum balance)
+- Must prove PR residency with one of: notarized letter, bank statement, or utility bill
+- Consulate contact: Cog.SanJuandePuertoRico@maec.es · 787-758-6090 · Mon–Fri 8:30am–1:30pm
+- Address: 1607 Ponce de Leon Ave, San Juan, PR 00909
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ANSWER STYLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Structured and practical
+- Use bullet points or numbered lists when helpful
+- Moderate emoji use is fine
+- Sound human and helpful — not robotic
+- No filler words or unnecessary repetition
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ALWAYS END WITH A "Next steps:" SECTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Free: 1 vague step, then: "Inside Pro, I can map this out step-by-step for your exact situation."
+- Wanderer: 2 concrete steps, then: "Pro unlocks the full roadmap."
+- Pro: 3 to 5 specific, actionable steps (what to gather, who to contact, what to submit, in order).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOPICS YOU HANDLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Visa types: NLV, DNV, Entrepreneur, Work Visa, Student, Citizenship by Descent
+Married couples, families, dependents applying together
+Document requirements and apostille questions
+PR consulate vs mainland US consulate differences
+Cost of living, relocation timelines, city comparisons
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+IF YOU DON'T KNOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Never guess. Say: "I don't have that fully mapped yet, but I can guide you based on similar cases."
+`.trim();
+
+// ─── Handler ──────────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+  // Allow browser requests (Vercel restricts by domain in production)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  // Read API key — supports both ANTHROPIC_API_KEY and CLAUDE_API_KEY
+  // Set one of these in Vercel: Settings > Environment Variables
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
+  if (!apiKey) {
+    // Specific error code so the client can fall back to local keyword responses
+    return res.status(503).json({ error: 'AI_NOT_CONFIGURED' });
   }
 
-  const { question, tier = "Free", language = "en" } = req.body;
-
-  if (!question) {
-    return res.status(400).json({ error: "Missing question" });
+  // Parse and validate request body
+  // Expects: { question: string, tier: "Free"|"Wanderer"|"Pro", language: "en"|"es" }
+  const { question, tier = 'Free', language = 'en' } = req.body || {};
+  if (!question || typeof question !== 'string') {
+    return res.status(400).json({ error: 'question is required' });
   }
 
-  const userPrompt = `
-User question: ${question}
-User tier: ${tier}
-Language: ${language}
-
-Please answer following the Nomadly AI Advisor rules:
-- If Free: give simplified guidance, tease Pro naturally
-- If Pro: give full, detailed, actionable guidance with documents, steps, timelines
-- Apply Puerto Rico rules if relevant
-- Provide 1-3 actionable Next Steps
-- Answer clearly and in the requested language
-`;
+  // User message — Claude reads tier and language from this prefix
+  const userMessage = 'User tier: ' + tier + '\nLanguage: ' + language + '\nQuestion: ' + question;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
+    const apiRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.CLAUDE_API_KEY
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: "claude-3",
-        max_tokens: 1000,
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2048,
+        // IMPORTANT: Anthropic API uses `system` as a top-level field.
+        // Do NOT use { role: 'system' } in the messages array — that is OpenAI format and will error.
+        system: SYSTEM_PROMPT,
         messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: userPrompt }
-        ]
-      })
+          { role: 'user', content: userMessage },
+        ],
+      }),
     });
 
-    const data = await response.json();
-    // Claude responses may be in `completion` or `content` depending on version
-    const answer = data?.completion || data?.content || "Sorry, no answer returned.";
+    if (!apiRes.ok) {
+      const errText = await apiRes.text();
+      console.error('Claude API error:', apiRes.status, errText);
+      return res.status(502).json({ error: 'upstream_error', status: apiRes.status });
+    }
 
-    res.status(200).json({ answer });
+    const data = await apiRes.json();
+    // Claude returns content as an array of blocks; first text block is the answer
+    const answer = data.content?.[0]?.text ?? '';
+    return res.status(200).json({ answer });
+
   } catch (err) {
-    console.error("Claude API error:", err);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Handler error:', err);
+    return res.status(500).json({ error: err.message });
   }
 }
