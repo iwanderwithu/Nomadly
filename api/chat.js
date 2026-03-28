@@ -1,13 +1,10 @@
-// api/chat.js — Nomadly AI Advisor · Vercel Serverless Function
-// Proxies questions from the frontend to Anthropic Claude.
-// API key is read server-side only — never exposed to the browser.
-//
-// Required env var in Vercel → Settings → Environment Variables:
-//   ANTHROPIC_API_KEY  (or CLAUDE_API_KEY as an alias — both are supported)
+// /api/chat.js — Nomadly AI Advisor
+// Serverless backend for Vercel
+// API key is read server-side only — never exposed to the browser
+// Required env var in Vercel: CLAUDE_API_KEY or ANTHROPIC_API_KEY
 
-// ─── System Prompt ────────────────────────────────────────────────────────────
-// Static constant — tier and language are passed per-request inside the user message.
-// Claude reads them and applies the matching tier rules below.
+import fetch from "node-fetch";
+
 const SYSTEM_PROMPT = `
 You are the Nomadly AI Advisor — a relocation expert helping Puerto Ricans and US citizens move to Spain.
 
@@ -44,7 +41,6 @@ TIER RULES (STRICTLY ENFORCED)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PUERTO RICO CONSULATE RULES
-Apply these whenever the user mentions Puerto Rico or the PR consulate:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 - No apostille required on any documents
 - No translation to Spanish required
@@ -84,53 +80,37 @@ IF YOU DON'T KNOW
 Never guess. Say: "I don't have that fully mapped yet, but I can guide you based on similar cases."
 `.trim();
 
-// ─── Handler ──────────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
-  // Allow browser requests (Vercel restricts by domain in production)
+  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  // Read API key — supports both ANTHROPIC_API_KEY and CLAUDE_API_KEY
-  // Set one of these in Vercel: Settings > Environment Variables
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY;
-  if (!apiKey) {
-    // Specific error code so the client can fall back to local keyword responses
-    return res.status(503).json({ error: 'AI_NOT_CONFIGURED' });
-  }
+  const apiKey = process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(503).json({ error: 'AI_NOT_CONFIGURED' });
 
-  // Parse and validate request body
-  // Expects: { question: string, tier: "Free"|"Wanderer"|"Pro", language: "en"|"es" }
+  // Read request body
   const { question, tier = 'Free', language = 'en' } = req.body || {};
-  if (!question || typeof question !== 'string') {
-    return res.status(400).json({ error: 'question is required' });
-  }
+  if (!question || typeof question !== 'string') return res.status(400).json({ error: 'question is required' });
 
-  // User message — Claude reads tier and language from this prefix
-  const userMessage = 'User tier: ' + tier + '\nLanguage: ' + language + '\nQuestion: ' + question;
+  // Combine system prompt + user info
+  const fullPrompt = `${SYSTEM_PROMPT}\n\nUser tier: ${tier}\nLanguage: ${language}\nQuestion: ${question}`;
 
   try {
-    const apiRes = await fetch('https://api.anthropic.com/v1/messages', {
+    const apiRes = await fetch('https://api.anthropic.com/v1/complete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        'X-API-Key': apiKey
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2048,
-        // IMPORTANT: Anthropic API uses `system` as a top-level field.
-        // Do NOT use { role: 'system' } in the messages array — that is OpenAI format and will error.
-        system: SYSTEM_PROMPT,
-        messages: [
-          { role: 'user', content: userMessage },
-        ],
-      }),
+        model: 'claude-v1',
+        prompt: fullPrompt,
+        max_tokens_to_sample: 2000
+      })
     });
 
     if (!apiRes.ok) {
@@ -140,9 +120,15 @@ export default async function handler(req, res) {
     }
 
     const data = await apiRes.json();
-    // Claude returns content as an array of blocks; first text block is the answer
-    const answer = data.content?.[0]?.text ?? '';
-    return res.status(200).json({ answer });
+    const answer = data.completion || 'No answer available.';
+    
+    // Optional: truncate Free tier answers
+    let finalAnswer = answer;
+    if (tier === 'Free' && answer.length > 300) {
+      finalAnswer = answer.slice(0, 300) + '... Upgrade to Pro for full guidance.';
+    }
+
+    return res.status(200).json({ answer: finalAnswer });
 
   } catch (err) {
     console.error('Handler error:', err);
