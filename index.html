@@ -4897,5 +4897,26 @@ document.querySelector("#submitQuestion").addEventListener("click", async () => 
   document.querySelector("#answerOutput").textContent = answer;
 });
 </script>
+  <script>
+async function askNomadlyAI(question, tier = "Free", language = "en") {
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question, tier, language })
+    });
+
+    const data = await response.json();
+    if (data.answer) {
+      return data.answer;
+    } else {
+      return "No answer returned. Please try again.";
+    }
+  } catch (err) {
+    console.error("Error contacting AI:", err);
+    return "Error contacting AI. Check console for details.";
+  }
+}
+</script>
 </body>
 </html>
