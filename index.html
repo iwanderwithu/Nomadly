@@ -518,9 +518,9 @@ function resetQuiz(){
     </div>
     <!-- Profile Switcher -->
     <div class="profile-switcher">
-      <div class="profile-btn active" onclick="setProfile('single',this)" id="prof-single">👤</div>
-      <div class="profile-btn" onclick="setProfile('couple',this)" id="prof-couple">👫</div>
-      <div class="profile-btn" onclick="setProfile('family',this)" id="prof-family">👨‍👩‍👧</div>
+      <div class="profile-btn active" onclick="setProfile('single',this)" id="prof-single">👤 Solo</div>
+      <div class="profile-btn" onclick="setProfile('couple',this)" id="prof-couple">👫 Couple</div>
+      <div class="profile-btn" onclick="setProfile('family',this)" id="prof-family">👨‍👩‍👧 Family</div>
     </div>
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
@@ -556,6 +556,7 @@ function resetQuiz(){
     <div class="sidebar-item" onclick="showPage('resources',document.querySelectorAll('.nav-tab')[4])"><span class="icon">🗂</span> <span id="sb-resources">Resources</span></div>
     <div class="sidebar-item" onclick="showPage('visas',document.querySelectorAll('.nav-tab')[5])"><span class="icon">🛂</span> <span id="sb-visas">Visas & Consulates</span></div>
     <div class="sidebar-item" onclick="showPage('housing',this)"><span class="icon">🏠</span> <span id="sb-housing">Housing Search</span></div>
+    <div class="sidebar-item" id="sb-prohub-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1])" style="display:none"><span class="icon">⚡</span> <span id="sb-prohub">Pro Hub</span><span style="font-size:9px;background:#c4622d;color:white;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:700">PRO</span></div>
     <!-- COACHING CTA -->
     <div onclick="openCoaching()" style="margin:12px 8px 0;background:linear-gradient(135deg,#c4622d,#d4a843);border-radius:12px;padding:14px;cursor:pointer;transition:opacity 0.15s" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
       <div style="font-size:18px;margin-bottom:4px">📞</div>
@@ -574,12 +575,13 @@ function resetQuiz(){
     
 <!-- DASHBOARD -->
 <div class="page active" id="page-dashboard">
-  <div id="profile-banner" class="profile-banner single">
+  <div id="profile-banner" class="profile-banner single" style="flex-wrap:wrap;gap:10px">
     <div class="profile-banner-icon" id="pb-icon">👤</div>
-    <div class="profile-banner-text">
+    <div class="profile-banner-text" style="flex:1;min-width:160px">
       <strong id="pb-title">Single Adult Mode</strong>
       <span id="pb-sub">Checklist and budget optimized for one person</span>
     </div>
+    <div id="pb-metrics" style="display:flex;gap:6px;flex-wrap:wrap;align-items:center"></div>
   </div>
   <div class="page-header">
     <div>
@@ -1949,9 +1951,18 @@ function setProfile(p, btn) {
   updateProfileBanner();
   updateBudgetForProfile();
   const track = getQuizTrack();
-  const trackLabels = { nlv:'NLV', dnv:'Digital Nomad Visa', descent:'Citizenship by Descent', student:'Student Visa' };
   const icons = { single:'👤', couple:'👫', family:'👨‍👩‍👧' };
-  showToast(icons[p] + ' ' + (p==='single'?'Single':p==='couple'?'Couple':'Family') + ' — ' + (trackLabels[track]||'NLV'), 'info');
+  const incomeChips = {
+    nlv:     { single:'€2,259/mo req.', couple:'€2,824/mo req.', family:'€3,954/mo req.' },
+    dnv:     { single:'€2,646/mo req.', couple:'€2,646/mo req.', family:'€2,646/mo req.' },
+    descent: { single:'No income min.', couple:'No income min.', family:'No income min.' },
+    student: { single:'€600/mo req.', couple:'€600/mo each', family:'€600/mo each' },
+    entrepreneur: { single:'Business plan req.', couple:'Business plan req.', family:'Business plan req.' },
+  };
+  const budgets = { single:'€2,100/mo', couple:'€3,600/mo', family:'€5,000/mo' };
+  const labels  = { single:'Solo', couple:'Couple', family:'Family' };
+  const income  = (incomeChips[track]||incomeChips.nlv)[p];
+  showToast(`${icons[p]} ${labels[p]} · ${income} · budget ${budgets[p]}`, 'info');
 }
 
 // Returns the current visa track derived from quiz answers
@@ -2023,9 +2034,30 @@ function updateProfileBanner() {
   const modeLabel = profileTitles[p] || 'Single Adult';
   const trackLabel = quizDone ? trackLabels[track] || 'NLV' : 'NLV';
 
+  // Income requirement chips per track × profile
+  const incomeReqs = {
+    nlv:          { single:'€2,259/mo', couple:'€2,824/mo', family:'€3,954/mo+' },
+    dnv:          { single:'€2,646/mo', couple:'€2,646/mo', family:'€2,646/mo' },
+    descent:      { single:'No minimum', couple:'No minimum', family:'No minimum' },
+    student:      { single:'€600/mo', couple:'€600/mo ea.', family:'€600/mo ea.' },
+    entrepreneur: { single:'Business plan', couple:'Business plan', family:'Business plan' },
+  };
+  const budgetAmounts = { single:'€2,100/mo', couple:'€3,600/mo', family:'€5,000/mo' };
+  const partyCounts   = { single:'1 person', couple:'2 people', family:'3+ people' };
+  const incomeReq = (incomeReqs[track] || incomeReqs.nlv)[p];
+  const budget    = budgetAmounts[p];
+  const partyCount = partyCounts[p];
+
   icon.textContent  = profileIcons[p] || '👤';
   title.textContent = modeLabel + ' · ' + trackLabel;
   sub.textContent   = quizDone ? trackReqs : 'NLV: Min. €2,259/mo income or €27,000+ savings · Health insurance no copay';
+
+  // Metric chips
+  const metricsEl = document.getElementById('pb-metrics');
+  if (metricsEl) {
+    const chip = (label, val, color) => `<span style="font-size:10px;font-weight:600;padding:4px 9px;border-radius:20px;background:rgba(13,13,13,0.07);color:${color||'#7a7060'};white-space:nowrap;display:inline-flex;flex-direction:column;gap:1px;text-align:center"><span style="font-size:9px;opacity:0.7;font-weight:500">${label}</span>${val}</span>`;
+    metricsEl.innerHTML = chip('Income req.', incomeReq, '#c4622d') + chip('Est. budget', budget, '#3b6fa0') + chip('Party size', partyCount, '#4a7c6f');
+  }
 }
 
 function updateBudgetForProfile() {
@@ -2320,7 +2352,9 @@ function renderDashboard() {
   updateBudgetForProfile();
   const catClass = {visa:'tag-visa',finance:'tag-finance',housing:'tag-housing',health:'tag-health',logistics:'tag-logistics'};
   const catLabel = {en:{visa:'Visa',finance:'Finance',housing:'Housing',health:'Health',logistics:'Logistics'},es:{visa:'Visa',finance:'Finanzas',housing:'Vivienda',health:'Salud',logistics:'Logística'}};
-  const dashTasks = tasks.filter(t=>!t.locked).slice(0,5);
+  const dashTasks = (currentPlan === 'free'
+    ? tasks.filter(t=>!t.locked && t.phase===1)
+    : tasks.filter(t=>!t.locked)).slice(0,5);
   document.getElementById('dashboard-tasks').innerHTML = dashTasks.map(t=>`
     <div class="check-item">
       <div class="check-box ${t.done?'done':''}" onclick="toggleDashTask(${t.id},this)">${t.done?'✓':''}</div>
@@ -3658,6 +3692,12 @@ function applyPlanRestrictions() {
   document.querySelectorAll('.free-lock-icon').forEach(el => {
     el.style.display = currentPlan === 'free' ? 'inline' : 'none';
   });
+
+  // Pro Hub sidebar item — show for Wanderer and Pro
+  const proHubSidebarItem = document.getElementById('sb-prohub-item');
+  if (proHubSidebarItem) {
+    proHubSidebarItem.style.display = (currentPlan === 'wanderer' || currentPlan === 'pro') ? 'flex' : 'none';
+  }
 }
 
 function selectPlan(plan) {
@@ -4583,7 +4623,7 @@ function renderJourney(country) {
   const isPro = currentPlan === 'pro';
   const proToolsHtml = buildProHub(isPaid, isPro, isES);
 
-  el.innerHTML = bannerHtml + sortedTracks.map(track => {
+  el.innerHTML = bannerHtml + proToolsHtml + sortedTracks.map(track => {
     const isRec = track.id === recommended && country === 'spain';
 
     // PAYWALL LOGIC:
@@ -4667,7 +4707,7 @@ function renderJourney(country) {
         </div>
       </div>
     </div>`;
-  }).join('') + proToolsHtml;
+  }).join('');
 }
 
 // ── PRO HUB ──────────────────────────────────────────────────────────────────
