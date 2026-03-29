@@ -413,16 +413,16 @@ function resetQuiz(){
 
 <!-- PLAN CARDS -->
 <div style="padding:24px 24px 0">
-  <!-- BILLING TOGGLE -->
+  <!-- BILLING TOGGLE — defaults to Annual per §5.2 -->
   <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:20px">
     <span style="font-size:13px;color:#7a7060" id="pw-monthly-label">Monthly</span>
-    <div onclick="toggleBilling()" id="billing-toggle" style="width:44px;height:24px;background:#e8e2d5;border-radius:12px;position:relative;cursor:pointer;transition:background 0.2s">
-      <div id="billing-knob" style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>
+    <div onclick="toggleBilling()" id="billing-toggle" style="width:44px;height:24px;background:#c4622d;border-radius:12px;position:relative;cursor:pointer;transition:background 0.2s">
+      <div id="billing-knob" style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;left:22px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>
     </div>
-    <span style="font-size:13px;color:#7a7060" id="pw-annual-label">Annual <span style="background:#eef6f4;color:#4a7c6f;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600">Save 20%</span></span>
+    <span style="font-size:13px;color:#7a7060" id="pw-annual-label">Annual <span style="background:#eef6f4;color:#4a7c6f;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600">Save 35%</span> <span style="background:#c4622d;color:white;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">Most Popular</span></span>
   </div>
 
-  <div style="display:grid;grid-template-columns:repeat(3,minmax(190px,1fr));gap:12px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px">
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(190px,1fr));gap:12px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">
 
     <!-- FREE -->
     <div style="border:1.5px solid rgba(13,13,13,0.1);border-radius:16px;padding:18px;background:#f9f8f6">
@@ -430,7 +430,7 @@ function resetQuiz(){
       <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#0d0d0d;margin-bottom:4px">$0</div>
       <div style="font-size:11px;color:#7a7060;margin-bottom:14px">Forever free</div>
       <div style="font-size:12px;color:#7a7060;line-height:2">
-        ✓ Phase 1 preview<br>✓ Consulate directory<br>× No full guides<br>× No tools or trackers<br>× No city data<br>× No AI Advisor
+        ✓ Phase 1 preview<br>✓ Visa overviews<br>✓ Consulate directory<br>× Full guides<br>× Task & doc trackers<br>× Budget tools<br>× AI Advisor
       </div>
       <div style="margin-top:14px;padding:9px;background:#e8e2d5;border-radius:8px;text-align:center;font-size:12px;font-weight:600;color:#7a7060">Current Plan</div>
     </div>
@@ -439,12 +439,12 @@ function resetQuiz(){
     <div style="border:1.5px solid rgba(13,13,13,0.15);border-radius:16px;padding:18px;background:#ffffff">
       <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#7a7060;margin-bottom:8px">Wanderer</div>
       <div style="display:flex;align-items:baseline;gap:2px;margin-bottom:4px">
-        <span style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#0d0d0d" id="w-price">$9</span>
+        <span style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#0d0d0d" id="w-price">$19</span>
         <span style="font-size:12px;color:#7a7060" id="w-period">/mo</span>
       </div>
-      <div style="font-size:11px;color:#7a7060;margin-bottom:14px" id="w-billed">Billed monthly</div>
+      <div style="font-size:11px;color:#7a7060;margin-bottom:14px" id="w-billed">Billed $229/year (save $119)</div>
       <div style="font-size:12px;color:#0d0d0d;line-height:2">
-        ✓ Full step-by-step guides<br>✓ Checklists & doc trackers<br>✓ Interactive tools<br>✓ Budget & visa tracker<br>✓ City data (Spain)<br>✓ Monthly updates<br>× No roadmap PDF<br>× No AI Advisor
+        ✓ Full step-by-step guides<br>✓ Task & doc trackers<br>✓ Budget tools & calculators<br>✓ City data — Spain<br>✓ Housing search<br>✓ Resources database<br>✓ Monthly updates<br>× AI Advisor<br>× Roadmap PDF
       </div>
       <button onclick="checkoutPlan('wanderer')" style="margin-top:14px;width:100%;padding:10px;background:#0d0d0d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
     </div>
@@ -454,14 +454,29 @@ function resetQuiz(){
       <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#c4622d;color:white;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:0.07em;white-space:nowrap" id="pw-popular">Most Popular</div>
       <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#c4622d;margin-bottom:8px">Nomad Pro</div>
       <div style="display:flex;align-items:baseline;gap:2px;margin-bottom:4px">
-        <span style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#0d0d0d" id="p-price">$19</span>
+        <span style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#0d0d0d" id="p-price">$37</span>
         <span style="font-size:12px;color:#7a7060" id="p-period">/mo</span>
       </div>
-      <div style="font-size:11px;color:#7a7060;margin-bottom:14px" id="p-billed">Billed monthly</div>
+      <div style="font-size:11px;color:#7a7060;margin-bottom:14px" id="p-billed">Billed $449/year (save $259)</div>
       <div style="font-size:12px;color:#0d0d0d;line-height:2">
-        ✓ Everything in Wanderer<br>✓ Roadmap generator (PDF)<br>✓ Smart document packs<br>✓ Impact calculator<br>✓ AI Advisor (automated)<br>✓ Optional add-ons<br>✓ Mortgage simulator<br>✓ Coliving search
+        ✓ Everything in Wanderer<br>✓ AI Advisor (automated)<br>✓ Roadmap generator (PDF)<br>✓ Smart document packs<br>✓ Pro calculators<br>✓ Optional add-ons<br>✓ Portugal content (coming)
       </div>
       <button onclick="checkoutPlan('pro')" style="margin-top:14px;width:100%;padding:10px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
+    </div>
+  </div>
+
+  <!-- PARTNER TIER — Phase 2, Month 2 -->
+  <div style="border:1.5px solid rgba(13,13,13,0.12);border-radius:14px;padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:#fafaf8">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="font-size:24px">⚖️</div>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:2px">Partner <span style="font-size:10px;font-weight:600;background:#f5f2eb;color:#7a7060;padding:2px 7px;border-radius:10px;margin-left:4px">Coming Month 2</span></div>
+        <div style="font-size:12px;color:#7a7060">Attorney &amp; advisor accounts · Client dashboard · Co-branding · Up to 20 seats</div>
+      </div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#0d0d0d" id="partner-price">$67<span style="font-size:12px;font-weight:400;color:#7a7060">/mo</span></div>
+      <div style="font-size:11px;color:#7a7060" id="partner-billed">Billed $799/year</div>
     </div>
   </div>
 
@@ -489,7 +504,7 @@ function resetQuiz(){
       <button onclick="closeCheckout()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.5);margin-bottom:6px">Nomadly · Secure Checkout</div>
       <div id="co-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:8px">Wanderer Plan</div>
-      <div id="co-price" style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;line-height:1">$9<span style="font-size:15px;font-weight:400;opacity:0.55">/mo</span></div>
+      <div id="co-price" style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;line-height:1">$19<span style="font-size:15px;font-weight:400;opacity:0.55">/mo</span></div>
     </div>
     <!-- Body -->
     <div style="padding:28px 32px">
@@ -3787,11 +3802,17 @@ function selectPlan(plan) {
 // ── STRIPE PAYMENT LINKS ──
 // TODO: Paste your Stripe Payment Link URLs below after creating them in the Stripe dashboard.
 // Configure each link's success_url to: https://nomadly-kohl.vercel.app/?paid=true&plan=wanderer (or pro)
+// TODO: Replace with live Stripe Payment Links after creating products in Stripe dashboard.
+// New products needed: Wanderer Monthly $29, Wanderer Annual $229, Pro Monthly $59,
+// Pro Annual $449, Partner Monthly $99, Partner Annual $799.
+// Archive (do NOT delete) old $9/$19 products for existing subscribers.
 const STRIPE_LINKS = {
-  wanderer_monthly: '', // TODO: https://buy.stripe.com/YOUR_WANDERER_MONTHLY_LINK
-  wanderer_annual:  '', // TODO: https://buy.stripe.com/YOUR_WANDERER_ANNUAL_LINK
-  pro_monthly:      '', // TODO: https://buy.stripe.com/YOUR_PRO_MONTHLY_LINK
-  pro_annual:       '', // TODO: https://buy.stripe.com/YOUR_PRO_ANNUAL_LINK
+  wanderer_monthly: '', // TODO: Replace with Stripe Payment Link — Wanderer Monthly $29/mo
+  wanderer_annual:  '', // TODO: Replace with Stripe Payment Link — Wanderer Annual $229/yr
+  pro_monthly:      '', // TODO: Replace with Stripe Payment Link — Pro Monthly $59/mo
+  pro_annual:       '', // TODO: Replace with Stripe Payment Link — Pro Annual $449/yr
+  partner_monthly:  '', // TODO: Replace with Stripe Payment Link — Partner Monthly $99/mo (Phase 2)
+  partner_annual:   '', // TODO: Replace with Stripe Payment Link — Partner Annual $799/yr (Phase 2)
 };
 
 let _checkoutActivePlan = 'wanderer';
@@ -3804,36 +3825,42 @@ function checkoutPlan(plan) {
   const plans = {
     wanderer: {
       title: 'Wanderer',
-      monthly: 9, annual: 86,
-      trial:   '🎉 7-day free trial · Then $9/mo · Cancel anytime',
-      trialES: '🎉 Prueba gratis 7 días · Luego $9/mes · Cancela cuando quieras',
-      features:   ['✓ Full planner — all 5 phases','✓ AI chat advisor (unlimited)','✓ Housing search with visa filter','✓ 25 documents tracked','✓ 10 cities compared','✓ Savings runway calculator','✓ Buy vs rent tool'],
-      featuresES: ['✓ Planificador completo — 5 fases','✓ Asesor IA por chat (ilimitado)','✓ Búsqueda de vivienda con filtro de visa','✓ 25 documentos rastreados','✓ 10 ciudades comparadas','✓ Calculadora de reserva financiera','✓ Calculadora alquilar vs comprar'],
+      monthly: 29, annualMonthly: 19, annualTotal: 229,
+      trial:   '🎉 7-day free trial · Then $29/mo · Cancel anytime',
+      trialES: '🎉 Prueba gratis 7 días · Luego $29/mes · Cancela cuando quieras',
+      trialAnnual:   '🎉 7-day free trial · Then $229/yr ($19/mo) · Cancel anytime',
+      trialAnnualES: '🎉 Prueba gratis 7 días · Luego $229/año ($19/mes) · Cancela cuando quieras',
+      features:   ['✓ Full step-by-step guides','✓ Task & document trackers','✓ Budget tools & savings calculator','✓ City data — Spain','✓ Housing search & rental guides','✓ Resources database','✓ Monthly content updates'],
+      featuresES: ['✓ Guías completas paso a paso','✓ Rastreadores de tareas y documentos','✓ Herramientas de presupuesto','✓ Datos de ciudades — España','✓ Búsqueda de vivienda','✓ Base de recursos','✓ Actualizaciones mensuales'],
     },
     pro: {
       title: 'Nomad Pro',
-      monthly: 19, annual: 182,
-      trial:   '🎉 7-day free trial · Then $19/mo · Cancel anytime',
-      trialES: '🎉 Prueba gratis 7 días · Luego $19/mes · Cancela cuando quieras',
-      features:   ['✓ Everything in Wanderer','✓ Unlimited documents','✓ 50+ cities worldwide','✓ Family profiles (couple + kids)','✓ Mortgage simulator','✓ Coliving search','✓ Priority email support'],
-      featuresES: ['✓ Todo lo de Wanderer','✓ Documentos ilimitados','✓ 50+ ciudades en todo el mundo','✓ Perfiles familiares (pareja + hijos)','✓ Simulador de hipoteca','✓ Búsqueda de coliving','✓ Soporte prioritario por correo'],
+      monthly: 59, annualMonthly: 37, annualTotal: 449,
+      trial:   '🎉 7-day free trial · Then $59/mo · Cancel anytime',
+      trialES: '🎉 Prueba gratis 7 días · Luego $59/mes · Cancela cuando quieras',
+      trialAnnual:   '🎉 7-day free trial · Then $449/yr ($37/mo) · Cancel anytime',
+      trialAnnualES: '🎉 Prueba gratis 7 días · Luego $449/año ($37/mes) · Cancela cuando quieras',
+      features:   ['✓ Everything in Wanderer','✓ AI Advisor (automated guidance)','✓ Roadmap generator (PDF)','✓ Smart document packs','✓ Pro calculators (impact, tax, investment)','✓ Optional add-ons','✓ Portugal content (coming soon)'],
+      featuresES: ['✓ Todo lo de Wanderer','✓ Asesor IA (orientación automatizada)','✓ Generador de hoja de ruta (PDF)','✓ Paquetes de documentos inteligentes','✓ Calculadoras Pro','✓ Complementos opcionales','✓ Contenido de Portugal (próximamente)'],
     },
   };
   const p = plans[plan] || plans.wanderer;
-  const price = isAnnual ? p.annual : p.monthly;
-  const periodStr = isAnnual ? (isES ? '/año' : '/yr') : (isES ? '/mes' : '/mo');
+  // Show monthly equivalent for annual — spec §5.2: "show the monthly equivalent prominently"
+  const displayPrice = isAnnual ? p.annualMonthly : p.monthly;
+  const periodStr = '/mo';
   const el = document.getElementById('stripe-checkout');
   if (!el) return;
   document.getElementById('co-title').textContent = p.title;
-  document.getElementById('co-price').innerHTML = `$${price}<span style="font-size:15px;font-weight:400;opacity:0.55">${periodStr}</span>`;
-  document.getElementById('co-trial').innerHTML = `<span style="font-size:16px">✅</span> ${isES ? p.trialES : p.trial}`;
+  document.getElementById('co-price').innerHTML = `$${displayPrice}<span style="font-size:15px;font-weight:400;opacity:0.55">${periodStr}</span>${isAnnual ? `<span style="display:block;font-size:12px;font-weight:400;opacity:0.6;margin-top:2px">billed $${p.annualTotal}/year</span>` : ''}`;
+  const trialKey = isAnnual ? (isES ? 'trialAnnualES' : 'trialAnnual') : (isES ? 'trialES' : 'trial');
+  document.getElementById('co-trial').innerHTML = `<span style="font-size:16px">✅</span> ${p[trialKey]}`;
   document.getElementById('co-features-label').textContent = isES ? 'Qué incluye' : "What's included";
   document.getElementById('co-features').innerHTML = (isES ? p.featuresES : p.features).join('<br>');
   document.getElementById('co-order-label').textContent = isES ? 'Cargo de hoy' : "Today's charge";
   document.getElementById('co-order-total').textContent = '$0.00';
   document.getElementById('co-order-note').textContent = isES
-    ? 'Después del período de prueba, se factura mensualmente. Cancela en cualquier momento.'
-    : 'After 7-day free trial, billed ' + (isAnnual ? 'annually' : 'monthly') + '. Cancel anytime.';
+    ? 'Después del período de prueba, se factura ' + (isAnnual ? 'anualmente' : 'mensualmente') + '. Cancela en cualquier momento.'
+    : 'After 7-day free trial, billed ' + (isAnnual ? `annually as $${p.annualTotal}` : 'monthly') + '. Cancel anytime.';
   document.getElementById('co-pay-btn').textContent = isES ? 'Proceder al Pago →' : 'Proceed to Payment →';
   el.style.display = 'flex';
 }
@@ -5087,7 +5114,9 @@ function closeCoaching() {
 document.getElementById('coaching-modal').addEventListener('click', function(e) {
   if(e.target===this) closeCoaching();
 });
-let isAnnual = false;
+// Default to annual per spec §5.2 — annual saves 35% and is 'Most Popular'
+let isAnnual = true;
+window._billingAnnual = true;
 
 function toggleBilling() {
   isAnnual = !isAnnual;
@@ -5099,48 +5128,63 @@ function toggleBilling() {
   const isES = currentLang === 'es';
   const wPrice = document.getElementById('w-price');
   const pPrice = document.getElementById('p-price');
-  const wPeriod = document.getElementById('w-period');
-  const pPeriod = document.getElementById('p-period');
+  const partnerPrice = document.getElementById('partner-price');
+  const partnerBilled = document.getElementById('partner-billed');
   const wBilled = document.getElementById('w-billed');
   const pBilled = document.getElementById('p-billed');
-  if (wPrice) wPrice.textContent = isAnnual ? '$7' : '$9';
-  if (pPrice) pPrice.textContent = isAnnual ? '$15' : '$19';
-  if (wPeriod) wPeriod.textContent = isAnnual ? (isES ? '/mes' : '/mo') : (isES ? '/mes' : '/mo');
-  if (pPeriod) pPeriod.textContent = isAnnual ? (isES ? '/mes' : '/mo') : (isES ? '/mes' : '/mo');
-  if (wBilled) wBilled.textContent = isAnnual ? (isES ? 'Facturado $84/año (ahorra $24)' : 'Billed $84/year (save $24)') : (isES ? 'Facturado mensualmente' : 'Billed monthly');
-  if (pBilled) pBilled.textContent = isAnnual ? (isES ? 'Facturado $180/año (ahorra $48)' : 'Billed $180/year (save $48)') : (isES ? 'Facturado mensualmente' : 'Billed monthly');
+  // Show monthly equivalent for annual; full price for monthly
+  if (wPrice) wPrice.textContent = isAnnual ? '$19' : '$29';
+  if (pPrice) pPrice.textContent = isAnnual ? '$37' : '$59';
+  if (wBilled) wBilled.textContent = isAnnual
+    ? (isES ? 'Facturado $229/año (ahorra $119)' : 'Billed $229/year (save $119)')
+    : (isES ? 'Facturado mensualmente' : 'Billed monthly');
+  if (pBilled) pBilled.textContent = isAnnual
+    ? (isES ? 'Facturado $449/año (ahorra $259)' : 'Billed $449/year (save $259)')
+    : (isES ? 'Facturado mensualmente' : 'Billed monthly');
+  if (partnerPrice) partnerPrice.innerHTML = isAnnual
+    ? '$67<span style="font-size:12px;font-weight:400;color:#7a7060">/mo</span>'
+    : '$99<span style="font-size:12px;font-weight:400;color:#7a7060">/mo</span>';
+  if (partnerBilled) partnerBilled.textContent = isAnnual
+    ? (isES ? 'Facturado $799/año' : 'Billed $799/year')
+    : (isES ? 'Facturado mensualmente' : 'Billed monthly');
 }
 
 function renderFeatureTable() {
   const isES = currentLang === 'es';
   const rows = isES ? [
     ['Vista previa Fase 1','✓','✓','✓'],
-    ['Guías completas paso a paso','—','✓','✓'],
-    ['Listas de verificación y rastreadores','—','✓','✓'],
-    ['Herramientas interactivas (presupuesto, rastreador)','—','✓','✓'],
-    ['Datos de ciudades (un país actualmente)','—','✓','✓'],
-    ['Actualizaciones mensuales / nuevo contenido','—','✓','✓'],
-    ['Generador de hoja de ruta (PDF/interactivo)','—','—','✓'],
-    ['Paquetes de documentos inteligentes','—','—','✓'],
-    ['Calculadora de impacto (ahorros, impuestos, visa)','—','—','✓'],
-    ['Asesor IA (orientación automatizada)','—','—','✓'],
-    ['Add-ons opcionales','—','—','✓'],
-    ['Directorio de Visas y Consulados','✓','✓','✓'],
+    ['Resumen de visas y directorio consular','✓','✓','✓'],
     ['Idioma EN / ES','✓','✓','✓'],
+    ['Guías completas paso a paso','—','✓','✓'],
+    ['Rastreadores de tareas y documentos','—','✓','✓'],
+    ['Herramientas de presupuesto y calculadora de ahorros','—','✓','✓'],
+    ['Datos de ciudades — España','—','✓','✓'],
+    ['Búsqueda de vivienda y guías de alquiler','—','✓','✓'],
+    ['Base de recursos de la comunidad','—','✓','✓'],
+    ['Actualizaciones mensuales de contenido','—','✓','✓'],
+    ['Asesor IA (orientación automatizada)','—','—','✓'],
+    ['Generador de hoja de ruta (PDF)','—','—','✓'],
+    ['Paquetes de documentos inteligentes','—','—','✓'],
+    ['Calculadoras Pro (impacto, impuestos, inversión)','—','—','✓'],
+    ['Contenido de Portugal (próximamente)','—','—','✓'],
+    ['Add-ons opcionales','—','—','✓'],
   ] : [
     ['Phase 1 Preview','✓','✓','✓'],
-    ['Full step-by-step guides','—','✓','✓'],
-    ['Checklists & document trackers','—','✓','✓'],
-    ['Interactive tools (budget, visa tracker)','—','✓','✓'],
-    ['City data (one country currently)','—','✓','✓'],
-    ['Monthly updates / new content','—','✓','✓'],
-    ['Roadmap generator (PDF/interactive)','—','—','✓'],
-    ['Smart document packs','—','—','✓'],
-    ['Impact calculator (savings, taxes, visa costs)','—','—','✓'],
-    ['AI Advisor (automated guidance)','—','—','✓'],
-    ['Optional add-ons','—','—','✓'],
-    ['Visa & Consulate Directory','✓','✓','✓'],
+    ['Visa overviews & consulate directory','✓','✓','✓'],
     ['EN / ES Language Toggle','✓','✓','✓'],
+    ['Full step-by-step guides','—','✓','✓'],
+    ['Task & document trackers','—','✓','✓'],
+    ['Budget tools & savings calculator','—','✓','✓'],
+    ['City data — Spain','—','✓','✓'],
+    ['Housing search & rental guides','—','✓','✓'],
+    ['Community resources database','—','✓','✓'],
+    ['Monthly content updates','—','✓','✓'],
+    ['AI Advisor (automated guidance)','—','—','✓'],
+    ['Roadmap generator (PDF)','—','—','✓'],
+    ['Smart document packs','—','—','✓'],
+    ['Pro calculators (impact, tax, investment)','—','—','✓'],
+    ['Portugal content (coming soon)','—','—','✓'],
+    ['Optional add-ons','—','—','✓'],
   ];
   const el = document.getElementById('feature-table-rows');
   if (!el) return;
