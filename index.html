@@ -201,9 +201,32 @@ function quizFinish(){
     +'<div style="font-weight:700;font-size:14px;color:'+color+';margin-bottom:4px">'+track+'</div>'
     +'<div style="font-size:12px;color:#7a7060">'+desc+'</div></div>'
     +(urgent?'<div style="background:#fdf6e8;border-radius:10px;padding:10px;font-size:12px;color:#d4a843;margin-bottom:14px;text-align:left">⚡ <strong>'+(isES?'¡Urgente!':'Urgent!')+'</strong> '+(isES?'Revisa tu Planificador para los próximos pasos inmediatos.':'Check your Planner for immediate next steps.')+'</div>':'')
-    +'<button onclick="quizClose()" style="width:100%;padding:14px;background:#c4622d;color:white;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer">'+(isES?'Vamos →':'Let\'s go →')+'</button>'
+    +'<button onclick="showLegalAck()" style="width:100%;padding:14px;background:#c4622d;color:white;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer">'+(isES?'Vamos →':'Let\'s go →')+'</button>'
     +'</div>';
 }
+// ── LEGAL ACKNOWLEDGMENT (§4.1) ─────────────────────────────────────────────
+function showLegalAck() {
+  // If already acknowledged, skip straight to dashboard
+  try { if(typeof DB!=='undefined'&&DB.get('legal_acknowledged',false)){quizClose();return;} } catch(e){}
+  var el=document.getElementById('legal-ack-modal');
+  if(el){el.style.display='flex';}
+}
+function acceptLegal() {
+  try { if(typeof DB!=='undefined'){DB.set('legal_acknowledged',true);} } catch(e){}
+  var el=document.getElementById('legal-ack-modal');
+  if(el){el.style.display='none';}
+  quizClose();
+}
+function showTOS() {
+  var el=document.getElementById('tos-modal');
+  if(el){el.style.display='flex';}
+}
+function closeTOS() {
+  var el=document.getElementById('tos-modal');
+  if(el){el.style.display='none';}
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 function quizClose(){
   var el=document.getElementById('onboarding');
   if(el){el.style.opacity='0';el.style.transition='opacity 0.3s';setTimeout(function(){el.style.display='none';},300);}
@@ -493,8 +516,52 @@ function resetQuiz(){
         Proceed to Payment →
       </button>
       <button onclick="closeCheckout()" style="width:100%;padding:10px;background:none;border:none;color:#7a7060;font-size:13px;cursor:pointer;margin-top:8px">← Go back to plans</button>
-      <div style="text-align:center;font-size:11px;color:#7a7060;margin-top:14px">By continuing you agree to our Terms of Service.<br>Questions? <a href="mailto:hello@nomadly.app" style="color:#3b6fa0">hello@nomadly.app</a></div>
+      <div style="text-align:center;font-size:11px;color:#7a7060;margin-top:14px">By continuing you agree to our <a href="#" onclick="showTOS();return false;" style="color:#3b6fa0">Terms of Service</a>.<br>Questions? <a href="mailto:hello@nomadly.app" style="color:#3b6fa0">hello@nomadly.app</a></div>
     </div>
+  </div>
+</div>
+
+<!-- LEGAL ACKNOWLEDGMENT MODAL (shown once after quiz, cannot be skipped) -->
+<div id="legal-ack-modal" style="position:fixed;inset:0;z-index:3000;background:rgba(13,13,13,0.97);display:none;align-items:center;justify-content:center;padding:24px">
+  <div style="background:#f5f2eb;border-radius:24px;padding:36px 32px;max-width:520px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.5)">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:36px;margin-bottom:10px">⚖️</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#0d0d0d;margin-bottom:6px">Before You Continue</div>
+      <div style="font-size:12px;color:#7a7060">Please read and acknowledge the following</div>
+    </div>
+    <div style="background:white;border-radius:14px;border:1.5px solid rgba(13,13,13,0.1);padding:20px;font-size:13px;color:#0d0d0d;line-height:1.75;margin-bottom:24px">
+      Nomadly provides educational information to help you prepare for your move to Spain. We are not a law firm and do not provide legal, immigration, or financial advice. Visa requirements change frequently and individual circumstances vary. By continuing, you confirm that you understand this platform is for informational and planning purposes only, and that you will verify all requirements with the official Spanish consulate or a licensed immigration professional before submitting any application.
+    </div>
+    <button onclick="acceptLegal()" style="width:100%;padding:14px;background:#c4622d;color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer;letter-spacing:-0.01em">I Understand — Take Me to My Plan</button>
+    <div style="text-align:center;margin-top:12px;font-size:11px;color:#7a7060">By proceeding, you agree to our <a href="#" onclick="showTOS();return false;" style="color:#3b6fa0">Terms of Service</a></div>
+  </div>
+</div>
+
+<!-- TERMS OF SERVICE MODAL -->
+<div id="tos-modal" style="position:fixed;inset:0;z-index:3500;background:rgba(13,13,13,0.85);display:none;align-items:center;justify-content:center;padding:24px">
+  <div style="background:#f5f2eb;border-radius:24px;padding:36px 32px;max-width:560px;width:100%;box-shadow:0 40px 80px rgba(0,0,0,0.5);position:relative;max-height:90vh;overflow-y:auto">
+    <button onclick="closeTOS()" style="position:absolute;top:16px;right:16px;background:rgba(13,13,13,0.08);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;color:#7a7060;display:flex;align-items:center;justify-content:center">✕</button>
+    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:#0d0d0d;margin-bottom:4px">Terms of Service</div>
+    <div style="font-size:12px;color:#7a7060;margin-bottom:22px">Nomadly · Last updated March 2026</div>
+    <div style="font-size:13px;color:#0d0d0d;line-height:1.8">
+      <div style="margin-bottom:18px;padding:14px;background:white;border-radius:10px;border:1px solid rgba(13,13,13,0.08)">
+        <strong style="display:block;color:#c4622d;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:0.05em">1. No Visa Guarantee</strong>
+        Nomadly does not guarantee visa approval and is not responsible for visa denials, delays, or changes in immigration policy.
+      </div>
+      <div style="margin-bottom:18px;padding:14px;background:white;border-radius:10px;border:1px solid rgba(13,13,13,0.08)">
+        <strong style="display:block;color:#c4622d;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:0.05em">2. Not Legal Advice</strong>
+        Use of this platform does not constitute immigration legal advice or representation.
+      </div>
+      <div style="margin-bottom:18px;padding:14px;background:white;border-radius:10px;border:1px solid rgba(13,13,13,0.08)">
+        <strong style="display:block;color:#c4622d;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:0.05em">3. Subscription Fees</strong>
+        Subscription fees are non-refundable after the 7-day trial period.
+      </div>
+      <div style="padding:14px;background:white;border-radius:10px;border:1px solid rgba(13,13,13,0.08)">
+        <strong style="display:block;color:#c4622d;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:0.05em">4. Educational Purpose</strong>
+        Content is provided for educational and informational purposes only.
+      </div>
+    </div>
+    <button onclick="closeTOS()" style="margin-top:22px;width:100%;padding:12px;background:#0d0d0d;color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer">Close</button>
   </div>
 </div>
 
@@ -934,6 +1001,11 @@ function resetQuiz(){
 
 <!-- VISAS & CONSULATES -->
 <div class="page" id="page-visas">
+  <!-- PERSISTENT LEGAL DISCLAIMER BANNER — non-dismissible per spec §4.3 -->
+  <div style="background:#fff8f2;border:1px solid rgba(196,98,45,0.25);border-radius:12px;padding:10px 14px;margin-bottom:18px;font-size:12px;color:#7a7060;line-height:1.6;display:flex;align-items:flex-start;gap:8px">
+    <span style="flex-shrink:0;font-size:14px;margin-top:1px">⚠️</span>
+    <span>Educational guide only — not legal advice. Requirements change. Always verify at the official Spanish consulate website before submitting documents. <a href="https://www.exteriores.gob.es" target="_blank" rel="noopener" style="color:#c4622d;font-weight:600;white-space:nowrap">Official Source: exteriores.gob.es ↗</a></span>
+  </div>
   <div class="page-header">
     <div><div class="page-title">🛂 Visas & Consulates</div><div class="page-sub" id="visas-sub">Official requirements, step-by-step guides & consulate directory</div></div>
   </div>
@@ -2276,6 +2348,11 @@ const AI_SUGGESTIONS = {
 // ── INIT ──
 function init() {
   seedData();
+  // Show legal acknowledgment for existing users who haven't seen it yet (§4.1)
+  if (DB.get('quiz_done', false) && !DB.get('legal_acknowledged', false)) {
+    const ackEl = document.getElementById('legal-ack-modal');
+    if (ackEl) ackEl.style.display = 'flex';
+  }
   // Restore saved profile
   const savedProfile = DB.get('user_profile', 'single');
   if (savedProfile !== 'single') {

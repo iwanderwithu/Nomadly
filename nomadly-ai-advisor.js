@@ -272,16 +272,18 @@ async function sendChat() {
     const resources  = getResourcesForQuestion(msg);
     const roadmap    = getRoadmapForQuestion(msg);
     const extras     = renderAnswerExtras(resources, roadmap, lang, tier);
-    answerHtml = markdownToHtml(answerText) + extras;
+    const aiDisclaimer = `<div style="margin-top:10px;padding:8px 11px;background:rgba(13,13,13,0.04);border-radius:8px;border-left:2px solid rgba(13,13,13,0.12);font-size:10px;color:#7a7060;line-height:1.55">For educational purposes only. Not legal or immigration advice. Requirements change — verify with the official Spanish consulate or a licensed attorney before proceeding.</div>`;
+    answerHtml = markdownToHtml(answerText) + extras + aiDisclaimer;
   } catch (err) {
     console.warn('[Nomadly AI] API error:', err.message);
     // Show the exact error so it's obvious when Claude is not connected
     const isNotConfigured = err.message === 'NOT_CONFIGURED';
     const localResponse = (typeof getAIResponse === 'function') ? getAIResponse(msg) : '';
+    const aiDisclaimer = `<div style="margin-top:10px;padding:8px 11px;background:rgba(13,13,13,0.04);border-radius:8px;border-left:2px solid rgba(13,13,13,0.12);font-size:10px;color:#7a7060;line-height:1.55">For educational purposes only. Not legal or immigration advice. Requirements change — verify with the official Spanish consulate or a licensed attorney before proceeding.</div>`;
     answerHtml = (isNotConfigured
       ? '<div style="font-size:11px;color:#c4622d;background:#fff3ee;border-radius:6px;padding:5px 9px;margin-bottom:8px;display:inline-block">⚠️ Claude API not configured — showing offline response</div><br>'
       : '<div style="font-size:11px;color:#c4622d;background:#fff3ee;border-radius:6px;padding:5px 9px;margin-bottom:8px;display:inline-block">⚠️ Claude API error (' + err.message + ') — showing offline response</div><br>'
-    ) + localResponse;
+    ) + localResponse + aiDisclaimer;
   }
 
   document.getElementById(tid)?.remove();
