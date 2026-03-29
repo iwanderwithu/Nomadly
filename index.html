@@ -643,7 +643,8 @@ function resetQuiz(){
     <div onclick="openCoaching()" style="margin:12px 8px 0;background:linear-gradient(135deg,#c4622d,#d4a843);border-radius:12px;padding:14px;cursor:pointer;transition:opacity 0.15s" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
       <div style="font-size:18px;margin-bottom:4px">📞</div>
       <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:white" id="coaching-cta-title">Book a Coaching Session</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px" id="coaching-cta-sub">15 min · $15 · Talk to someone who did this</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px" id="coaching-cta-sub">20 min · $45 · Talk to someone who did this</div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:6px;line-height:1.4">General guidance only — not legal advice</div>
     </div>
     <div class="sidebar-progress">
       <div class="sp-label" id="sb-progress-label">Relocation progress</div>
@@ -1400,7 +1401,7 @@ function resetQuiz(){
           📍 <strong style="color:#0d0d0d">San Juan Consulate:</strong> Edificio Mercantil Plaza, Piso 11, Av. Ponce de León s/n, Hato Rey PR 00918 · 📞 787-758-6090 · Mon–Fri 8:30am–1:30pm
         </div>
         <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
-          <button onclick="openCoaching()" style="padding:10px 18px;background:#4a7c6f;color:white;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">📞 Book Coach $15 →</button>
+          <button onclick="openCoaching()" style="padding:10px 18px;background:#4a7c6f;color:white;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">📞 Book Coach $45 →</button>
           <button onclick="hideVisaDetail()" style="padding:10px 18px;background:#f5f2eb;color:#0d0d0d;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">← Back to Visa Guides</button>
         </div>
       </div>
@@ -1462,7 +1463,7 @@ function resetQuiz(){
           📍 <strong style="color:#0d0d0d">San Juan Consulate:</strong> Edificio Mercantil Plaza, Piso 11, Av. Ponce de León s/n, Hato Rey PR 00918 · 📞 787-758-6090 · Mon–Fri 8:30am–1:30pm
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button onclick="openCoaching()" style="padding:10px 18px;background:#e67e22;color:white;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">📞 Book Strategy Session $15 →</button>
+          <button onclick="openCoaching()" style="padding:10px 18px;background:#e67e22;color:white;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">📞 Book Strategy Session $45 →</button>
           <button onclick="hideVisaDetail()" style="padding:10px 18px;background:#f5f2eb;color:#0d0d0d;border:none;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer">← Back to Visa Guides</button>
         </div>
       </div>
@@ -1696,19 +1697,21 @@ function resetQuiz(){
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
       <div style="background:#fff3ee;border-radius:12px;padding:16px;border:2px solid #c4622d">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px" id="coaching-intro-title">Intro Call</div>
-        <div style="font-size:26px;font-weight:800;color:#c4622d;line-height:1;margin-bottom:6px">$15</div>
-        <div style="font-size:11px;color:#7a7060;line-height:1.5" id="coaching-intro-desc">15 min · Zoom or phone<br>Is this move right for me?</div>
+        <div style="font-size:26px;font-weight:800;color:#c4622d;line-height:1;margin-bottom:6px">$45</div>
+        <div style="font-size:11px;color:#7a7060;line-height:1.5" id="coaching-intro-desc">20 min · Zoom or phone<br>Is this move right for me?</div>
       </div>
       <div style="background:#f5f2eb;border-radius:12px;padding:16px;border:1.5px solid rgba(13,13,13,0.1)">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:6px" id="coaching-deep-title">Deep Dive</div>
-        <div style="font-size:26px;font-weight:800;color:#0d0d0d;line-height:1;margin-bottom:6px">$49</div>
-        <div style="font-size:11px;color:#7a7060;line-height:1.5" id="coaching-deep-desc">60 min · Full review<br>Document review &amp; visa strategy</div>
+        <div style="font-size:26px;font-weight:800;color:#0d0d0d;line-height:1;margin-bottom:6px">$149</div>
+        <div style="font-size:11px;color:#7a7060;line-height:1.5" id="coaching-deep-desc">60 min · Full review<br>Visa strategy &amp; document checklist</div>
       </div>
     </div>
     <!-- Bio -->
     <div style="font-size:12px;color:#7a7060;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d" id="coaching-bio">
       <strong style="color:#0d0d0d">Your coach:</strong> Puerto Rican navigating the Spain NLV process firsthand. Consulate appointment done, documents in progress, flight booked for July. Real experience — not generic advice.
     </div>
+    <!-- Legal disclaimer — §7.2 required above booking button -->
+    <div style="font-size:11px;color:#7a7060;line-height:1.55;margin-bottom:12px;padding:10px 12px;background:#f5f2eb;border-radius:8px;border-left:2px solid rgba(13,13,13,0.15)" id="coaching-disclaimer">These sessions provide general relocation guidance and product support — not legal, immigration, or financial advice. For visa-specific legal questions, please consult a licensed immigration attorney.</div>
     <!-- Book button -->
     <a href="https://calendly.com" target="_blank" style="display:block;width:100%;padding:14px;background:#c4622d;color:white;border-radius:12px;font-weight:700;font-size:15px;text-align:center;text-decoration:none;box-sizing:border-box" id="coaching-book-btn">Book Your Session →</a>
     <div style="text-align:center;margin-top:10px;font-size:11px;color:#7a7060" id="coaching-note">Via Calendly · Payment at booking · All times EST</div>
@@ -1809,13 +1812,13 @@ const T = {
     'journey-title':'🗺️ My Journey to Spain','journey-sub':'Your personalized step-by-step roadmap',
     // Coaching
     'coaching-cta-title':'Book a Coaching Session',
-    'coaching-cta-sub':'Intro $15 · Deep Dive $49 · Real experience',
-    'coaching-modal-title':'📞 Book a Coaching Session',
+    'coaching-cta-sub':'20 min · $45 · Talk to someone who did this',
+    'coaching-modal-title':'📞 Book a Session',
     'coaching-modal-sub':'Talk to someone who actually made this move',
     'coaching-intro-title':'Intro Call',
-    'coaching-intro-desc':'15 min · Zoom or phone\nIs this move right for me?',
+    'coaching-intro-desc':'20 min · Zoom or phone\nIs this move right for me?',
     'coaching-deep-title':'Deep Dive',
-    'coaching-deep-desc':'60 min · Full review\nDocument review & visa strategy',
+    'coaching-deep-desc':'60 min · Full review\nVisa strategy & document checklist',
     'coaching-bio':'<strong style="color:#0d0d0d">About your coach:</strong> Puerto Rican currently navigating the Spain NLV process firsthand. Consulate appointment completed, documents in progress, flight booked for July. Real experience, real answers.',
     'coaching-book-btn':'Book Your Session →',
     'coaching-note':'Sessions via Calendly · Payment at booking · All times EST',
@@ -1919,13 +1922,13 @@ const T = {
     'journey-title':'🗺️ Mi Viaje a España','journey-sub':'Tu hoja de ruta paso a paso personalizada',
     // Coaching
     'coaching-cta-title':'Reservar una Sesión de Coaching',
-    'coaching-cta-sub':'Intro $15 · Deep Dive $49 · Experiencia real',
-    'coaching-modal-title':'📞 Reservar Sesión de Coaching',
+    'coaching-cta-sub':'20 min · $45 · Habla con alguien que lo hizo',
+    'coaching-modal-title':'📞 Reservar Sesión',
     'coaching-modal-sub':'Habla con alguien que realmente hizo esta mudanza',
     'coaching-intro-title':'Llamada Intro',
-    'coaching-intro-desc':'15 min · Zoom o teléfono\nIdeal para: ¿Es esto para mí?',
+    'coaching-intro-desc':'20 min · Zoom o teléfono\nIdeal para: ¿Es esto para mí?',
     'coaching-deep-title':'Sesión Profunda',
-    'coaching-deep-desc':'60 min · Revisión completa\nIdeal para: Revisión de documentos, estrategia de visa',
+    'coaching-deep-desc':'60 min · Revisión completa\nEstrategia de visa y lista de documentos',
     'coaching-bio':'<strong style="color:#0d0d0d">Sobre tu coach:</strong> Puertorriqueña navegando el proceso de NLV de España en este momento. Cita consular completada, documentos en proceso, vuelo reservado para julio. Experiencia real, respuestas reales.',
     'coaching-book-btn':'Reserva tu Sesión →',
     'coaching-note':'Sesiones vía Calendly · Pago al reservar · Todos los horarios EST',
@@ -4807,7 +4810,7 @@ function renderJourney(country) {
         <div style="margin-top:14px;padding:12px;background:${track.bg};border-left:3px solid ${track.color};border-radius:0 8px 8px 0;font-size:12px;color:#7a7060;line-height:1.6">${track.tip}</div>
         <div style="margin-top:10px;font-size:11px;color:#7a7060;padding:8px 10px;background:#f5f2eb;border-radius:8px">📍 <strong style="color:#0d0d0d">Consulate:</strong> ${track.consulate}</div>
         <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
-          <button onclick="openCoaching()" style="padding:8px 16px;background:#f5f2eb;color:#c4622d;border:1.5px solid rgba(196,98,45,0.3);border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">📞 Book Coach $15 →</button>
+          <button onclick="openCoaching()" style="padding:8px 16px;background:#f5f2eb;color:#c4622d;border:1.5px solid rgba(196,98,45,0.3);border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">📞 Book Coach $45 →</button>
         </div>
       </div>
     </div>`;
@@ -5037,8 +5040,8 @@ function buildProHub(isPaid, isPro, isES) {
 
   // ── ADD-ONS TAB ──
   const addons = [
-    {icon:'📞', price:'$15', en:['Book a Coaching Session','15-min free intro call with someone who relocated from PR to Spain.','Book now →'], es:['Reserva una Sesión de Coaching','Llamada introductoria gratuita de 15 min con alguien que se mudó de PR a España.','Reservar →'], action:'openCoaching()'},
-    {icon:'📄', price:'$49', en:['Priority Document Review','Expert review of your full NLV document pack before submission — catch errors before the consulate does.','Coming soon'], es:['Revisión Prioritaria de Documentos','Revisión experta de tu paquete completo de documentos NLV antes de enviarlo.','Próximamente'], action:''},
+    {icon:'📞', price:'$45', en:['Book a Coaching Session','20-min intro call with someone who relocated from PR to Spain. General guidance — not legal advice.','Book now →'], es:['Reserva una Sesión de Coaching','Llamada introductoria de 20 min con alguien que se mudó de PR a España. Orientación general — no es asesoría legal.','Reservar →'], action:'openCoaching()'},
+    {icon:'📄', price:'$149', en:['Priority Document Review','Expert review of your full NLV document pack before submission — catch errors before the consulate does.','Coming soon'], es:['Revisión Prioritaria de Documentos','Revisión experta de tu paquete completo de documentos NLV antes de enviarlo.','Próximamente'], action:''},
     {icon:'🏙️', price:'$79', en:['City & Neighborhood Consultation','1-on-1 call comparing cities, neighborhoods, housing costs, and lifestyle fit for your profile.','Coming soon'], es:['Consulta de Ciudad y Barrio','Llamada 1 a 1 comparando ciudades, barrios, costos de vivienda y estilo de vida.','Próximamente'], action:''},
     {icon:'🎯', price:'$99', en:['Visa Strategy Session','Private 1-on-1 planning call — visa selection, timeline, PR consulate tips, and your exact next steps.','Coming soon'], es:['Sesión de Estrategia de Visa','Llamada privada 1 a 1 — selección de visa, cronograma, consejos del consulado de PR.','Próximamente'], action:''},
   ];
