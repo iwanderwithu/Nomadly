@@ -967,12 +967,12 @@ function resetQuiz(){
           <div style="font-size:11px;color:#7a7060;line-height:1.8">• ITP tax (resale): 8–10% of price<br>• IVA (new build): 10% + 1.5% AJD<br>• Notary + registry: ~1–2%<br>• Gestor (agent) fees: ~1%<br>• Mortgage arrangement: ~0.5–1%<br>• Total buying cost: <strong style="color:#c4622d">~10–13% on top of price</strong></div>
         </div>
         <div style="background:#f5f2eb;border-radius:10px;padding:14px">
-          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">🏙️ Best Areas for Appreciation</div>
-          <div style="font-size:11px;color:#7a7060;line-height:1.8">• <strong>Málaga</strong> — 8–12% YoY, coastal, expat demand<br>• <strong>Valencia</strong> — 6–9% YoY, undervalued vs Barcelona<br>• <strong>Madrid outskirts</strong> — new transport links boosting values<br>• <strong>Alicante / Costa Blanca</strong> — strong rental market<br>• <strong>Seville</strong> — lowest entry price, growing tourism</div>
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px" id="budget-areas-title">🏙️ Best Areas for Appreciation</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8" id="budget-areas-body">• <strong>Málaga</strong> — 8–12% YoY, coastal, expat demand<br>• <strong>Valencia</strong> — 6–9% YoY, undervalued vs Barcelona<br>• <strong>Madrid outskirts</strong> — new transport links boosting values<br>• <strong>Alicante / Costa Blanca</strong> — strong rental market<br>• <strong>Seville</strong> — lowest entry price, growing tourism</div>
         </div>
         <div style="background:#f5f2eb;border-radius:10px;padding:14px">
-          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">🏦 Non-Resident Mortgage</div>
-          <div style="font-size:11px;color:#7a7060;line-height:1.8">• Max loan: 70% of appraised value<br>• Min down: 30% + 10–13% buying costs<br>• Rate: ~3.2–4.5% variable / 3.5–5% fixed<br>• Best banks for non-residents: Sabadell, Bankinter, Santander<br>• NIE + Spanish bank account required</div>
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px" id="budget-mortgage-title">🏦 Non-Resident Mortgage</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8" id="budget-mortgage-body">• Max loan: 70% of appraised value<br>• Min down: 30% + 10–13% buying costs<br>• Rate: ~3.2–4.5% variable / 3.5–5% fixed<br>• Best banks for non-residents: Sabadell, Bankinter, Santander<br>• NIE + Spanish bank account required</div>
         </div>
       </div>
     </div>
@@ -1023,8 +1023,8 @@ function resetQuiz(){
 
   <!-- SUB-NAV -->
   <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;" id="visa-subnav">
-    <div class="filter-btn active" onclick="showVisaSection('visas-section',this)">📋 Visa Guides</div>
-    <div class="filter-btn" onclick="showVisaSection('consulates-section',this)">🏢 Consulate Directory</div>
+    <div class="filter-btn active" id="visas-tab-guides" onclick="showVisaSection('visas-section',this)">📋 Visa Guides</div>
+    <div class="filter-btn" id="visas-tab-consulates" onclick="showVisaSection('consulates-section',this)">🏢 Consulate Directory</div>
   </div>
 
   <!-- VISA GUIDES SECTION -->
@@ -1565,22 +1565,22 @@ function resetQuiz(){
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🏡 Spotahome</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Verified furnished rentals — book remotely from PR. Best for first 3 months.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-spotahome-desc">Verified furnished rentals — book remotely from PR. Best for first 3 months.</div>
         <a href="https://spotahome.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">spotahome.com →</a>
       </div>
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🏢 Idealista</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Largest Spanish platform. Best price tracking and long-term rentals from locals.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-idealista-desc">Largest Spanish platform. Best price tracking and long-term rentals from locals.</div>
         <a href="https://idealista.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">idealista.com →</a>
       </div>
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">📸 Fotocasa</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Local listings with price history. Great for understanding market trends per neighborhood.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-fotocasa-desc">Local listings with price history. Great for understanding market trends per neighborhood.</div>
         <a href="https://fotocasa.es" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">fotocasa.es →</a>
       </div>
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🎓 HousingAnywhere</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Best for student visa holders. Mid-term furnished rentals, flexible contracts. No Spanish required.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-housinganywhere-desc">Best for student visa holders. Mid-term furnished rentals, flexible contracts. No Spanish required.</div>
         <a href="https://housinganywhere.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">housinganywhere.com →</a>
       </div>
     </div>
@@ -1591,57 +1591,52 @@ function resetQuiz(){
     <div id="housing-law-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:14px">⚖️ Spanish Rental Law — What You Need to Know</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Lease Length</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Min 5 years tenant protection (LAU 2019). Landlord can't kick you out before 5 years without cause.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-lease-label">Lease Length</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-lease-body">Min 5 years tenant protection (LAU 2019). Landlord can't kick you out before 5 years without cause.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Deposit</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">1 month unfurnished · 2 months furnished. Landlord must hold in regulated account.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-deposit-label">Deposit</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-deposit-body">1 month unfurnished · 2 months furnished. Landlord must hold in regulated account.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Agency Fees</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Since 2023: landlord pays the agent — not you. If an agent charges you, it's illegal.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-agency-label">Agency Fees</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-agency-body">Since 2023: landlord pays the agent — not you. If an agent charges you, it's illegal.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Empadronamiento</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Landlord must sign your empadronamiento (city registration). Confirm BEFORE signing lease.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-empad-label">Empadronamiento</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-empad-body">Landlord must sign your empadronamiento (city registration). Confirm BEFORE signing lease.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Utilities</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Usually NOT included. Budget €100–150/mo for electricity, water, internet. Verify with landlord.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-utilities-label">Utilities</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-utilities-body">Usually NOT included. Budget €100–150/mo for electricity, water, internet. Verify with landlord.</div>
       </div>
-      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">PR to Spain Tips</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Most landlords want: passport, bank statements (3 months), and proof of income/savings for NLV. Spotahome lets you book without a NIE.</div>
-      </div>
+      <div id="rl-tips-tile" style="background:#f5f2eb;border-radius:10px;padding:12px"></div>
     </div>
   </div>
 
   <!-- Wanderer/Pro premium section -->
   <div id="housing-pro-section" style="margin-top:20px;display:none">
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">📊 Rental Market Trends — Spain 2025–2026</div>
+    <div id="rl-market-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">📊 Rental Market Trends — Spain 2025–2026</div>
     <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:14px;padding:20px">
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">
         <div style="text-align:center;padding:14px;background:#fff3ee;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#c4622d;font-family:'Syne',sans-serif">+14%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Málaga rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-malaga-label">Málaga rent increase YoY</div>
         </div>
         <div style="text-align:center;padding:14px;background:#eef2f8;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#3b6fa0;font-family:'Syne',sans-serif">+11%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Madrid rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-madrid-label">Madrid rent increase YoY</div>
         </div>
         <div style="text-align:center;padding:14px;background:#eef6f4;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#4a7c6f;font-family:'Syne',sans-serif">+7%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Sevilla rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-sevilla-label">Sevilla rent increase YoY</div>
         </div>
         <div style="text-align:center;padding:14px;background:#fdf6e8;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#d4a843;font-family:'Syne',sans-serif">+9%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Valencia rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-valencia-label">Valencia rent increase YoY</div>
         </div>
       </div>
-      <div style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px;background:#f5f2eb;border-radius:10px">
-        💡 <strong style="color:#0d0d0d">PR Expat Strategy:</strong> Arrive in Málaga or Sevilla first — lower rents, large Spanish-speaking expat community. After empadronamiento and TIE card (3–6 months), you can negotiate longer leases with better rates. Many PR expats find apartments for €700–850/mo in Sevilla that rival €1,200/mo Madrid equivalents.
-      </div>
+      <div id="rl-expat-tip" style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px;background:#f5f2eb;border-radius:10px"></div>
     </div>
   </div>
 
@@ -1806,6 +1801,37 @@ const T = {
     'housing-filter-label':'Filter:',
     'housing-platforms-title':'🔗 Find Your Home — Recommended Platforms',
     'housing-law-title':'⚖️ Spanish Rental Law — What You Need to Know',
+    // Housing rental law grid
+    'rl-lease-label':'LEASE LENGTH',
+    'rl-lease-body':'Min 5 years tenant protection (LAU 2019). Landlord can\'t kick you out before 5 years without cause.',
+    'rl-deposit-label':'DEPOSIT',
+    'rl-deposit-body':'1 month unfurnished · 2 months furnished. Landlord must hold in regulated account.',
+    'rl-agency-label':'AGENCY FEES',
+    'rl-agency-body':'Since 2023: landlord pays the agent — not you. If an agent charges you, it\'s illegal.',
+    'rl-empad-label':'EMPADRONAMIENTO',
+    'rl-empad-body':'Landlord must sign your empadronamiento (city registration). Confirm BEFORE signing lease.',
+    'rl-utilities-label':'UTILITIES',
+    'rl-utilities-body':'Usually NOT included. Budget €100–150/mo for electricity, water, internet. Verify with landlord.',
+    // Housing rental market trends
+    'rl-market-title':'📊 Rental Market Trends — Spain 2025–2026',
+    'rl-malaga-label':'Málaga rent increase YoY',
+    'rl-madrid-label':'Madrid rent increase YoY',
+    'rl-sevilla-label':'Sevilla rent increase YoY',
+    'rl-valencia-label':'Valencia rent increase YoY',
+    'rl-expat-tip':'💡 <strong style="color:#0d0d0d">Expat Strategy:</strong> Arrive in Málaga or Sevilla first — lower rents, large Spanish-speaking expat community. After empadronamiento and TIE card (3–6 months), you can negotiate longer leases with better rates.',
+    // Housing platform descriptions
+    'hp-spotahome-desc':'Verified furnished rentals — book remotely from PR. Best for first 3 months.',
+    'hp-idealista-desc':'Largest Spanish platform. Best price tracking and long-term rentals from locals.',
+    'hp-fotocasa-desc':'Local listings with price history. Great for understanding market trends per neighborhood.',
+    'hp-housinganywhere-desc':'Best for student visa holders. Mid-term furnished rentals, flexible contracts. No Spanish required.',
+    // Budget property section
+    'budget-areas-title':'🏙️ Best Areas for Appreciation',
+    'budget-areas-body':'• <strong>Málaga</strong> — 8–12% YoY, coastal, expat demand<br>• <strong>Valencia</strong> — 6–9% YoY, undervalued vs Barcelona<br>• <strong>Madrid outskirts</strong> — new transport links boosting values<br>• <strong>Alicante / Costa Blanca</strong> — strong rental market<br>• <strong>Seville</strong> — lowest entry price, growing tourism',
+    'budget-mortgage-title':'🏦 Non-Resident Mortgage',
+    'budget-mortgage-body':'• Max loan: 70% of appraised value<br>• Min down: 30% + 10–13% buying costs<br>• Rate: ~3.2–4.5% variable / 3.5–5% fixed<br>• Best banks for non-residents: Sabadell, Bankinter, Santander<br>• NIE + Spanish bank account required',
+    // Consulate page tabs
+    'visas-tab-guides':'📋 Visa Guides',
+    'visas-tab-consulates':'🏢 Consulate Directory',
     // Hero section
     'hero-badge':'🇵🇷 Built for Puerto Ricans moving to Spain',
     'hero-h1':'Nomadly: Self-guided<br>relocation to Spain',
@@ -1855,7 +1881,7 @@ const T = {
     'pw-popular':'Más Popular','pw-plan1-name':'Viajero','pw-plan2-name':'Nómada Pro',
     'pw-cta':'Comenzar Prueba Gratuita de 7 Días →','pw-later':'Quizás después',
     'notif-title':'Notificaciones','notif-clear-btn':'Borrar todo','free-badge':'Plan Gratuito',
-    'upgrade-btn':'Mejorar →',
+    'upgrade-btn':'Actualizar →',
     'mt-title':'➕ Agregar Nueva Tarea','mt-name-label':'Nombre de Tarea','mt-phase-label':'Fase',
     'mt-cat-label':'Categoría','mt-cancel':'Cancelar','mt-add':'Agregar Tarea',
     'md-title':'📁 Agregar Documento','md-name-label':'Nombre del Documento','md-cat-label':'Categoría',
@@ -1915,6 +1941,37 @@ const T = {
     'housing-filter-label':'Filtrar:',
     'housing-platforms-title':'🔗 Encuentra Tu Hogar — Plataformas Recomendadas',
     'housing-law-title':'⚖️ Ley de Alquiler en España — Lo Que Debes Saber',
+    // Housing rental law grid
+    'rl-lease-label':'DURACIÓN DEL CONTRATO',
+    'rl-lease-body':'Mín. 5 años de protección al inquilino (LAU 2019). El propietario no puede echarte antes de 5 años sin causa justificada.',
+    'rl-deposit-label':'DEPÓSITO',
+    'rl-deposit-body':'1 mes sin amueblar · 2 meses amueblado. El propietario debe depositarlo en cuenta regulada.',
+    'rl-agency-label':'HONORARIOS DE AGENCIA',
+    'rl-agency-body':'Desde 2023: el propietario paga al agente, no tú. Si un agente te cobra, es ilegal.',
+    'rl-empad-label':'EMPADRONAMIENTO',
+    'rl-empad-body':'El propietario debe firmar tu empadronamiento (registro municipal). Confírmalo ANTES de firmar el contrato.',
+    'rl-utilities-label':'SUMINISTROS',
+    'rl-utilities-body':'Generalmente NO incluidos. Presupuesta €100–150/mes para electricidad, agua e internet. Verifica con el propietario.',
+    // Housing rental market trends
+    'rl-market-title':'📊 Tendencias del Mercado de Alquiler — España 2025–2026',
+    'rl-malaga-label':'Aumento de alquiler en Málaga interanual',
+    'rl-madrid-label':'Aumento de alquiler en Madrid interanual',
+    'rl-sevilla-label':'Aumento de alquiler en Sevilla interanual',
+    'rl-valencia-label':'Aumento de alquiler en Valencia interanual',
+    'rl-expat-tip':'💡 <strong style="color:#0d0d0d">Estrategia Expat:</strong> Llega primero a Málaga o Sevilla — alquileres más bajos, gran comunidad de habla hispana. Tras el empadronamiento y la TIE (3–6 meses), podrás negociar contratos más largos con mejores condiciones.',
+    // Housing platform descriptions
+    'hp-spotahome-desc':'Alquileres amueblados verificados — reserva a distancia desde PR. Ideal para los primeros 3 meses.',
+    'hp-idealista-desc':'Mayor plataforma española. Mejor para seguimiento de precios y alquileres a largo plazo con propietarios locales.',
+    'hp-fotocasa-desc':'Anuncios locales con historial de precios. Ideal para entender las tendencias de mercado por barrio.',
+    'hp-housinganywhere-desc':'Ideal para titulares de visa de estudiante. Alquileres amueblados de medio plazo, contratos flexibles. Sin requisito de español.',
+    // Budget property section
+    'budget-areas-title':'🏙️ Mejores Zonas para Revalorización',
+    'budget-areas-body':'• <strong>Málaga</strong> — 8–12% interanual, costera, demanda expat<br>• <strong>Valencia</strong> — 6–9% interanual, infravalorada frente a Barcelona<br>• <strong>Afueras de Madrid</strong> — nuevas líneas de transporte impulsan los valores<br>• <strong>Alicante / Costa Blanca</strong> — mercado de alquiler sólido<br>• <strong>Sevilla</strong> — precio de entrada más bajo, turismo en auge',
+    'budget-mortgage-title':'🏦 Hipoteca para No Residentes',
+    'budget-mortgage-body':'• Préstamo máximo: 70% del valor tasado<br>• Entrada mínima: 30% + 10–13% de gastos de compra<br>• Tipo: ~3,2–4,5% variable / 3,5–5% fijo<br>• Mejores bancos para no residentes: Sabadell, Bankinter, Santander<br>• NIE + cuenta bancaria española requeridos',
+    // Consulate page tabs
+    'visas-tab-guides':'📋 Guías de Visa',
+    'visas-tab-consulates':'🏢 Directorio de Consulados',
     // Hero section
     'hero-badge':'🇵🇷 Hecho para puertorriqueños que se mudan a España',
     'hero-h1':'Nomadly: Reubicación guiada<br>por ti a España',
@@ -1977,7 +2034,7 @@ function updateHousingDropdowns() {
 function t(key) { return T[currentLang][key] || T['en'][key] || key; }
 
 function applyTranslations() {
-  const htmlKeys = new Set(['coaching-bio','hero-h1']);
+  const htmlKeys = new Set(['coaching-bio','hero-h1','budget-areas-body','budget-mortgage-body','rl-expat-tip']);
   Object.keys(T.en).forEach(key => {
     const el = document.getElementById(key);
     if (el) {
@@ -4478,6 +4535,42 @@ function applyHousingVisaFilter(visaType) {
   }
 }
 
+// ── COUNTRY PAIR TIPS — loaded in rental law grid "origin → destination Tips" tile ──
+const COUNTRY_PAIR_TIPS = {
+  'PR→es': {
+    label_en:'PR → Spain Tips', label_es:'Puerto Rico → España',
+    body_en:'Most landlords want: passport, bank statements (3 months), and proof of income/savings for NLV. Spotahome lets you book without a NIE.',
+    body_es:'La mayoría de propietarios piden: pasaporte, extractos bancarios (3 meses) y prueba de ingresos/ahorros para la NLV. Spotahome permite reservar sin NIE.',
+  },
+  'mainland→es': {
+    label_en:'US → Spain Tips', label_es:'EE.UU. → España',
+    body_en:'US passport holders need similar docs — no apostille differences for landlords. Set up a Wise account for automatic Euro rent payments before arrival.',
+    body_es:'Los titulares de pasaporte estadounidense necesitan documentos similares. Crea una cuenta Wise para pagos de alquiler automáticos en euros antes de llegar.',
+  },
+  'default→es': {
+    label_en:'Expat Tips', label_es:'Consejos para Expats',
+    body_en:'Most landlords want: passport, bank statements (3 months), and proof of income. Spotahome lets you book without a NIE.',
+    body_es:'La mayoría de propietarios piden: pasaporte, extractos bancarios (3 meses) y prueba de ingresos. Spotahome permite reservar sin NIE.',
+  },
+};
+
+function renderRentalLawTipsTile() {
+  const tile = document.getElementById('rl-tips-tile');
+  if (!tile) return;
+  const qa = DB.get('quiz_answers', {});
+  // q1=origin: 'PR', 'mainland', or undefined
+  const origin = qa.q1 || 'default';
+  // destination country: currently always 'es'
+  const destCode = 'es';
+  const pairKey = origin + '→' + destCode;
+  const tips = COUNTRY_PAIR_TIPS[pairKey] || COUNTRY_PAIR_TIPS['default→' + destCode] || COUNTRY_PAIR_TIPS['default→es'];
+  const isES = (typeof currentLang !== 'undefined' && currentLang === 'es');
+  tile.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">${isES ? tips.label_es : tips.label_en}</div>
+    <div style="font-size:12px;color:#0d0d0d;line-height:1.6">${isES ? tips.body_es : tips.body_en}</div>
+  `;
+}
+
 function renderHousingPage() {
   // Auto-populate visa filter from quiz answers
   const qa = DB.get('quiz_answers', {});
@@ -4495,6 +4588,8 @@ function renderHousingPage() {
   const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
   if (proSection) proSection.style.display = isPaid ? 'block' : 'none';
   if (upgradeBanner) upgradeBanner.style.display = isPaid ? 'none' : 'block';
+  // Render dynamic rental law tips tile (origin→destination)
+  renderRentalLawTipsTile();
 }
 
 function renderJourneyStep(phaseKey, si, total, text, stateVal, color, isDoc) {
