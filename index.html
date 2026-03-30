@@ -20,7 +20,6 @@
     <p id="hero-sub" style="font-size:clamp(14px,2vw,18px);color:rgba(255,255,255,0.72);line-height:1.7;margin-bottom:34px;max-width:500px;margin-left:auto;margin-right:auto">The guided relocation platform built for Puerto Ricans and US citizens ready to start their life in Spain.</p>
     <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
       <button id="hero-cta" onclick="resetQuiz()" style="padding:15px 32px;background:#c4622d;color:white;border:none;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:16px;cursor:pointer;letter-spacing:-0.01em" onmouseover="this.style.background='#e8855a'" onmouseout="this.style.background='#c4622d'">Take the Free Quiz →</button>
-      <button id="hero-browse" onclick="showPage('visas',document.querySelector('.nav-tab[onclick*=visas]'))" style="padding:15px 24px;background:rgba(255,255,255,0.1);color:white;border:1px solid rgba(255,255,255,0.25);border-radius:12px;font-family:'Syne',sans-serif;font-weight:600;font-size:15px;cursor:pointer" onmouseover="this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">Browse Visas</button>
     </div>
     <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap">
       <div style="text-align:center"><div style="font-family:'Syne',sans-serif;font-size:24px;font-weight:900;color:white">2 min</div><div id="hero-stat-1" style="font-size:12px;color:rgba(255,255,255,0.55);margin-top:2px">quiz to your plan</div></div>
@@ -400,8 +399,8 @@ function resetQuiz(){
 
 <!-- HEADER -->
 <div style="background:linear-gradient(135deg,#0d0d0d,#2a2a2a);padding:28px 32px;text-align:center;color:white">
-  <div style="font-size:36px;margin-bottom:10px">🇪🇸</div>
-  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px" id="pw-title">Your Move to Spain, Simplified</div>
+  <div id="pw-flag" style="font-size:36px;margin-bottom:10px"></div>
+  <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px" id="pw-title">Your Relocation, Simplified</div>
   <div style="font-size:13px;opacity:0.6" id="pw-desc">Phase 1 preview free — unlock the full journey with a subscription</div>
 </div>
 
@@ -419,7 +418,7 @@ function resetQuiz(){
     <div onclick="toggleBilling()" id="billing-toggle" style="width:44px;height:24px;background:#c4622d;border-radius:12px;position:relative;cursor:pointer;transition:background 0.2s">
       <div id="billing-knob" style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;left:22px;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)"></div>
     </div>
-    <span style="font-size:13px;color:#7a7060" id="pw-annual-label">Annual <span style="background:#eef6f4;color:#4a7c6f;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600">Save 35%</span> <span style="background:#c4622d;color:white;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700">Most Popular</span></span>
+    <span style="font-size:13px;color:#7a7060" id="pw-annual-label">Annual <span style="background:#eef6f4;color:#4a7c6f;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600">Save 35%</span></span>
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(3,minmax(190px,1fr));gap:12px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px">
@@ -459,7 +458,7 @@ function resetQuiz(){
       </div>
       <div style="font-size:11px;color:#7a7060;margin-bottom:14px" id="p-billed">Billed $449/year (save $259)</div>
       <div style="font-size:12px;color:#0d0d0d;line-height:2">
-        ✓ Everything in Wanderer<br>✓ AI Advisor (automated)<br>✓ Roadmap generator (PDF)<br>✓ Smart document packs<br>✓ Pro calculators<br>✓ Optional add-ons<br>✓ Portugal content (coming)
+        ✓ Everything in Wanderer<br>✓ AI Advisor (automated)<br>✓ Roadmap generator (PDF)<br>✓ Smart document packs<br>✓ Pro calculators<br>✓ Optional add-ons
       </div>
       <button onclick="checkoutPlan('pro')" style="margin-top:14px;width:100%;padding:10px;background:#c4622d;color:white;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all 0.15s">Start 7-Day Free Trial →</button>
     </div>
@@ -629,7 +628,6 @@ function resetQuiz(){
   <aside class="sidebar">
     <div class="sidebar-section" id="sb-relocations">My Relocations</div>
     <div class="sidebar-item" onclick="showPage('dashboard',document.querySelectorAll('.nav-tab')[0])"><span class="icon">🇪🇸</span> <span id="sb-spain">Spain</span></div>
-    <div class="sidebar-item" style="opacity:0.7"><span class="icon">🇵🇹</span> <span id="sb-portugal">Portugal</span><span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:2px 6px;border-radius:8px;margin-left:4px;font-weight:600">Soon</span></div>
     <div class="sidebar-section" id="sb-tools">Tools</div>
     <div class="sidebar-item" onclick="showPage('dashboard',document.querySelectorAll('.nav-tab')[0])"><span class="icon">🏠</span> <span id="sb-overview">Overview</span></div>
     <div class="sidebar-item" onclick="showPage('journey',document.querySelectorAll('.nav-tab')[1])"><span class="icon">🗺️</span> <span id="sb-planner">My Journey</span></div>
@@ -642,8 +640,8 @@ function resetQuiz(){
     <!-- COACHING CTA -->
     <div onclick="openCoaching()" style="margin:12px 8px 0;background:linear-gradient(135deg,#c4622d,#d4a843);border-radius:12px;padding:14px;cursor:pointer;transition:opacity 0.15s" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
       <div style="font-size:18px;margin-bottom:4px">📞</div>
-      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:white" id="coaching-cta-title">Book a Coaching Session</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px" id="coaching-cta-sub">20 min · $45 · Talk to someone who did this</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:white" id="coaching-cta-title">Got questions? Let's talk</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px" id="coaching-cta-sub">20 min · $45 · General questions about the process or the product</div>
       <div style="font-size:10px;color:rgba(255,255,255,0.55);margin-top:6px;line-height:1.4">General guidance only — not legal advice</div>
     </div>
     <div class="sidebar-progress">
@@ -669,13 +667,13 @@ function resetQuiz(){
   <div class="page-header">
     <div>
       <div class="page-title" id="dash-greeting">Good morning ✦</div>
-      <div class="page-sub">Spain — Madrid · <span id="days-to-go">127</span> <span id="dash-days-label">days to go</span></div>
+      <div class="page-sub">Spain · <span id="days-to-go">127</span> <span id="dash-days-label">days to go</span></div>
     </div>
   </div>
   <div class="stats-row">
     <div class="stat-card c1"><div class="stat-label" id="stat-label-1">Tasks Remaining</div><div class="stat-value" id="stat-remaining">—</div><div class="stat-note" id="stat-urgent">3 urgent this week</div></div>
     <div class="stat-card c2"><div class="stat-label" id="stat-label-2">Documents Ready</div><div class="stat-value" id="stat-docs">—</div><div class="stat-note" id="stat-docs-note">Loading...</div></div>
-    <div class="stat-card c3"><div class="stat-label" id="stat-label-3">Monthly Budget</div><div class="stat-value" id="stat-budget">€2,100</div><div class="stat-note" id="stat-budget-note">Est. for Madrid</div></div>
+    <div class="stat-card c3"><div class="stat-label" id="stat-label-3">Monthly Budget</div><div class="stat-value" id="stat-budget">€2,100</div><div class="stat-note" id="stat-budget-note">Monthly estimate</div></div>
   </div>
   <div class="grid-2">
     <div class="card">
@@ -796,8 +794,6 @@ function resetQuiz(){
             <option value="2100" style="color:#0d0d0d;background:white">Madrid (€2,100)</option>
             <option value="1700" style="color:#0d0d0d;background:white">Málaga (€1,700)</option>
             <option value="1600" style="color:#0d0d0d;background:white">Sevilla (€1,600)</option>
-            <option value="1950" style="color:#0d0d0d;background:white">Lisboa (€1,950)</option>
-            <option value="1600" style="color:#0d0d0d;background:white">Porto (€1,600)</option>
             <option value="900" style="color:#0d0d0d;background:white">Medellín ($900)</option>
             <option value="1050" style="color:#0d0d0d;background:white">Bogotá ($1,050)</option>
             <option value="1200" style="color:#0d0d0d;background:white">San José CR ($1,200)</option>
@@ -921,7 +917,6 @@ function resetQuiz(){
     <!-- PROPERTY PRICES BY COUNTRY -->
     <div id="property-country-tabs" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
       <div class="filter-btn active" onclick="showPropertyCountry('spain',this)">🇪🇸 Spain</div>
-      <div class="filter-btn" onclick="showPropertyCountry('portugal',this)">🇵🇹 Portugal</div>
     </div>
 
     <div id="property-grid"></div>
@@ -972,12 +967,12 @@ function resetQuiz(){
           <div style="font-size:11px;color:#7a7060;line-height:1.8">• ITP tax (resale): 8–10% of price<br>• IVA (new build): 10% + 1.5% AJD<br>• Notary + registry: ~1–2%<br>• Gestor (agent) fees: ~1%<br>• Mortgage arrangement: ~0.5–1%<br>• Total buying cost: <strong style="color:#c4622d">~10–13% on top of price</strong></div>
         </div>
         <div style="background:#f5f2eb;border-radius:10px;padding:14px">
-          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">🏙️ Best Areas for Appreciation</div>
-          <div style="font-size:11px;color:#7a7060;line-height:1.8">• <strong>Málaga</strong> — 8–12% YoY, coastal, expat demand<br>• <strong>Valencia</strong> — 6–9% YoY, undervalued vs Barcelona<br>• <strong>Madrid outskirts</strong> — new transport links boosting values<br>• <strong>Alicante / Costa Blanca</strong> — strong rental market<br>• <strong>Seville</strong> — lowest entry price, growing tourism</div>
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px" id="budget-areas-title">🏙️ Best Areas for Appreciation</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8" id="budget-areas-body">• <strong>Málaga</strong> — 8–12% YoY, coastal, expat demand<br>• <strong>Valencia</strong> — 6–9% YoY, undervalued vs Barcelona<br>• <strong>Madrid outskirts</strong> — new transport links boosting values<br>• <strong>Alicante / Costa Blanca</strong> — strong rental market<br>• <strong>Seville</strong> — lowest entry price, growing tourism</div>
         </div>
         <div style="background:#f5f2eb;border-radius:10px;padding:14px">
-          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px">🏦 Non-Resident Mortgage</div>
-          <div style="font-size:11px;color:#7a7060;line-height:1.8">• Max loan: 70% of appraised value<br>• Min down: 30% + 10–13% buying costs<br>• Rate: ~3.2–4.5% variable / 3.5–5% fixed<br>• Best banks for non-residents: Sabadell, Bankinter, Santander<br>• NIE + Spanish bank account required</div>
+          <div style="font-weight:600;font-size:12px;color:#0d0d0d;margin-bottom:8px" id="budget-mortgage-title">🏦 Non-Resident Mortgage</div>
+          <div style="font-size:11px;color:#7a7060;line-height:1.8" id="budget-mortgage-body">• Max loan: 70% of appraised value<br>• Min down: 30% + 10–13% buying costs<br>• Rate: ~3.2–4.5% variable / 3.5–5% fixed<br>• Best banks for non-residents: Sabadell, Bankinter, Santander<br>• NIE + Spanish bank account required</div>
         </div>
       </div>
     </div>
@@ -1028,8 +1023,8 @@ function resetQuiz(){
 
   <!-- SUB-NAV -->
   <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;" id="visa-subnav">
-    <div class="filter-btn active" onclick="showVisaSection('visas-section',this)">📋 Visa Guides</div>
-    <div class="filter-btn" onclick="showVisaSection('consulates-section',this)">🏢 Consulate Directory</div>
+    <div class="filter-btn active" id="visas-tab-guides" onclick="showVisaSection('visas-section',this)">📋 Visa Guides</div>
+    <div class="filter-btn" id="visas-tab-consulates" onclick="showVisaSection('consulates-section',this)">🏢 Consulate Directory</div>
   </div>
 
   <!-- VISA GUIDES SECTION -->
@@ -1039,7 +1034,6 @@ function resetQuiz(){
     <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap" id="visa-filter-bar">
       <div class="filter-btn active" onclick="filterVisaCards('all',this)">All</div>
       <div class="filter-btn" onclick="filterVisaCards('spain',this)">🇪🇸 Spain</div>
-      <div class="filter-btn" onclick="filterVisaCards('portugal',this)">🇵🇹 Portugal</div>
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;" id="visa-cards">
@@ -1140,26 +1134,6 @@ function resetQuiz(){
           <div class="vc-footer">
             <span style="color:#7a7060">Permit: <strong style="color:#0d0d0d">3 years</strong></span>
             <span style="color:#e67e22;font-weight:600;font-size:11px">Full Guide →</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- PORTUGAL D7 -->
-      <div class="visa-card" data-tags="portugal" style="opacity:0.8">
-        <div class="vc-header" style="background:linear-gradient(135deg,#4a7c6f,#6aab9c)">
-          <div style="font-size:26px;margin-bottom:6px">🇵🇹</div>
-          <div style="font-weight:800;font-size:15px">Portugal — D7 Passive Income Visa</div>
-          <div style="font-size:11px;opacity:0.8;margin-top:3px">NHR tax · 5yr citizenship path</div>
-        </div>
-        <div class="vc-body">
-          <div class="vc-tags">
-            <span style="font-size:10px;padding:2px 8px;background:#eef6f4;color:#4a7c6f;border-radius:6px;font-weight:600">€820/mo minimum</span>
-            <span style="font-size:10px;padding:2px 8px;background:#fff3ee;color:#c4622d;border-radius:6px;font-weight:600">NHR 10% Tax</span>
-          </div>
-          <div class="vc-desc">Lower threshold than Spain. NHR regime gives 10% flat tax on foreign income for 10 years. Citizenship after 5 years.</div>
-          <div class="vc-footer">
-            <span style="color:#7a7060">Processing: <strong style="color:#0d0d0d">2–3 months</strong></span>
-            <span style="font-size:10px;padding:2px 8px;background:#f5f2eb;color:#7a7060;border-radius:6px;font-weight:600">Coming Soon</span>
           </div>
         </div>
       </div>
@@ -1477,7 +1451,6 @@ function resetQuiz(){
       <select id="consulate-country-filter" onchange="filterConsulatesByCountry(this.value)" style="padding:9px 14px;border:1.5px solid rgba(13,13,13,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;background:#fff;color:#0d0d0d">
         <option value="all">All Countries</option>
         <option value="Spain">🇪🇸 Spain</option>
-        <option value="Portugal">🇵🇹 Portugal</option>
         <option value="Italy">🇮🇹 Italy</option>
         <option value="Germany">🇩🇪 Germany</option>
         <option value="Ireland">🇮🇪 Ireland</option>
@@ -1514,7 +1487,6 @@ function resetQuiz(){
   <!-- COUNTRY TABS -->
   <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap" id="journey-country-tabs">
     <div class="filter-btn active" onclick="showJourneyCountry('spain',this)">🇪🇸 Spain</div>
-    <div class="filter-btn" onclick="showJourneyCountry('portugal',this)" style="opacity:0.65">🇵🇹 Portugal <span style="font-size:9px;background:#f5f2eb;color:#7a7060;padding:1px 5px;border-radius:6px;font-weight:600">Soon</span></div>
   </div>
 
   <!-- VIEW SUB-NAV: Roadmap / Checklist -->
@@ -1593,22 +1565,22 @@ function resetQuiz(){
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🏡 Spotahome</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Verified furnished rentals — book remotely from PR. Best for first 3 months.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-spotahome-desc">Verified furnished rentals — book remotely from PR. Best for first 3 months.</div>
         <a href="https://spotahome.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">spotahome.com →</a>
       </div>
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🏢 Idealista</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Largest Spanish platform. Best price tracking and long-term rentals from locals.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-idealista-desc">Largest Spanish platform. Best price tracking and long-term rentals from locals.</div>
         <a href="https://idealista.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">idealista.com →</a>
       </div>
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">📸 Fotocasa</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Local listings with price history. Great for understanding market trends per neighborhood.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-fotocasa-desc">Local listings with price history. Great for understanding market trends per neighborhood.</div>
         <a href="https://fotocasa.es" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">fotocasa.es →</a>
       </div>
       <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:12px;padding:16px">
         <div style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:4px">🎓 HousingAnywhere</div>
-        <div style="font-size:12px;color:#7a7060;margin-bottom:8px">Best for student visa holders. Mid-term furnished rentals, flexible contracts. No Spanish required.</div>
+        <div style="font-size:12px;color:#7a7060;margin-bottom:8px" id="hp-housinganywhere-desc">Best for student visa holders. Mid-term furnished rentals, flexible contracts. No Spanish required.</div>
         <a href="https://housinganywhere.com" target="_blank" style="font-size:12px;color:#3b6fa0;font-weight:600">housinganywhere.com →</a>
       </div>
     </div>
@@ -1619,57 +1591,52 @@ function resetQuiz(){
     <div id="housing-law-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:14px">⚖️ Spanish Rental Law — What You Need to Know</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px">
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Lease Length</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Min 5 years tenant protection (LAU 2019). Landlord can't kick you out before 5 years without cause.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-lease-label">Lease Length</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-lease-body">Min 5 years tenant protection (LAU 2019). Landlord can't kick you out before 5 years without cause.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Deposit</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">1 month unfurnished · 2 months furnished. Landlord must hold in regulated account.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-deposit-label">Deposit</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-deposit-body">1 month unfurnished · 2 months furnished. Landlord must hold in regulated account.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Agency Fees</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Since 2023: landlord pays the agent — not you. If an agent charges you, it's illegal.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-agency-label">Agency Fees</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-agency-body">Since 2023: landlord pays the agent — not you. If an agent charges you, it's illegal.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Empadronamiento</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Landlord must sign your empadronamiento (city registration). Confirm BEFORE signing lease.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-empad-label">Empadronamiento</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-empad-body">Landlord must sign your empadronamiento (city registration). Confirm BEFORE signing lease.</div>
       </div>
       <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">Utilities</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Usually NOT included. Budget €100–150/mo for electricity, water, internet. Verify with landlord.</div>
+        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px" id="rl-utilities-label">Utilities</div>
+        <div style="font-size:12px;color:#0d0d0d;line-height:1.6" id="rl-utilities-body">Usually NOT included. Budget €100–150/mo for electricity, water, internet. Verify with landlord.</div>
       </div>
-      <div style="background:#f5f2eb;border-radius:10px;padding:12px">
-        <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">PR to Spain Tips</div>
-        <div style="font-size:12px;color:#0d0d0d;line-height:1.6">Most landlords want: passport, bank statements (3 months), and proof of income/savings for NLV. Spotahome lets you book without a NIE.</div>
-      </div>
+      <div id="rl-tips-tile" style="background:#f5f2eb;border-radius:10px;padding:12px"></div>
     </div>
   </div>
 
   <!-- Wanderer/Pro premium section -->
   <div id="housing-pro-section" style="margin-top:20px;display:none">
-    <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">📊 Rental Market Trends — Spain 2025–2026</div>
+    <div id="rl-market-title" style="font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#0d0d0d;margin-bottom:12px">📊 Rental Market Trends — Spain 2025–2026</div>
     <div style="background:#fff;border:1.5px solid rgba(13,13,13,0.08);border-radius:14px;padding:20px">
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:16px">
         <div style="text-align:center;padding:14px;background:#fff3ee;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#c4622d;font-family:'Syne',sans-serif">+14%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Málaga rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-malaga-label">Málaga rent increase YoY</div>
         </div>
         <div style="text-align:center;padding:14px;background:#eef2f8;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#3b6fa0;font-family:'Syne',sans-serif">+11%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Madrid rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-madrid-label">Madrid rent increase YoY</div>
         </div>
         <div style="text-align:center;padding:14px;background:#eef6f4;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#4a7c6f;font-family:'Syne',sans-serif">+7%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Sevilla rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-sevilla-label">Sevilla rent increase YoY</div>
         </div>
         <div style="text-align:center;padding:14px;background:#fdf6e8;border-radius:10px">
           <div style="font-size:24px;font-weight:800;color:#d4a843;font-family:'Syne',sans-serif">+9%</div>
-          <div style="font-size:11px;color:#7a7060;margin-top:3px">Valencia rent increase YoY</div>
+          <div style="font-size:11px;color:#7a7060;margin-top:3px" id="rl-valencia-label">Valencia rent increase YoY</div>
         </div>
       </div>
-      <div style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px;background:#f5f2eb;border-radius:10px">
-        💡 <strong style="color:#0d0d0d">PR Expat Strategy:</strong> Arrive in Málaga or Sevilla first — lower rents, large Spanish-speaking expat community. After empadronamiento and TIE card (3–6 months), you can negotiate longer leases with better rates. Many PR expats find apartments for €700–850/mo in Sevilla that rival €1,200/mo Madrid equivalents.
-      </div>
+      <div id="rl-expat-tip" style="font-size:12px;color:#7a7060;line-height:1.7;padding:12px;background:#f5f2eb;border-radius:10px"></div>
     </div>
   </div>
 
@@ -1688,8 +1655,8 @@ function resetQuiz(){
     <!-- Header -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <div>
-        <div style="font-weight:800;font-size:19px;color:#0d0d0d" id="coaching-modal-title">📞 Book a Session</div>
-        <div style="font-size:12px;color:#7a7060;margin-top:3px" id="coaching-modal-sub">Talk to someone who actually made this move</div>
+        <div style="font-weight:800;font-size:19px;color:#0d0d0d" id="coaching-modal-title">📞 Book a Call</div>
+        <div style="font-size:12px;color:#7a7060;margin-top:3px" id="coaching-modal-sub">General questions about the relocation process or the product</div>
       </div>
       <button onclick="closeCoaching()" style="background:none;border:none;font-size:22px;color:#7a7060;cursor:pointer;padding:4px;line-height:1">✕</button>
     </div>
@@ -1705,10 +1672,6 @@ function resetQuiz(){
         <div style="font-size:26px;font-weight:800;color:#0d0d0d;line-height:1;margin-bottom:6px">$149</div>
         <div style="font-size:11px;color:#7a7060;line-height:1.5" id="coaching-deep-desc">60 min · Full review<br>Visa strategy &amp; document checklist</div>
       </div>
-    </div>
-    <!-- Bio -->
-    <div style="font-size:12px;color:#7a7060;line-height:1.7;margin-bottom:16px;padding:12px 14px;background:#fff3ee;border-radius:10px;border-left:3px solid #c4622d" id="coaching-bio">
-      <strong style="color:#0d0d0d">Your coach:</strong> Puerto Rican navigating the Spain NLV process firsthand. Consulate appointment done, documents in progress, flight booked for July. Real experience — not generic advice.
     </div>
     <!-- Legal disclaimer — §7.2 required above booking button -->
     <div style="font-size:11px;color:#7a7060;line-height:1.55;margin-bottom:12px;padding:10px 12px;background:#f5f2eb;border-radius:8px;border-left:2px solid rgba(13,13,13,0.15)" id="coaching-disclaimer">These sessions provide general relocation guidance and product support — not legal, immigration, or financial advice. For visa-specific legal questions, please consult a licensed immigration attorney.</div>
@@ -1732,7 +1695,7 @@ const T = {
     'nav-budget':'Budget','nav-ai':'AI','nav-resources':'Resources',
     'budget-filter-cost':'🌍 Cost of Living','budget-filter-personal':'💰 My Budget','budget-filter-property':'🏠 Property & Land','budget-filter-investment':'📈 Investment Analysis',
     // Sidebar
-    'sb-relocations':'My Relocations','sb-spain':'Spain','sb-portugal':'Portugal',
+    'sb-relocations':'My Relocations','sb-spain':'Spain',
     'sb-colombia':'Colombia','sb-add-dest':'Add destination','sb-tools':'Tools',
     'sb-planner':'My Journey','sb-overview':'Overview','sb-documents':'Documents','sb-budget':'Budget',
     'sb-ai':'AI Advisor','sb-resources':'Resources','sb-housing':'Housing Search',
@@ -1740,7 +1703,7 @@ const T = {
     // Dashboard
     'dash-greeting':'Good morning ✦','dash-days-label':'days to go',
     'stat-label-1':'Tasks Remaining','stat-label-2':'Documents Ready','stat-label-3':'Monthly Budget',
-    'stat-budget-note':'Est. for Madrid','dash-tasks-title':"This Week's Tasks",
+    'stat-budget-note':'Monthly estimate','dash-tasks-title':"This Week's Tasks",
     'dash-see-all':'See all →','dash-activity-title':'Activity Feed',
     'ai-panel-title':'Nomadly AI','ai-panel-sub':'Your relocation advisor',
     'dash-ai-placeholder':'Ask anything about your move...','dash-ask-btn':'Ask →',
@@ -1770,7 +1733,7 @@ const T = {
     'rf-all':'All','rf-health':'🏥 Health','rf-legal':'⚖️ Legal','rf-housing':'🏠 Housing',
     'rf-finance':'💳 Finance','rf-relocation':'🧳 Relocation','rf-community':'🤝 Community',
     // Paywall
-    'pw-title':'Your Move to Spain, Simplified',
+    'pw-title':'Your Relocation, Simplified',
     'pw-desc':'Phase 1 preview free — unlock the full journey with a subscription',
     'pw-popular':'Most Popular','pw-plan1-name':'Wanderer','pw-plan2-name':'Nomad Pro',
     'pw-cta':'Start 7-Day Free Trial →','pw-later':'Maybe later',
@@ -1811,10 +1774,10 @@ const T = {
     // Journey page
     'journey-title':'🗺️ My Journey to Spain','journey-sub':'Your personalized step-by-step roadmap',
     // Coaching
-    'coaching-cta-title':'Book a Coaching Session',
-    'coaching-cta-sub':'20 min · $45 · Talk to someone who did this',
-    'coaching-modal-title':'📞 Book a Session',
-    'coaching-modal-sub':'Talk to someone who actually made this move',
+    'coaching-cta-title':"Got questions? Let's talk",
+    'coaching-cta-sub':'20 min · $45 · General questions about the process or the product',
+    'coaching-modal-title':'📞 Book a Call',
+    'coaching-modal-sub':'General questions about the relocation process or the product',
     'coaching-intro-title':'Intro Call',
     'coaching-intro-desc':'20 min · Zoom or phone\nIs this move right for me?',
     'coaching-deep-title':'Deep Dive',
@@ -1838,12 +1801,42 @@ const T = {
     'housing-filter-label':'Filter:',
     'housing-platforms-title':'🔗 Find Your Home — Recommended Platforms',
     'housing-law-title':'⚖️ Spanish Rental Law — What You Need to Know',
+    // Housing rental law grid
+    'rl-lease-label':'LEASE LENGTH',
+    'rl-lease-body':'Min 5 years tenant protection (LAU 2019). Landlord can\'t kick you out before 5 years without cause.',
+    'rl-deposit-label':'DEPOSIT',
+    'rl-deposit-body':'1 month unfurnished · 2 months furnished. Landlord must hold in regulated account.',
+    'rl-agency-label':'AGENCY FEES',
+    'rl-agency-body':'Since 2023: landlord pays the agent — not you. If an agent charges you, it\'s illegal.',
+    'rl-empad-label':'EMPADRONAMIENTO',
+    'rl-empad-body':'Landlord must sign your empadronamiento (city registration). Confirm BEFORE signing lease.',
+    'rl-utilities-label':'UTILITIES',
+    'rl-utilities-body':'Usually NOT included. Budget €100–150/mo for electricity, water, internet. Verify with landlord.',
+    // Housing rental market trends
+    'rl-market-title':'📊 Rental Market Trends — Spain 2025–2026',
+    'rl-malaga-label':'Málaga rent increase YoY',
+    'rl-madrid-label':'Madrid rent increase YoY',
+    'rl-sevilla-label':'Sevilla rent increase YoY',
+    'rl-valencia-label':'Valencia rent increase YoY',
+    'rl-expat-tip':'💡 <strong style="color:#0d0d0d">Expat Strategy:</strong> Arrive in Málaga or Sevilla first — lower rents, large Spanish-speaking expat community. After empadronamiento and TIE card (3–6 months), you can negotiate longer leases with better rates.',
+    // Housing platform descriptions
+    'hp-spotahome-desc':'Verified furnished rentals — book remotely from PR. Best for first 3 months.',
+    'hp-idealista-desc':'Largest Spanish platform. Best price tracking and long-term rentals from locals.',
+    'hp-fotocasa-desc':'Local listings with price history. Great for understanding market trends per neighborhood.',
+    'hp-housinganywhere-desc':'Best for student visa holders. Mid-term furnished rentals, flexible contracts. No Spanish required.',
+    // Budget property section
+    'budget-areas-title':'🏙️ Best Areas for Appreciation',
+    'budget-areas-body':'• <strong>Málaga</strong> — 8–12% YoY, coastal, expat demand<br>• <strong>Valencia</strong> — 6–9% YoY, undervalued vs Barcelona<br>• <strong>Madrid outskirts</strong> — new transport links boosting values<br>• <strong>Alicante / Costa Blanca</strong> — strong rental market<br>• <strong>Seville</strong> — lowest entry price, growing tourism',
+    'budget-mortgage-title':'🏦 Non-Resident Mortgage',
+    'budget-mortgage-body':'• Max loan: 70% of appraised value<br>• Min down: 30% + 10–13% buying costs<br>• Rate: ~3.2–4.5% variable / 3.5–5% fixed<br>• Best banks for non-residents: Sabadell, Bankinter, Santander<br>• NIE + Spanish bank account required',
+    // Consulate page tabs
+    'visas-tab-guides':'📋 Visa Guides',
+    'visas-tab-consulates':'🏢 Consulate Directory',
     // Hero section
     'hero-badge':'🇵🇷 Built for Puerto Ricans moving to Spain',
     'hero-h1':'Nomadly: Self-guided<br>relocation to Spain',
     'hero-sub':'Preview Phase 1 for free — unlock the full step-by-step journey with tools, trackers, and city insights with a subscription.',
     'hero-cta':'Take the Free Quiz →',
-    'hero-browse':'Browse Visas',
     'hero-stat-1':'quiz to your plan',
     'hero-stat-2':'tracked + guided',
     'hero-stat-3':'PR → citizenship',
@@ -1852,14 +1845,14 @@ const T = {
     'nav-overview':'Inicio','nav-planner':'Mi Viaje','nav-documents':'Documentos',
     'nav-budget':'Presupuesto','nav-ai':'IA','nav-resources':'Recursos',
     'budget-filter-cost':'🌍 Costo de Vida','budget-filter-personal':'💰 Mi Presupuesto','budget-filter-property':'🏠 Propiedad y Terreno','budget-filter-investment':'📈 Análisis de Inversión',
-    'sb-relocations':'Mis Reubicaciones','sb-spain':'España','sb-portugal':'Portugal',
+    'sb-relocations':'Mis Reubicaciones','sb-spain':'España',
     'sb-colombia':'Colombia','sb-add-dest':'Agregar destino','sb-tools':'Herramientas',
     'sb-planner':'Mi Viaje','sb-overview':'Inicio','sb-documents':'Documentos','sb-budget':'Presupuesto',
     'sb-ai':'Asesor IA','sb-resources':'Recursos','sb-housing':'Búsqueda de Vivienda',
     'sb-progress-label':'Progreso de reubicación',
     'dash-greeting':'Buenos días ✦','dash-days-label':'días restantes',
     'stat-label-1':'Tareas Pendientes','stat-label-2':'Documentos Listos','stat-label-3':'Presupuesto Mensual',
-    'stat-budget-note':'Est. para Madrid','dash-tasks-title':'Tareas de Esta Semana',
+    'stat-budget-note':'Estimado mensual','dash-tasks-title':'Tareas de Esta Semana',
     'dash-see-all':'Ver todas →','dash-activity-title':'Actividad Reciente',
     'ai-panel-title':'Nomadly IA','ai-panel-sub':'Tu asesor de reubicación',
     'dash-ai-placeholder':'Pregunta cualquier cosa sobre tu mudanza...','dash-ask-btn':'Preguntar →',
@@ -1888,7 +1881,7 @@ const T = {
     'pw-popular':'Más Popular','pw-plan1-name':'Viajero','pw-plan2-name':'Nómada Pro',
     'pw-cta':'Comenzar Prueba Gratuita de 7 Días →','pw-later':'Quizás después',
     'notif-title':'Notificaciones','notif-clear-btn':'Borrar todo','free-badge':'Plan Gratuito',
-    'upgrade-btn':'Mejorar →',
+    'upgrade-btn':'Actualizar →',
     'mt-title':'➕ Agregar Nueva Tarea','mt-name-label':'Nombre de Tarea','mt-phase-label':'Fase',
     'mt-cat-label':'Categoría','mt-cancel':'Cancelar','mt-add':'Agregar Tarea',
     'md-title':'📁 Agregar Documento','md-name-label':'Nombre del Documento','md-cat-label':'Categoría',
@@ -1921,10 +1914,10 @@ const T = {
     // Journey page
     'journey-title':'🗺️ Mi Viaje a España','journey-sub':'Tu hoja de ruta paso a paso personalizada',
     // Coaching
-    'coaching-cta-title':'Reservar una Sesión de Coaching',
-    'coaching-cta-sub':'20 min · $45 · Habla con alguien que lo hizo',
-    'coaching-modal-title':'📞 Reservar Sesión',
-    'coaching-modal-sub':'Habla con alguien que realmente hizo esta mudanza',
+    'coaching-cta-title':'¿Tienes preguntas? Hablemos',
+    'coaching-cta-sub':'20 min · $45 · Preguntas generales sobre el proceso o el producto',
+    'coaching-modal-title':'📞 Reservar una llamada',
+    'coaching-modal-sub':'Preguntas generales sobre el proceso de reubicación o el producto',
     'coaching-intro-title':'Llamada Intro',
     'coaching-intro-desc':'20 min · Zoom o teléfono\nIdeal para: ¿Es esto para mí?',
     'coaching-deep-title':'Sesión Profunda',
@@ -1948,12 +1941,42 @@ const T = {
     'housing-filter-label':'Filtrar:',
     'housing-platforms-title':'🔗 Encuentra Tu Hogar — Plataformas Recomendadas',
     'housing-law-title':'⚖️ Ley de Alquiler en España — Lo Que Debes Saber',
+    // Housing rental law grid
+    'rl-lease-label':'DURACIÓN DEL CONTRATO',
+    'rl-lease-body':'Mín. 5 años de protección al inquilino (LAU 2019). El propietario no puede echarte antes de 5 años sin causa justificada.',
+    'rl-deposit-label':'DEPÓSITO',
+    'rl-deposit-body':'1 mes sin amueblar · 2 meses amueblado. El propietario debe depositarlo en cuenta regulada.',
+    'rl-agency-label':'HONORARIOS DE AGENCIA',
+    'rl-agency-body':'Desde 2023: el propietario paga al agente, no tú. Si un agente te cobra, es ilegal.',
+    'rl-empad-label':'EMPADRONAMIENTO',
+    'rl-empad-body':'El propietario debe firmar tu empadronamiento (registro municipal). Confírmalo ANTES de firmar el contrato.',
+    'rl-utilities-label':'SUMINISTROS',
+    'rl-utilities-body':'Generalmente NO incluidos. Presupuesta €100–150/mes para electricidad, agua e internet. Verifica con el propietario.',
+    // Housing rental market trends
+    'rl-market-title':'📊 Tendencias del Mercado de Alquiler — España 2025–2026',
+    'rl-malaga-label':'Aumento de alquiler en Málaga interanual',
+    'rl-madrid-label':'Aumento de alquiler en Madrid interanual',
+    'rl-sevilla-label':'Aumento de alquiler en Sevilla interanual',
+    'rl-valencia-label':'Aumento de alquiler en Valencia interanual',
+    'rl-expat-tip':'💡 <strong style="color:#0d0d0d">Estrategia Expat:</strong> Llega primero a Málaga o Sevilla — alquileres más bajos, gran comunidad de habla hispana. Tras el empadronamiento y la TIE (3–6 meses), podrás negociar contratos más largos con mejores condiciones.',
+    // Housing platform descriptions
+    'hp-spotahome-desc':'Alquileres amueblados verificados — reserva a distancia desde PR. Ideal para los primeros 3 meses.',
+    'hp-idealista-desc':'Mayor plataforma española. Mejor para seguimiento de precios y alquileres a largo plazo con propietarios locales.',
+    'hp-fotocasa-desc':'Anuncios locales con historial de precios. Ideal para entender las tendencias de mercado por barrio.',
+    'hp-housinganywhere-desc':'Ideal para titulares de visa de estudiante. Alquileres amueblados de medio plazo, contratos flexibles. Sin requisito de español.',
+    // Budget property section
+    'budget-areas-title':'🏙️ Mejores Zonas para Revalorización',
+    'budget-areas-body':'• <strong>Málaga</strong> — 8–12% interanual, costera, demanda expat<br>• <strong>Valencia</strong> — 6–9% interanual, infravalorada frente a Barcelona<br>• <strong>Afueras de Madrid</strong> — nuevas líneas de transporte impulsan los valores<br>• <strong>Alicante / Costa Blanca</strong> — mercado de alquiler sólido<br>• <strong>Sevilla</strong> — precio de entrada más bajo, turismo en auge',
+    'budget-mortgage-title':'🏦 Hipoteca para No Residentes',
+    'budget-mortgage-body':'• Préstamo máximo: 70% del valor tasado<br>• Entrada mínima: 30% + 10–13% de gastos de compra<br>• Tipo: ~3,2–4,5% variable / 3,5–5% fijo<br>• Mejores bancos para no residentes: Sabadell, Bankinter, Santander<br>• NIE + cuenta bancaria española requeridos',
+    // Consulate page tabs
+    'visas-tab-guides':'📋 Guías de Visa',
+    'visas-tab-consulates':'🏢 Directorio de Consulados',
     // Hero section
     'hero-badge':'🇵🇷 Hecho para puertorriqueños que se mudan a España',
     'hero-h1':'Nomadly: Reubicación guiada<br>por ti a España',
     'hero-sub':'Previsualiza la Fase 1 gratis — desbloquea el recorrido completo con herramientas, rastreadores e información de ciudades con una suscripción.',
     'hero-cta':'Tomar el Quiz Gratis →',
-    'hero-browse':'Ver Visas',
     'hero-stat-1':'quiz a tu plan',
     'hero-stat-2':'rastreadas + guiadas',
     'hero-stat-3':'PR → ciudadanía',
@@ -2011,7 +2034,7 @@ function updateHousingDropdowns() {
 function t(key) { return T[currentLang][key] || T['en'][key] || key; }
 
 function applyTranslations() {
-  const htmlKeys = new Set(['coaching-bio','hero-h1']);
+  const htmlKeys = new Set(['coaching-bio','hero-h1','budget-areas-body','budget-mortgage-body','rl-expat-tip']);
   Object.keys(T.en).forEach(key => {
     const el = document.getElementById(key);
     if (el) {
@@ -2250,11 +2273,6 @@ const CITIES = {
     {flag:'🌴',name:'Málaga',cost:'€1,700',index:'56 · Affordable',breakdown:{rent:680,food:260,transport:50,health:130,utilities:100,leisure:240,other:240}},
     {flag:'🌞',name:'Sevilla',cost:'€1,600',index:'52 · Most affordable',breakdown:{rent:650,food:250,transport:55,health:120,utilities:95,leisure:220,other:210}},
   ],
-  portugal:[
-    {flag:'🌊',name:'Lisbon',cost:'€1,950',index:'63 · Mid-range',selected:true,breakdown:{rent:850,food:280,transport:70,health:140,utilities:110,leisure:280,other:220}},
-    {flag:'🌅',name:'Porto',cost:'€1,600',index:'52 · Affordable',breakdown:{rent:650,food:240,transport:55,health:120,utilities:100,leisure:230,other:205}},
-    {flag:'🏖️',name:'Algarve',cost:'€1,450',index:'47 · Budget',breakdown:{rent:580,food:220,transport:80,health:110,utilities:90,leisure:200,other:170}},
-  ],
   mexico:[
     {flag:'🌮',name:'Mexico City',cost:'$1,200',index:'38 · Very affordable',selected:true,breakdown:{rent:450,food:180,transport:30,health:100,utilities:80,leisure:200,other:160}},
     {flag:'🌊',name:'Puerto Vallarta',cost:'$1,100',index:'35 · Affordable',breakdown:{rent:420,food:160,transport:40,health:90,utilities:75,leisure:190,other:125}},
@@ -2264,7 +2282,6 @@ const CITIES = {
 
 const COUNTRY_CHIPS = [
   {key:'spain',flag:'🇪🇸',label:'Spain',label_es:'España'},
-  {key:'portugal',flag:'🇵🇹',label:'Portugal',label_es:'Portugal',locked:true},
 ];
 
 // ── AI RESPONSES ──
@@ -2281,7 +2298,7 @@ const AI = {
     malaga:`🌴 <strong>Málaga vs Madrid:</strong><br><br>Málaga is about <strong>€400/month cheaper</strong>. Rent is ~24% lower (€680 vs €900). Closest climate to Puerto Rico — warm, coastal, relaxed. Best base for the citizenship track and eventual property purchase.`,
     housing:`🏠 <strong>Finding Housing from Puerto Rico:</strong><br><br>• <strong>Idealista.com</strong> — largest Spanish platform<br>• <strong>Spotahome</strong> — verified, remote-bookable<br>• <strong>Fotocasa</strong> — great for Málaga<br><br>Book first 2–3 months furnished. Málaga budget: €600–800/mo for 1BR.<br>Landlords need NIE/passport + 2 months deposit.`,
     banking:`🏦 <strong>Banking Strategy:</strong><br><br><strong>Before leaving PR:</strong> Open Wise — real Euro IBAN, works everywhere in Spain.<br><br><strong>After arriving:</strong> Open Spanish account in person with passport + empadronamiento.<br>Best: N26 (digital), BBVA, CaixaBank.`,
-    consulates:`🏢 <strong>Consulate Directory:</strong><br><br>Check the <strong>Visas & Consulates</strong> tab → Consulate Directory for the full searchable list.<br><br>🇵🇷 <strong>Puerto Rico residents:</strong><br>• Spain → <strong>Consulado General en San Juan, PR</strong> ⭐<br>&nbsp;&nbsp;Edificio Mercantil Plaza, Piso 11, Av. Ponce de León s/n, Hato Rey PR 00918<br>&nbsp;&nbsp;📧 Cog.SanJuandePuertoRico@maec.es · 📞 787-758-6090<br>&nbsp;&nbsp;Hours: Mon–Fri 8:30am–1:30pm · Appointment required<br>• Italy → <strong>Miami</strong> consulate (consolatomiami@esteri.it)<br>• Germany → <strong>Miami</strong> consulate (info@miami.diplo.de)<br>• Ireland → <strong>New York</strong> consulate (newyorkcg@dfa.ie)<br>• Portugal → <strong>New York</strong> consulate<br>• Poland → <strong>New York</strong> consulate<br>• Greece → <strong>New York</strong> consulate`,
+    consulates:`🏢 <strong>Consulate Directory:</strong><br><br>Check the <strong>Visas & Consulates</strong> tab → Consulate Directory for the full searchable list.<br><br>🇵🇷 <strong>Puerto Rico residents:</strong><br>• Spain → <strong>Consulado General en San Juan, PR</strong> ⭐<br>&nbsp;&nbsp;Edificio Mercantil Plaza, Piso 11, Av. Ponce de León s/n, Hato Rey PR 00918<br>&nbsp;&nbsp;📧 Cog.SanJuandePuertoRico@maec.es · 📞 787-758-6090<br>&nbsp;&nbsp;Hours: Mon–Fri 8:30am–1:30pm · Appointment required<br>• Italy → <strong>Miami</strong> consulate (consolatomiami@esteri.it)<br>• Germany → <strong>Miami</strong> consulate (info@miami.diplo.de)<br>• Ireland → <strong>New York</strong> consulate (newyorkcg@dfa.ie)<br>• Poland → <strong>New York</strong> consulate<br>• Greece → <strong>New York</strong> consulate`,
     italian_citizenship:`🇮🇹 <strong>Italian Citizenship by Descent (Jure Sanguinis):</strong><br><br>⚠️ <strong>Major 2025 change:</strong> As of March 28, 2025, only children and grandchildren of Italian-born citizens may apply. Great-grandchildren are no longer eligible for new applications.<br><br><strong>Two pathways:</strong><br>• <strong>Administrative</strong> — Apply at any Italian municipality. 4–6 months. DIY possible.<br>• <strong>Judicial</strong> — Required for maternal line where child was born before 1948. Requires Italian lawyer. 8–18 months.<br><br>See the full step-by-step guide in the <strong>Visas & Consulates → Citizenship by Descent</strong> tab.`,
     entrepreneur:`🚀 <strong>Spain Entrepreneur Visa (Ley de Startups — Law 28/2022):</strong><br><br>One of the most accessible startup visas in the EU — <strong>no minimum investment required</strong>. Business plan evaluated by <strong>ENISA</strong> (10–20 days). Residence permit then processed by <strong>UGE</strong> (~20 days). Initial permit: <strong>3 years</strong> (renewable 2 more).<br><br><strong>Requirements:</strong><br>• Innovative business plan — ICT, green energy, health sciences, biotech, aerospace. Must be scalable beyond Spain. Company under 5 years old.<br>• Financial proof: ~€31,752 savings OR €600/mo (one-time bank statement)<br>• Health insurance (authorized to operate in Spain)<br>• FBI background check (apostilled)<br>• Spanish business address (co-working space accepted)<br><br><strong>Tax benefits:</strong><br>• <strong>Beckham Law</strong> — 24% flat personal tax for 6 years<br>• <strong>15% corporate tax</strong> for first 4 profitable years (vs 25% standard)<br>• Stock options: €50k/year tax-free<br>• Must not have been Spanish tax resident in previous 5 years<br><br>⚠️ <strong>Spain's Golden Visa ended April 2025</strong> — making this the top innovation immigration route.<br><br>🇵🇷 <strong>PR advantage:</strong> 2-year citizenship fast track applies. Barcelona (22@ district), Madrid, and Málaga TechPark are the top hubs. Company can be incorporated online in ~6 hours.`,
     salamanca:`🏛️ <strong>Salamanca, Spain:</strong><br><br>Salamanca is a <strong>university city in central Spain</strong> — home to the oldest university in Spain (founded 1218) and one of the top Spanish language schools in the world.<br><br><strong>Why PR expats choose Salamanca:</strong><br>• Best-in-class Spanish language immersion programs<br>• Very affordable: 1BR rent €400–600/mo, food ~€200/mo<br>• Small, walkable, safe city<br>• Beautiful architecture (UNESCO World Heritage Plaza Mayor)<br>• Strong student community<br><br><strong>Best strategy for PR movers:</strong> Enroll in a 6–12 month language program in Salamanca → switch to NLV or DNV → start the 2-year citizenship clock. UIMP and Cursos Internacionales are the top programs.<br><br>🏠 Neighborhoods: <strong>Centro Histórico</strong> (€500–700/mo, stunning), <strong>San Bernardo</strong> (€400–550/mo, student area), <strong>Garrido</strong> (€350–500/mo, most affordable).`,
@@ -2689,18 +2706,11 @@ const PROPERTY_DATA={
     {city:'Valencia',type:'Apartment',price:2200,size:'~82m² for €180k',trend:'↑ 9% YoY',color:'#4a7c6f'},
     {city:'Granada',type:'Apartment',price:1600,size:'~113m² for €180k',trend:'↑ 5% YoY',color:'#4a7c6f'},
   ]},
-  portugal:{cities:[
-    {city:'Lisbon Centro',type:'Apartment',price:5200,size:'~35m² for €180k',trend:'↑ 7% YoY',color:'#c4622d'},
-    {city:'Porto',type:'Apartment',price:3400,size:'~53m² for €180k',trend:'↑ 9% YoY',color:'#d4a843'},
-    {city:'Algarve Coast',type:'Apartment',price:3800,size:'~47m² for €180k',trend:'↑ 11% YoY',color:'#c4622d'},
-    {city:'Braga',type:'Apartment',price:1800,size:'~100m² for €180k',trend:'↑ 6% YoY',color:'#4a7c6f'},
-  ]},
 };
 
 const LAND_DATA=[
   {flag:'🇪🇸',country:'Spain — Andalucía',price:'€15,000–80,000/hectare',desc:'Rural land in Málaga province. Olive groves and almond farms from €20k/ha. Coastal plots much higher.',size:'What €50k buys: ~1–3 hectares rural',note:'NIE required to buy. Non-EU must prove investment intent.',color:'#fff3ee',textc:'#c4622d'},
   {flag:'🇪🇸',country:'Spain — Interior',price:'€5,000–30,000/hectare',desc:'Extremadura, Castilla-La Mancha — cheapest land in Western Europe. Great for homesteading or farming.',size:'What €50k buys: ~3–10 hectares',note:'Full EU legal protections. No restrictions for US buyers.',color:'#fff3ee',textc:'#c4622d'},
-  {flag:'🇵🇹',country:'Portugal — Alentejo',price:'€3,000–20,000/hectare',desc:'Vast agricultural plains. Wine country, cork forests, olive groves. Golden Visa eligible.',size:'What €50k buys: ~5–15 hectares',note:'Portugal has very clear foreign land ownership laws.',color:'#eef6f4',textc:'#4a7c6f'},
 ];
 
 function renderPropertyData(country) {
@@ -3288,8 +3298,27 @@ document.addEventListener('click',e=>{
 function openModal(id){document.getElementById(id).classList.add('active');}
 function closeModal(id){document.getElementById(id).classList.remove('active');}
 document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active');});});
+function getDestinationInfo() {
+  // Returns {name, flag} for the user's destination country.
+  // Currently Spain is the only live destination — expanded in Session 7.
+  const countryMap = { spain: {name:'Spain', flag:'🇪🇸'}, portugal: {name:'Portugal', flag:'🇵🇹'} };
+  const country = (typeof currentJourneyCountry !== 'undefined' && currentJourneyCountry) ? currentJourneyCountry : 'spain';
+  return countryMap[country] || null;
+}
 function showPaywall(){
   document.getElementById('paywall').classList.add('active');
+  // Update pricing header with destination country
+  const dest = getDestinationInfo();
+  const isES = (typeof currentLang !== 'undefined' && currentLang === 'es');
+  const flagEl = document.getElementById('pw-flag');
+  const titleEl = document.getElementById('pw-title');
+  if (dest) {
+    if (flagEl) flagEl.textContent = dest.flag;
+    if (titleEl) titleEl.textContent = isES ? ('Tu Mudanza a ' + dest.name + ', Simplificada') : ('Your Move to ' + dest.name + ', Simplified');
+  } else {
+    if (flagEl) flagEl.textContent = '';
+    if (titleEl) titleEl.textContent = isES ? 'Tu Reubicación, Simplificada' : 'Your Relocation, Simplified';
+  }
   renderFeatureTable();
 }
 function dismissPaywall(){document.getElementById('paywall').classList.remove('active');}
@@ -3413,7 +3442,6 @@ const CONSULATES = [
   {country:'Ireland',flag:'🇮🇪',city:'🇵🇷 San Juan (via New York)',email:'newyorkcg@dfa.ie',web:'www.dfa.ie/irish-consulate/newyork',note:'PR residents use New York consulate ⭐',lat:18.460,lng:-66.110},
   {country:'Poland',flag:'🇵🇱',city:'🇵🇷 San Juan (via New York)',email:'newyork.kg.sekretariat@msz.gov.pl',web:'www.newyork.msz.gov.pl',note:'PR residents use New York consulate ⭐',lat:18.458,lng:-66.108},
   {country:'Greece',flag:'🇬🇷',city:'🇵🇷 San Juan (via New York)',email:'greekconsulate.nyc@mfa.gr',web:'www.mfa.gr/usa/en/newyork/',note:'PR residents use New York consulate ⭐',lat:18.456,lng:-66.106},
-  {country:'Portugal',flag:'🇵🇹',city:'🇵🇷 San Juan (via New York)',email:'mail@consuladoportugalenewyork.com',web:'www.consuladoportugalenewyork.com',note:'PR residents use New York consulate ⭐',lat:18.454,lng:-66.104},
   {country:'UK',flag:'🇬🇧',city:'🇵🇷 San Juan (via Miami)',email:'miami.general@fco.gov.uk',web:'www.gov.uk/world/organisations/british-consulate-general-miami',note:'PR residents use Miami consulate ⭐',lat:18.452,lng:-66.102},
   // USA CONSULATES
   {country:'Spain',flag:'🇪🇸',city:'Boston',email:'cog.boston@maec.es',web:'www.exteriores.gob.es/Consulados/Boston',note:'Jurisdiction: New England states',lat:42.358,lng:-71.057},
@@ -3423,11 +3451,6 @@ const CONSULATES = [
   {country:'Spain',flag:'🇪🇸',city:'Miami',email:'cog.miami@maec.es',web:'www.exteriores.gob.es/Consulados/Miami',note:'Jurisdiction: Florida, Puerto Rico, Caribbean ⭐',lat:25.775,lng:-80.208},
   {country:'Spain',flag:'🇪🇸',city:'New York',email:'cog.nuevayork@maec.es',web:'www.exteriores.gob.es/Consulados/NuevaYork',note:'Jurisdiction: NY, NJ, PA and more',lat:40.712,lng:-74.006},
   {country:'Spain',flag:'🇪🇸',city:'San Francisco',email:'cog.sanfrancisco@maec.es',web:'www.exteriores.gob.es/Consulados/SanFrancisco',note:'Jurisdiction: Northern California, Pacific Northwest',lat:37.775,lng:-122.418},
-  {country:'Portugal',flag:'🇵🇹',city:'Boston',email:'boston@mne.pt',web:'www.consulateportugalboston.com',note:'Jurisdiction: New England',lat:42.360,lng:-71.059},
-  {country:'Portugal',flag:'🇵🇹',city:'New York',email:'mail@consuladoportugalenewyork.com',web:'www.consuladoportugalenewyork.com',note:'Jurisdiction: NY, NJ',lat:40.714,lng:-74.008},
-  {country:'Portugal',flag:'🇵🇹',city:'Newark',email:'pedror@nassaued.net',web:'www.nassaued.net',note:'Jurisdiction: New Jersey',lat:40.735,lng:-74.172},
-  {country:'Portugal',flag:'🇵🇹',city:'Providence',email:'consulateportugalprovidence@gmail.com',web:'www.consulateportugalprovidence.com',note:'Jurisdiction: Rhode Island',lat:41.823,lng:-71.412},
-  {country:'Portugal',flag:'🇵🇹',city:'San Francisco',email:'consulport.sfrancisco@gmail.com',web:'www.sfrpc.com',note:'Jurisdiction: Western US',lat:37.773,lng:-122.420},
   {country:'Italy',flag:'🇮🇹',city:'Atlanta',email:'consatlanta@esteri.it',web:'consatlanta.esteri.it',note:'Jurisdiction: Southeast',lat:33.749,lng:-84.388},
   {country:'Italy',flag:'🇮🇹',city:'Boston',email:'consolatogenerale.boston@esteri.it',web:'consbostonusa.esteri.it',note:'Jurisdiction: New England',lat:42.362,lng:-71.062},
   {country:'Italy',flag:'🇮🇹',city:'Chicago',email:'consolato.chicago@esteri.it',web:'conschicago.esteri.it',note:'Jurisdiction: Midwest',lat:41.880,lng:-87.628},
@@ -3521,7 +3544,7 @@ function initMap(consulates) {
   mapMarkers.forEach(m => map.removeLayer(m));
   mapMarkers = [];
   const countryColors = {
-    'Spain':'#c4622d','Portugal':'#4a7c6f','Italy':'#3b6fa0','Germany':'#0d0d0d',
+    'Spain':'#c4622d','Italy':'#3b6fa0','Germany':'#0d0d0d',
     'Ireland':'#4a7c6f','UK':'#7c5cbf','Poland':'#c4622d','Greece':'#3b6fa0',
     'Czech Republic':'#d4a843','Slovakia':'#c4622d','Hungary':'#d4a843'
   };
@@ -3630,7 +3653,7 @@ function showVisaDetail(visa) {
     const filterBarE = document.getElementById('visa-filter-bar');
     if (cardsE) cardsE.style.display = 'none';
     if (filterBarE) filterBarE.style.display = 'none';
-    ['nlv','dnv','d7','col','spain-descent','entrepreneur'].forEach(v => {
+    ['nlv','dnv','col','spain-descent','entrepreneur'].forEach(v => {
       const el = document.getElementById('visa-detail-'+v);
       if (el) el.style.display = 'none';
     });
@@ -3644,7 +3667,7 @@ function showVisaDetail(visa) {
   const filterBar = document.getElementById('visa-filter-bar');
   if (cards) cards.style.display = 'none';
   if (filterBar) filterBar.style.display = 'none';
-  ['nlv','dnv','d7','col','spain-descent','entrepreneur'].forEach(v => {
+  ['nlv','dnv','col','spain-descent','entrepreneur'].forEach(v => {
     const el = document.getElementById('visa-detail-'+v);
     if (el) el.style.display = 'none';
   });
@@ -3660,7 +3683,7 @@ function showVisaDetail(visa) {
 }
 
 function hideVisaDetail() {
-  ['nlv','dnv','d7','col','spain-descent','entrepreneur'].forEach(v => {
+  ['nlv','dnv','col','spain-descent','entrepreneur'].forEach(v => {
     const el = document.getElementById('visa-detail-'+v);
     if (el) el.style.display = 'none';
   });
@@ -3843,8 +3866,8 @@ function checkoutPlan(plan) {
       trialES: '🎉 Prueba gratis 7 días · Luego $59/mes · Cancela cuando quieras',
       trialAnnual:   '🎉 7-day free trial · Then $449/yr ($37/mo) · Cancel anytime',
       trialAnnualES: '🎉 Prueba gratis 7 días · Luego $449/año ($37/mes) · Cancela cuando quieras',
-      features:   ['✓ Everything in Wanderer','✓ AI Advisor (automated guidance)','✓ Roadmap generator (PDF)','✓ Smart document packs','✓ Pro calculators (impact, tax, investment)','✓ Optional add-ons','✓ Portugal content (coming soon)'],
-      featuresES: ['✓ Todo lo de Wanderer','✓ Asesor IA (orientación automatizada)','✓ Generador de hoja de ruta (PDF)','✓ Paquetes de documentos inteligentes','✓ Calculadoras Pro','✓ Complementos opcionales','✓ Contenido de Portugal (próximamente)'],
+      features:   ['✓ Everything in Wanderer','✓ AI Advisor (automated guidance)','✓ Roadmap generator (PDF)','✓ Smart document packs','✓ Pro calculators (impact, tax, investment)','✓ Optional add-ons'],
+      featuresES: ['✓ Todo lo de Wanderer','✓ Asesor IA (orientación automatizada)','✓ Generador de hoja de ruta (PDF)','✓ Paquetes de documentos inteligentes','✓ Calculadoras Pro','✓ Complementos opcionales'],
     },
   };
   const p = plans[plan] || plans.wanderer;
@@ -4108,55 +4131,6 @@ const JOURNEYS = {
         ],
         tip:'🚀 PR advantage: ENISA evaluation in 10–20 days, 3-year permit, 15% corp tax + 24% Beckham personal tax, €50k stock option exemption. Spain\'s Golden Visa ended April 2025 — this is now the top innovation route. PR founders qualify for the 2-year citizenship clock. Company can be incorporated online in ~6 hours.',
         consulate:'Consulado General de España · Mercantil Plaza, Piso 11, Hato Rey PR 00918 · 787-758-6090',
-      },
-    ]
-  },
-  portugal: {
-    flag:'🇵🇹', name:'Portugal', comingSoon: true,
-    desc:'Portugal\'s D7 Passive Income Visa requires just €820/mo — lower than Spain\'s NLV. Path to citizenship in 5 years, NHR tax benefits (10% flat rate on foreign income), and a lower cost of living. Lisbon, Porto, and the Algarve are top destinations.',
-    tracks:[]
-  },
-  _portugal_full: {
-    flag:'🇵🇹', name:'Portugal',
-    tracks:[
-      {
-        id:'d7', icon:'🌊', color:'#4a7c6f', bg:'#eef6f4',
-        title:'D7 Passive Income Visa',
-        subtitle:'Pension · rental income · investments · savings',
-        who:'Min €820/mo passive income (lower than Spain NLV). Path to citizenship after 5 years. NHR tax benefits.',
-        timeline:'2–3 months processing · 2yr renewable · 5yr → permanent · citizenship after 5yr',
-        phases:[
-          {phase:'Phase 1 — Open Portuguese Bank Account',icon:'🏦',color:'#4a7c6f',steps:[
-            'Open account at Millennium BCP or Caixa Geral (can do remotely)',
-            'Deposit min 3 months of income proof',
-            'Get NIF (Portuguese tax ID) — can get at consulate',
-          ]},
-          {phase:'Phase 2 — Documents',icon:'📁',color:'#d4a843',steps:[
-            'FBI Background Check (apostilled)',
-            'Proof of accommodation in Portugal',
-            'Health insurance covering Portugal',
-            'Proof of passive income min €820/mo',
-            'All documents apostilled and translated to Portuguese',
-          ]},
-          {phase:'Phase 3 — Apply at AIMA',icon:'🏢',color:'#3b6fa0',steps:[
-            'Apply via Portuguese Consulate or in Portugal at AIMA office',
-            'Get appointment (book early — 2–4 month waits)',
-            'Receive temporary residence card (2 years)',
-          ]},
-          {phase:'Phase 4 — Life in Portugal',icon:'🏠',color:'#4a7c6f',steps:[
-            'Register at local Junta de Freguesia',
-            'Activate NHR tax status (10% flat rate on foreign income for 10 years)',
-            'Renew residency every 2 years',
-          ]},
-          {phase:'Phase 5 — Citizenship at 5 Years',icon:'🛂',color:'#4a7c6f',steps:[
-            'Apply for Portuguese citizenship after 5 years',
-            'Pass A2 Portuguese language test',
-            'Clean criminal record required',
-            'EU passport — travel in 27 countries',
-          ]},
-        ],
-        tip:'🏖️ Portugal is cheaper than Spain and has lower income thresholds. Lisbon and Porto are popular, but Algarve offers the best value and climate.',
-        consulate:'Portuguese Consulate New York · mail@consuladoportugalenewyork.com',
       },
     ]
   },
@@ -4561,6 +4535,42 @@ function applyHousingVisaFilter(visaType) {
   }
 }
 
+// ── COUNTRY PAIR TIPS — loaded in rental law grid "origin → destination Tips" tile ──
+const COUNTRY_PAIR_TIPS = {
+  'PR→es': {
+    label_en:'PR → Spain Tips', label_es:'Puerto Rico → España',
+    body_en:'Most landlords want: passport, bank statements (3 months), and proof of income/savings for NLV. Spotahome lets you book without a NIE.',
+    body_es:'La mayoría de propietarios piden: pasaporte, extractos bancarios (3 meses) y prueba de ingresos/ahorros para la NLV. Spotahome permite reservar sin NIE.',
+  },
+  'mainland→es': {
+    label_en:'US → Spain Tips', label_es:'EE.UU. → España',
+    body_en:'US passport holders need similar docs — no apostille differences for landlords. Set up a Wise account for automatic Euro rent payments before arrival.',
+    body_es:'Los titulares de pasaporte estadounidense necesitan documentos similares. Crea una cuenta Wise para pagos de alquiler automáticos en euros antes de llegar.',
+  },
+  'default→es': {
+    label_en:'Expat Tips', label_es:'Consejos para Expats',
+    body_en:'Most landlords want: passport, bank statements (3 months), and proof of income. Spotahome lets you book without a NIE.',
+    body_es:'La mayoría de propietarios piden: pasaporte, extractos bancarios (3 meses) y prueba de ingresos. Spotahome permite reservar sin NIE.',
+  },
+};
+
+function renderRentalLawTipsTile() {
+  const tile = document.getElementById('rl-tips-tile');
+  if (!tile) return;
+  const qa = DB.get('quiz_answers', {});
+  // q1=origin: 'PR', 'mainland', or undefined
+  const origin = qa.q1 || 'default';
+  // destination country: currently always 'es'
+  const destCode = 'es';
+  const pairKey = origin + '→' + destCode;
+  const tips = COUNTRY_PAIR_TIPS[pairKey] || COUNTRY_PAIR_TIPS['default→' + destCode] || COUNTRY_PAIR_TIPS['default→es'];
+  const isES = (typeof currentLang !== 'undefined' && currentLang === 'es');
+  tile.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:#c4622d;text-transform:uppercase;margin-bottom:4px">${isES ? tips.label_es : tips.label_en}</div>
+    <div style="font-size:12px;color:#0d0d0d;line-height:1.6">${isES ? tips.body_es : tips.body_en}</div>
+  `;
+}
+
 function renderHousingPage() {
   // Auto-populate visa filter from quiz answers
   const qa = DB.get('quiz_answers', {});
@@ -4578,6 +4588,8 @@ function renderHousingPage() {
   const isPaid = currentPlan === 'wanderer' || currentPlan === 'pro';
   if (proSection) proSection.style.display = isPaid ? 'block' : 'none';
   if (upgradeBanner) upgradeBanner.style.display = isPaid ? 'none' : 'block';
+  // Render dynamic rental law tips tile (origin→destination)
+  renderRentalLawTipsTile();
 }
 
 function renderJourneyStep(phaseKey, si, total, text, stateVal, color, isDoc) {
@@ -4684,7 +4696,7 @@ function renderJourney(country) {
   // Sync country tab UI
   document.querySelectorAll('#journey-country-tabs .filter-btn').forEach(b => b.classList.remove('active'));
   const tabs = document.querySelectorAll('#journey-country-tabs .filter-btn');
-  const tabMap = {spain:0, portugal:1, costarica:2};
+  const tabMap = {spain:0, costarica:1};
   if (tabs[tabMap[country]]) tabs[tabMap[country]].classList.add('active');
 
   let recommended = j.tracks[0].id;
@@ -4735,7 +4747,7 @@ function renderJourney(country) {
 
     // PAYWALL LOGIC:
     // Spain: Phase 1 fully free. Phases 2+ locked behind Wanderer.
-    // Portugal & Costa Rica: overview + Phase 1 title free, steps locked.
+    // Costa Rica: overview + Phase 1 title free, steps locked.
     const countryLocked = !isPaid && country !== 'spain';
     const phasesHtml = track.phases.map((p, i) => {
       const phaseKey = country + '_' + track.id + '_phase' + i;
@@ -4788,7 +4800,7 @@ function renderJourney(country) {
     const lockedTeaser = !isPaid ? `
       <div onclick="showPaywall()" style="margin-top:8px;padding:16px;background:linear-gradient(135deg,#fff8f5,#f5f2eb);border:1.5px dashed rgba(196,98,45,0.4);border-radius:12px;text-align:center;cursor:pointer">
         <div style="font-size:20px;margin-bottom:6px">🔒</div>
-        <div style="font-size:13px;font-weight:700;color:#c4622d;margin-bottom:4px">${countryLocked ? 'Full ' + j.name + ' Guide — Wanderer $9/mo' : remainingPhases + ' more phases — Documents, Consulate, Arrive & Citizenship'}</div>
+        <div style="font-size:13px;font-weight:700;color:#c4622d;margin-bottom:4px">${countryLocked ? 'Full ' + j.name + ' Guide — Wanderer $29/mo' : remainingPhases + ' more phases — Documents, Consulate, Arrive & Citizenship'}</div>
         <div style="font-size:12px;color:#7a7060;margin-bottom:10px">Unlock the complete step-by-step roadmap</div>
         <div style="display:inline-block;padding:8px 20px;background:#c4622d;color:white;border-radius:8px;font-weight:700;font-size:13px">Unlock Wanderer →</div>
       </div>` : '';
@@ -5169,7 +5181,6 @@ function renderFeatureTable() {
     ['Generador de hoja de ruta (PDF)','—','—','✓'],
     ['Paquetes de documentos inteligentes','—','—','✓'],
     ['Calculadoras Pro (impacto, impuestos, inversión)','—','—','✓'],
-    ['Contenido de Portugal (próximamente)','—','—','✓'],
     ['Add-ons opcionales','—','—','✓'],
   ] : [
     ['Phase 1 Preview','✓','✓','✓'],
@@ -5186,7 +5197,6 @@ function renderFeatureTable() {
     ['Roadmap generator (PDF)','—','—','✓'],
     ['Smart document packs','—','—','✓'],
     ['Pro calculators (impact, tax, investment)','—','—','✓'],
-    ['Portugal content (coming soon)','—','—','✓'],
     ['Optional add-ons','—','—','✓'],
   ];
   const el = document.getElementById('feature-table-rows');
